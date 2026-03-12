@@ -50,7 +50,7 @@ return [
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'school_management'),
             'username' => env('DB_USERNAME', 'ykxz2coe5i0komck'),
-            'password' => env('DB_PASSWORD', 'ZlMX85SH9l82jnlj7EnG'),
+            'password' => env('DB_PASSWORD', '1234'),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_CHARSET', 'utf8mb4'),
             'collation' => env('DB_COLLATION', 'utf8mb4_general_ci'),
