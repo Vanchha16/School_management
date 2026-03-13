@@ -12,11 +12,13 @@ use App\Http\Controllers\Backend\StudentController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\StudentRegisterController;
 use App\Http\Controllers\Backend\SubmissionController;
+use App\Http\Controllers\ProfileController;
 /*
 |--------------------------------------------------------------------------
 | PUBLIC
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return redirect()->route('student.register');
 });
@@ -32,7 +34,7 @@ Route::post('/logout', [SimpleLoginController::class, 'logout'])->name('logout')
 Route::get('admin/late-returns', [\App\Http\Controllers\Backend\BorrowController::class, 'lateReturns'])
     ->name('borrows.late_returns');
 Route::get('admin/overdue-borrows', [\App\Http\Controllers\Backend\BorrowController::class, 'overdueBorrows'])
-->name('borrows.overdue');
+    ->name('borrows.overdue');
 /*
 |--------------------------------------------------------------------------
 | DASHBOARD (after login)
@@ -136,7 +138,20 @@ Route::delete('/admin/submissions/{id}/remove', [SubmissionController::class, 'r
 
 Route::post('/admin/submissions/cancel-all', [SubmissionController::class, 'cancelAll'])
     ->name('submissions.cancelAll');
-    Route::get('/register/check-phone', [App\Http\Controllers\Backend\StudentRegisterController::class, 'checkPhone'])
+Route::get('/register/check-phone', [App\Http\Controllers\Backend\StudentRegisterController::class, 'checkPhone'])
     ->name('register.checkPhone');
-    Route::get('/register/check-student-name', [App\Http\Controllers\Backend\StudentRegisterController::class, 'checkStudentName'])
+Route::get('/register/check-student-name', [App\Http\Controllers\Backend\StudentRegisterController::class, 'checkStudentName'])
     ->name('register.checkStudentName');
+
+
+// Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::post('/profile/photo', [ProfileController::class, 'storePhoto'])->name('profile.photo.store');
+    Route::post('/profile/photo/update', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
+
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});

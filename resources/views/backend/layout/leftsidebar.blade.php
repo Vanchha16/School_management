@@ -4,16 +4,120 @@
         <i class="bi bi-list"></i>
     </button>
 
-    <div class="fw-semibold">Don School</div>
+    <div class="fw-semibold">IT Room</div>
 
-    <div style="width: 38px;"></div>
+    <div style="width: 38px;">
+        <div class="dashboard-user-row">
+                                <button type="button"
+                                    class="btn btn-light rounded-circle d-flex align-items-center justify-content-center position-relative flex-shrink-0"
+                                    style="width:44px; height:44px;">
+                                    <i class="bi bi-bell"></i>
+                                    <span
+                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                        style="font-size:10px;">
+                                        3
+                                    </span>
+                                </button>
+
+                                @php
+                                    $user = Auth::user();
+                                    $profilePhoto = !empty($user?->photo) ? asset('storage/' . $user->photo) : null;
+                                    $userInitial = strtoupper(substr($user->name ?? 'A', 0, 1));
+                                @endphp
+
+                                <div class="dropdown">
+                                    <button
+                                        class="dashboard-profile-btn btn btn-light border-0 rounded-pill px-2 px-sm-3 py-2 d-flex align-items-center gap-2 shadow-sm"
+                                        type="button" data-bs-toggle="dropdown" data-bs-display="static"
+                                        aria-expanded="false">
+
+                                        <div class="position-relative flex-shrink-0">
+                                            @if (!empty($user->photo))
+                                                <img src="{{ asset('storage/' . $user->photo) }}" alt="Profile"
+                                                    class="dashboard-user-avatar rounded-circle border">
+                                            @else
+                                                <div
+                                                    class="dashboard-user-initial rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase border">
+                                                    {{ strtoupper(substr($user->name ?? 'A', 0, 1)) }}
+                                                </div>
+                                            @endif
+
+                                            <span
+                                                class="position-absolute bottom-0 end-0 translate-middle p-1 bg-success border border-white rounded-circle"
+                                                style="width:10px; height:10px;"></span>
+                                        </div>
+
+                                        <div class="text-start lh-sm d-none d-sm-block">
+                                            <div class="fw-semibold text-dark" style="font-size: 14px;">
+                                                {{ $user->name ?? 'Admin' }}
+                                            </div>
+                                            <div class="text-muted text-truncate"
+                                                style="font-size: 12px; max-width: 180px;">
+                                                {{ $user->email ?? 'Administrator' }}
+                                            </div>
+                                        </div>
+
+                                        <i class="bi bi-chevron-down small text-muted"></i>
+                                    </button>
+
+                                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2 mt-2"
+                                        style="min-width: 280px; z-index: 1055;">
+                                        <li class="px-3 py-3">
+                                            <div class="d-flex align-items-center gap-3">
+                                                @if ($profilePhoto)
+                                                    <img src="{{ $profilePhoto }}" alt="Profile"
+                                                        class="dashboard-dropdown-avatar rounded-circle border">
+                                                @else
+                                                    <div
+                                                        class="dashboard-dropdown-initial rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase border">
+                                                        {{ $userInitial }}
+                                                    </div>
+                                                @endif
+
+                                                <div class="min-w-0">
+                                                    <div class="fw-bold text-truncate">{{ $user->name ?? 'Admin' }}</div>
+                                                    <div class="text-muted small text-truncate">{{ $user->email ?? '' }}
+                                                    </div>
+                                                    <span class="badge bg-success-subtle text-success mt-1">Online</span>
+                                                </div>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <hr class="dropdown-divider my-2">
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item rounded-3 py-2" href="{{ route('profile') }}">
+                                                <i class="bi bi-person me-2"></i> My Profile
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <form method="POST" action="{{ route('logout') }}">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item rounded-3 py-2 text-danger">
+                                                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+    </div>
 </div> 
  <div class="app d-flex">
       <aside id="sidebar" class="sidebar d-flex flex-column p-2">
           <div class="brand">
-              <div class="brand-badge"><i class="bi bi-grid"></i></div>
+              <div class="brand-badge">
+                <a href="{{ url ('dashboard') }}" style="text-decoration: none; color:inherit;">
+                    <img src="{{ asset('assets/img/photo_2026-03-13_15-04-21.jpg') }}" alt="Profile" class="rounded-circle border" style="width:38px; height:38px; object-fit:cover;">
+                </a>
+              </div>
               <div>
-                  <div style="line-height:1;">Don <span class="text-muted">School</span></div>
+                  <a href="{{ url ('dashboard') }}" style="text-decoration: none; color:inherit;">
+                      <div style="line-height:1;">IT <span class="text-muted">Room</span></div>
+                  </a>
                   <div class="text-muted" style="font-size:12px;font-weight:600;">
                       {{ auth()->user()->name }} • {{ ucfirst(auth()->user()->role ?? 'User') }}
                   </div>

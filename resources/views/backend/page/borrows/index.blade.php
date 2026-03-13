@@ -4,7 +4,7 @@
 @section('borrow_active', 'active')
 
 @section('contents')
-    <div class="container-fluid">
+    <div class="container-fluid" style="padding: 3% 1%">
 
         {{-- ✅ SHOW ERRORS + SUCCESS HERE --}}
         @if ($errors->any())
