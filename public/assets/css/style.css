@@ -171,7 +171,9 @@
         top: 0;
         z-index: 1030;
     }
-
+    .phone-hide {
+        display: none !important;
+    }
     .page-wrapper {
         display: block !important;
     }
