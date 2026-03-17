@@ -21,20 +21,21 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <div>
-                <h2 class="fw-bold mb-0">Submission</h2>
-                <div class="text-muted">New student registrations waiting for approval</div>
+                <h2 class="fw-bold mb-0">{{ __('app.submissions') }}</h2>
+                <div class="text-muted">{{ __('app.New student registrations waiting for approval') }}</div>
             </div>
 
             <div class="d-flex gap-2 flex-wrap">
                 <form method="GET" class="d-flex gap-2">
-                    <input class="form-control" name="q" value="{{ request('q') }}" placeholder="Search name / phone">
-                    <button class="btn btn-outline-secondary">Search</button>
+                    <input class="form-control" name="q" value="{{ request('q') }}"
+                        placeholder="{{ __('app.Search student name...') }}">
+                    <button class="btn btn-primary">{{ __('app.search') }}</button>
                 </form>
-
+                <a href="{{ url()->current() }}" class="btn btn-danger">{{ __('app.reset') }}</a>
                 <form method="POST" action="{{ route('submissions.cancelAll') }}"
                     onsubmit="return confirm('Are you sure you want to cancel all submissions?');">
                     @csrf
-                    <button type="submit" class="btn btn-danger">Cancel All</button>
+                    <button type="submit" class="btn btn-warning">{{ __('app.delete all') }}</button>
                 </form>
             </div>
         </div>
@@ -44,14 +45,14 @@
                 <table class="table table-bordered align-middle">
                     <thead>
                         <tr>
-                            <th>Student</th>
-                            <th>Phone</th>
-                            <th>Group</th>
-                            <th>Item</th>
-                            <th>Image</th>
-                            <th>Qty</th>
-                            <th>Status</th>
-                            <th style="width: 260px;">Action</th>
+                            <th>{{ __('app.Student Name') }}</th>
+                            <th>{{ __('app.Phone Number') }}</th>
+                            <th>{{ __('app.Group') }}</th>
+                            <th>{{ __('app.item') }}</th>
+                            <th>{{ __('app.Image') }}</th>
+                            <th>{{ __('app.qty') }}</th>
+                            <th>{{ __('app.Status') }}</th>
+                            <th style="width: 260px;">{{ __('app.Action') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,7 +61,17 @@
                                 <td>{{ $row->student_name }}</td>
                                 <td>{{ $row->phone_number }}</td>
                                 <td>{{ $row->group->group_name ?? '-' }}</td>
-                                <td>{{ $row->item->name ?? '-' }}</td>
+                                <td>
+
+                                    @if ($row->item && $row->item_id)
+                                        {{ $row->item->name }}
+                                    @else
+                                        <span class="badge bg-warning text-dark">
+                                            {{ $row->other_item ?? '-' }}
+                                        </span>
+                                    @endif
+
+                                </td>
                                 <td>
                                     @if (!empty($row->item?->image))
                                         <img src="{{ asset('storage/' . $row->item->image) }}" width="60" height="60"
@@ -80,7 +91,7 @@
                                 <td>
                                     <div class="d-flex flex-column gap-2">
                                         @if ($row->is_student_existing || $row->is_student_added)
-                                            <div class="text-success small">Student already in database</div>
+                                            <div class="text-success small">{{ __('app.Student already in database') }}</div>
 
                                             @if (!$row->is_borrow_approved)
                                                 <form method="POST"

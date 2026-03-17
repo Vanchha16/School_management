@@ -29,8 +29,8 @@
     <div class="container-fluid" style="padding: 3%;">
         <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
             <div>
-                <h2 class="fw-bold mb-1">Groups</h2>
-                <div class="text-secondary">Add, view, edit, and delete groups.</div>
+                <h2 class="fw-bold mb-1">{{ __('app.groups') }}</h2>
+                <div class="text-secondary">{{ __('app.Add, view, edit, and delete groups.') }}</div>
             </div>
 
             <div class="d-flex flex-wrap align-items-center gap-2">
@@ -45,17 +45,17 @@
                             name="q"
                             value="{{ request('q') }}"
                             class="form-control border-start-0"
-                            placeholder="Search group name..."
+                            placeholder="{{ __('app.Search by group name...') }}"
                         >
                     </div>
 
-                    <button class="btn btn-outline-secondary">Apply</button>
-                    <a href="{{ url()->current() }}" class="btn btn-light">Reset</a>
+                    <button class="btn btn-primary">{{ __('app.search') }}</button>
+                    <a href="{{ url()->current() }}" class="btn btn-danger">{{ __('app.reset') }}</a>
                 </form>
 
                 {{-- Add --}}
                 <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#addGroupModal">
-                    <i class="bi bi-people me-1"></i> Add Group
+                    <i class="bi bi-people me-1"></i> {{ __('app.add_group') }}
                 </button>
             </div>
         </div>
@@ -64,12 +64,12 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-secondary small">
-                        Total: {{ $groups->total() }}
+                        {{ __('app.total_groups') }}: {{ $groups->total() }}
                     </span>
                 </div>
 
                 <h5 class="fw-bold mb-3" style="display:flex; justify-content: space-between;">
-                    Groups
+                        {{ __('app.groups') }}
                 </h5>
 
                 <div class="table-responsive">
@@ -77,9 +77,9 @@
                         <thead>
                             <tr class="text-secondary small">
                                 <th style="width:80px;">#</th>
-                                <th class="text-center">Group Name</th>
-                                <th class="text-center" style="width:160px;">Total Students</th>
-                                <th class="text-end" style="width:120px;">Action</th>
+                                <th class="text-center">{{ __('app.Group Name') }}</th>
+                                <th class="text-center" style="width:160px;">{{ __('app.Total Students') }}</th>
+                                <th class="text-end" style="width:120px;">{{ __('app.Action') }}</th>
                             </tr>
                         </thead>
 

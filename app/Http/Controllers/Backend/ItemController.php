@@ -43,7 +43,7 @@ public function index(Request $request)
         'qty'         => 'required|integer|min:0',
         'status'      => 'required|in:0,1',
         'description' => 'nullable|string|max:1000',
-        'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1024',
+        'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2024',
     ]);
 
     $path = null;

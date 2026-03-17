@@ -4,28 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Borrow extends Model
+class ItemHistory extends Model
 {
     protected $fillable = [
+    'borrow_id',
     'student_id',
     'item_id',
-    'qty',
-    'borrow_date',
-    'due_date',
-    'return_date',
-    'status',
-    'notes',
-    'condition',
-    'return_notes',
+    'user_id',
     'approved_by',
     'returned_by',
+    'action',
+    'details',
+    'action_at',
 ];
 
     protected $casts = [
-        'borrow_date' => 'datetime',
-        'due_date' => 'datetime',
-        'return_date' => 'datetime',
+        'action_at' => 'datetime',
     ];
+
+    public function borrow()
+    {
+        return $this->belongsTo(Borrow::class);
+    }
 
     public function student()
     {
@@ -37,6 +37,11 @@ class Borrow extends Model
         return $this->belongsTo(Item::class, 'item_id', 'Itemid');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function approvedByUser()
     {
         return $this->belongsTo(User::class, 'approved_by');
@@ -46,5 +51,4 @@ class Borrow extends Model
     {
         return $this->belongsTo(User::class, 'returned_by');
     }
-    
 }

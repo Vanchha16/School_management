@@ -14,7 +14,7 @@
                         style="width:72px; height:72px; object-fit:cover;">
                 @else
                     <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase border"
-                        style="width:42px; height:42px; background:#e0e7ff; color:#3730a3; font-size:24px;">
+                        style="width:72px; height:72px; background:#e0e7ff; color:#3730a3; font-size:24px;">
                         {{ strtoupper(substr($user->name ?? 'A', 0, 1)) }}
                     </div>
                 @endif

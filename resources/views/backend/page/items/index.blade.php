@@ -24,8 +24,8 @@
         {{-- Header --}}
         <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
             <div>
-                <h2 class="fw-bold mb-1">Items</h2>
-                <div class="text-secondary">Add, view, edit, and delete items.</div>
+                <h2 class="fw-bold mb-1">{{ __('app.items') }}</h2>
+                <div class="text-secondary">{{ __('app.Add, view, edit and delete items') }}</div>
             </div>
 
             <div class="d-flex flex-wrap align-items-center gap-2">
@@ -36,13 +36,13 @@
                             <i class="bi bi-search"></i>
                         </span>
                         <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0"
-                            placeholder="Search by name, status..." style="min-width: 320px;">
+                            placeholder="{{ __('app.Search by item name...') }}" style="min-width: 320px;">
                     </div>
                 </form>
 
                 {{-- Add --}}
                 <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addItemModal">
-                    <i class="bi bi-plus-lg me-1"></i> Add Item
+                    <i class="bi bi-plus-lg me-1"></i> {{ __('app.add_item') }}
                 </button>
             </div>
         </div>
@@ -52,7 +52,7 @@
             <div class="col-12 col-md-4">
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body">
-                        <div class="text-secondary small">Total Items</div>
+                        <div class="text-secondary small">{{ __('app.total_items') }}</div>
                         <div class="fs-3 fw-bold">{{ $statTotal ?? 0 }}</div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
             <div class="col-12 col-md-4">
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body">
-                        <div class="text-secondary small">Active</div>
+                        <div class="text-secondary small">{{ __('app.item_active') }}</div>
                         <div class="fs-3 fw-bold">{{ $statActive ?? 0 }}</div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
             <div class="col-12 col-md-4">
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body">
-                        <div class="text-secondary small">Inactive</div>
+                        <div class="text-secondary small">{{ __('app.item_inactive') }}</div>
                         <div class="fs-3 fw-bold">{{ $statInactive ?? 0 }}</div>
                     </div>
                 </div>
@@ -86,13 +86,13 @@
                         <thead>
                             <tr class="text-secondary small">
                                 <th style="width:60px;">#</th>
-                                <th style="width:90px;">Image</th>
-                                <th>Name</th>
-                                <th class="text-end">Borrow</th>
-                                <th class="text-end">Available</th>
-                                <th class="text-center">Qty</th>
-                                <th>Status</th>
-                                <th class="text-end" style="width:180px;">Actions</th>
+                                <th style="width:90px;">{{ __('app.Image') }}</th>
+                                <th>{{ __('app.item_name') }}</th>
+                                <th class="text-end">{{ __('app.item_borrowed') }}</th>
+                                <th class="text-end">{{ __('app.item_available') }}</th>
+                                <th class="text-center">{{ __('app.item_qty') }}</th>
+                                <th>{{ __('app.item_status') }}</th>
+                                <th class="text-end" style="width:180px;">{{ __('app.Actions') }}</th>
                             </tr>
                         </thead>
 
@@ -121,10 +121,10 @@
                                     <td>
                                         @if ($it->status == 1)
                                             <span
-                                                class="badge rounded-pill bg-success-subtle text-success px-3 py-2">Active</span>
+                                                class="badge rounded-pill bg-success-subtle text-success px-3 py-2">{{ __('app.item_active') }}</span>
                                         @else
                                             <span
-                                                class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">Inactive</span>
+                                                class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">{{ __('app.item_inactive') }}</span>
                                         @endif
                                     </td>
 
@@ -153,7 +153,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-danger py-4">No Data found</td>
+                                    <td colspan="8" class="text-center text-danger py-4">{{ __('app.No Data found') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -176,7 +176,7 @@
                 @csrf
 
                 <div class="modal-header">
-                    <h5 class="modal-title fw-semibold">Add Item</h5>
+                    <h5 class="modal-title fw-semibold">{{ __('app.add_item') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -184,7 +184,7 @@
                     <div class="row g-4">
 
                         <div class="col-12 col-md-5">
-                            <label class="form-label fw-semibold">Item Image</label>
+                            <label class="form-label fw-semibold">{{ __('app.item_image') }}</label>
 
                             <div class="border border-2 border-secondary-subtle rounded-4 p-3">
                                 <div class="d-flex gap-3 align-items-start">
@@ -194,17 +194,17 @@
                                     </div>
 
                                     <div class="flex-grow-1">
-                                        <div class="fw-semibold">Upload image</div>
-                                        <div class="text-secondary small">JPG/PNG/WebP. Max 1MB.</div>
+                                        <div class="fw-semibold">{{ __('app.Upload image') }}</div>
+                                        <div class="text-secondary small">JPG/PNG/WebP. Max 2MB.</div>
 
                                         <input class="form-control mt-3" type="file" name="image" accept="image/*">
-                                        <div class="form-text">Saved to <code>storage/app/public/items</code>.</div>
+                                        {{-- <div class="form-text">Saved to <code>storage/app/public/items</code>.</div> --}}
                                     </div>
                                 </div>
 
                                 <div class="d-flex gap-2 mt-3">
                                     <button type="reset" class="btn btn-outline-secondary btn-sm">
-                                        <i class="bi bi-x-circle me-1"></i>Remove
+                                        <i class="bi bi-x-circle me-1"></i> {{ __('app.Remove image') }}
                                     </button>
                                 </div>
                             </div>
@@ -212,37 +212,37 @@
 
                         <div class="col-12 col-md-7">
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">Item Name <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" placeholder="e.g., School Bag"
+                                <label class="form-label fw-semibold">{{ __('app.item_name') }} <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control" placeholder=""
                                     required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">Description</label>
-                                <textarea name="description" class="form-control" rows="4" placeholder="Write detail about this item...">{{ old('description') }}</textarea>
-                                <div class="form-text">Example: USB flash drive 32GB used for lab computers.</div>
+                                <label class="form-label fw-semibold">{{ __('app.item_description') }}</label>
+                                <textarea name="description" class="form-control" rows="4" placeholder="{{ __('app.Write detail about this item...') }}">{{ old('description') }}</textarea>
+                                {{-- <div class="form-text">Example: USB flash drive 32GB used for lab computers.</div> --}}
                             </div>
                             <div class="row g-3 mb-3">
                                 <div class="col-12 col-md-4">
-                                    <label class="form-label fw-semibold">Quantity <span
+                                    <label class="form-label fw-semibold">{{ __('app.item_qty') }} <span
                                             class="text-danger">*</span></label>
                                     <input type="number" name="qty" class="form-control" min="0"
                                         step="1" value="0" required>
                                 </div>
 
                                 <div class="col-12 col-md-4">
-                                    <label class="form-label fw-semibold">Status <span
+                                    <label class="form-label fw-semibold">{{ __('app.item_status') }} <span
                                             class="text-danger">*</span></label>
                                     <select name="status" class="form-select rounded-3 py-2" required>
-                                        <option value="1" selected>Active</option>
-                                        <option value="0">Inactive</option>
+                                        <option value="1" selected>{{ __('app.item_active') }}</option>
+                                        <option value="0">{{ __('app.item_inactive') }}</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="text-secondary small">
+                            {{-- <div class="text-secondary small">
                                 Note: <code>available</code> and <code>borrow</code> will be saved as <b>0</b>
                                 automatically.
-                            </div>
+                            </div> --}}
                         </div>
 
                     </div>
@@ -269,7 +269,7 @@
                     @method('PUT')
 
                     <div class="modal-header">
-                        <h5 class="modal-title fw-semibold">Edit Item</h5>
+                        <h5 class="modal-title fw-semibold">{{ __('app.edit_item') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
@@ -277,7 +277,7 @@
                         <div class="row g-4">
 
                             <div class="col-12 col-md-5">
-                                <label class="form-label fw-semibold">Item Image</label>
+                                <label class="form-label fw-semibold">{{ __('app.item_image') }}</label>
 
                                 <div class="border border-2 border-secondary-subtle rounded-4 p-3">
                                     <div class="mb-3">
@@ -286,37 +286,37 @@
                                     </div>
 
                                     <input class="form-control" type="file" name="image" accept="image/*">
-                                    <div class="form-text">Leave empty to keep current image.</div>
+                                    <div class="form-text">{{ __('app.Leave empty to keep current image.') }}</div>
                                 </div>
                             </div>
 
                             <div class="col-12 col-md-7">
                                 <div class="mb-3">
-                                    <label class="form-label fw-semibold">Item Name <span
+                                    <label class="form-label fw-semibold">{{ __('app.item_name') }} <span
                                             class="text-danger">*</span></label>
                                     <input type="text" name="name" class="form-control"
                                         value="{{ $it->name }}" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label fw-semibold">Description</label>
-                                    <textarea name="description" class="form-control" rows="4" placeholder="Write detail about this item...">{{ old('description', $it->description) }}</textarea>
-                                    <div class="form-text">Example: USB flash drive 32GB used for lab computers.</div>
+                                    <label class="form-label fw-semibold">{{ __('app.item_description') }}</label>
+                                    <textarea name="description" class="form-control" rows="4" placeholder="{{ __('app.Write detail about this item...') }}">{{ old('description', $it->description) }}</textarea>
+                                    {{-- <div class="form-text">{{ __('app.Example: USB flash drive 32GB used for lab computers.') }}</div> --}}
                                 </div>
                                 <div class="row g-3 mb-3">
                                     <div class="col-12 col-md-4">
-                                        <label class="form-label fw-semibold">Quantity <span
+                                        <label class="form-label fw-semibold">{{ __('app.item_qty') }} <span
                                                 class="text-danger">*</span></label>
                                         <input type="number" name="qty" class="form-control" min="0"
                                             step="1" value="{{ $it->qty }}" required>
                                     </div>
 
                                     <div class="col-12 col-md-4">
-                                        <label class="form-label fw-semibold">Status <span
+                                        <label class="form-label fw-semibold">{{ __('app.item_status') }} <span
                                                 class="text-danger">*</span></label>
                                         <select name="status" class="form-select rounded-3 py-2" required>
-                                            <option value="1" {{ $it->status == 1 ? 'selected' : '' }}>Active
+                                            <option value="1" {{ $it->status == 1 ? 'selected' : '' }}>{{ __('app.item_active') }}</option>
                                             </option>
-                                            <option value="0" {{ $it->status == 0 ? 'selected' : '' }}>Inactive
+                                            <option value="0" {{ $it->status == 0 ? 'selected' : '' }}>{{ __('app.item_inactive') }}
                                             </option>
                                         </select>
                                     </div>
@@ -324,9 +324,9 @@
                                 </div>
 
 
-                                <div class="text-secondary small">
+                                {{-- <div class="text-secondary small">
                                     Note: <code>available</code> and <code>borrow</code> are not changed here.
-                                </div>
+                                </div> --}}
                             </div>
 
                         </div>

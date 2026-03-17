@@ -43,4 +43,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function approvedByUser()
+{
+    return $this->belongsTo(User::class, 'approved_by');
+}
+
+public function returnedByUser()
+{
+    return $this->belongsTo(User::class, 'returned_by');
+}
 }

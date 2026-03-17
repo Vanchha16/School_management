@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use App\Models\Borrow;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
             ->count();
 
         $view->with('overdueCount', $overdueCount);
+        if(session()->has('locale')){
+        App::setLocale(session('locale'));
+    }
     });
     }
 }

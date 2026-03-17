@@ -13,6 +13,7 @@ use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\StudentRegisterController;
 use App\Http\Controllers\Backend\SubmissionController;
 use App\Http\Controllers\ProfileController;
+
 /*
 |--------------------------------------------------------------------------
 | PUBLIC
@@ -23,6 +24,17 @@ Route::get('/', function () {
     return redirect()->route('student.register');
 });
 
+
+
+Route::get('/language/{locale}', function ($locale) {
+    if (! in_array($locale, ['en', 'kh'], true)) {
+        abort(400);
+    }
+
+    session()->put('locale', $locale);
+
+    return redirect()->back();
+})->name('language.switch');
 /*
 |--------------------------------------------------------------------------
 | AUTH
@@ -85,6 +97,8 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     Route::get('/borrows', [BorrowController::class, 'index'])->name('borrows.index');
     Route::post('/borrows/borrow', [BorrowController::class, 'storeBorrow'])->name('borrows.borrow');
     Route::post('/borrows/return', [BorrowController::class, 'storeReturn'])->name('borrows.return');
+    Route::put('/borrows/update', [BorrowController::class, 'update'])
+        ->name('borrows.update');
     Route::post('/borrows/{borrow}/undo-return', [BorrowController::class, 'undoReturn'])->name('borrows.undoReturn');
     Route::delete('/borrows/{borrow}', [BorrowController::class, 'destroy'])->name('borrows.destroy');
 
@@ -92,6 +106,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     Route::get('/items', [ItemController::class, 'index'])->name('items.index');
     Route::get('/items/{itemid}', [ItemController::class, 'show'])->name('items.show');
     Route::post('/items', [ItemController::class, 'store'])->name('items.store');
+
     Route::put('/items/{itemid}', [ItemController::class, 'update'])->name('items.update');
     Route::delete('/items/{itemid}', [ItemController::class, 'destroy'])->name('items.destroy');
 
@@ -155,3 +170,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::get('/item-history', [BorrowController::class, 'itemHistory'])->name('borrows.history');
+});
+
+
+

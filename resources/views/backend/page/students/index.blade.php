@@ -14,8 +14,8 @@
 
         <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
             <div>
-                <h2 class="fw-bold mb-1">Students</h2>
-                <div class="text-secondary">Add, view, edit, and delete students.</div>
+                <h2 class="fw-bold mb-1">{{ __('app.students') }}</h2>
+                <div class="text-secondary">{{ __('app.Add, view, edit, and delete students.') }}</div>
             </div>
 
             <div class="d-flex flex-wrap align-items-center gap-2">
@@ -25,12 +25,12 @@
                             <i class="bi bi-search"></i>
                         </span>
                         <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0"
-                            placeholder="Search name, phone, group, status..." style="min-width: 320px;">
+                            placeholder="{{ __('app.Search student name...') }}" style="min-width: 320px;">
                     </div>
                 </form>
 
                 <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addStudentModal">
-                    <i class="bi bi-plus-lg me-1"></i> Add Student
+                    <i class="bi bi-plus-lg me-1"></i> {{ __('app.Add Student') }}
                 </button>
             </div>
         </div>
@@ -39,7 +39,7 @@
             <div class="col-12 col-md-4">
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body">
-                        <div class="text-secondary small">Total Students</div>
+                        <div class="text-secondary small">{{ __('app.total_students') }}</div>
                         <div class="fs-3 fw-bold">{{ $statTotal ?? 0 }}</div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
             <div class="col-12 col-md-4">
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body">
-                        <div class="text-secondary small">Active</div>
+                        <div class="text-secondary small">{{ __('app.active_students') }}</div>
                         <div class="fs-3 fw-bold">{{ $statActive ?? 0 }}</div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
             <div class="col-12 col-md-4">
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body">
-                        <div class="text-secondary small">Inactive</div>
+                        <div class="text-secondary small">{{ __('app.inactive_students') }}</div>
                         <div class="fs-3 fw-bold">{{ $statInactive ?? 0 }}</div>
                     </div>
                 </div>
@@ -71,12 +71,12 @@
                         <thead>
                             <tr class="text-secondary small">
                                 <th style="width:60px;">#</th>
-                                <th>Student Name</th>
-                                <th>Gender</th>
-                                <th>Phone Number</th>
-                                <th>Group</th>
-                                <th>Status</th>
-                                <th class="text-end" style="width:180px;">Actions</th>
+                                <th>{{ __('app.Student Name') }}</th>
+                                <th>{{ __('app.Gender') }}</th>
+                                <th>{{ __('app.Phone Number') }}</th>
+                                <th>{{ __('app.Group') }}</th>
+                                <th>{{ __('app.Status') }}</th>
+                                <th class="text-end" style="width:180px;">{{ __('app.action') }}</th>
                             </tr>
                         </thead>
 
@@ -95,11 +95,11 @@
                                     <td>
                                         @if ($s->status == 1)
                                             <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
-                                                Active
+                                                {{ __('app.active_students') }}
                                             </span>
                                         @else
                                             <span class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">
-                                                Inactive
+                                                {{ __('app.inactive_students') }}
                                             </span>
                                         @endif
                                     </td>
@@ -120,7 +120,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-outline-danger btn-sm"
-                                                onclick="return confirm('Delete this student?')">
+                                                onclick="return confirm('{{ __('app.Delete this student?') }} ') ">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
@@ -128,7 +128,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center text-danger py-4">No Data found</td>
+                                    <td colspan="7" class="text-center text-danger py-4">{{ __('app.no_data_found') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -163,23 +163,23 @@
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Gender <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">{{ __('app.Gender') }} <span class="text-danger">*</span></label>
                             <select name="gender" class="form-select" required>
-                                <option value="">-- Select Gender --</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option value="">-- {{ __('app.select_gender') }} --</option>
+                                <option value="Male">{{ __('app.male') }}</option>
+                                <option value="Female">{{ __('app.female') }}</option>
                             </select>
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Phone Number</label>
+                            <label class="form-label fw-semibold">{{ __('app.Phone Number') }}</label>
                             <input type="text" name="phone_number" class="form-control">
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-semibold">Group</label>
+                            <label class="form-label fw-semibold">{{ __('app.Group') }}</label>
                             <select name="group_id" class="form-select" required>
-                                <option value="">-- Select Group --</option>
+                                <option value="">-- {{ __('app.select_group') }} --</option>
                                 @foreach ($groups as $g)
                                     <option value="{{ $g->group_id }}">{{ $g->group_name }}</option>
                                 @endforeach
@@ -187,10 +187,10 @@
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">{{ __('app.Status') }} <span class="text-danger">*</span></label>
                             <select name="status" class="form-select rounded-3 py-2" required>
-                                <option value="1" selected>Active</option>
-                                <option value="0">Inactive</option>
+                                <option value="1" selected>{{ __('app.active') }}</option>
+                                <option value="0">{{ __('app.inactive') }}</option>
                             </select>
                         </div>
 
@@ -218,7 +218,7 @@
                     @method('PUT')
 
                     <div class="modal-header">
-                        <h5 class="modal-title fw-semibold">Edit Student</h5>
+                        <h5 class="modal-title fw-semibold">{{ __('app.edit') }} {{ __('app.students') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
@@ -226,14 +226,14 @@
                         <div class="row g-3">
 
                             <div class="col-12">
-                                <label class="form-label fw-semibold">Student Name <span
+                                <label class="form-label fw-semibold">{{ __('app.Student Name') }} <span
                                         class="text-danger">*</span></label>
                                 <input type="text" name="student_name" class="form-control"
                                     value="{{ old('student_name', $s->student_name) }}" required>
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <label class="form-label fw-semibold">Gender <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">{{ __('app.Gender') }} <span class="text-danger">*</span></label>
                                 <select name="gender" class="form-select" required>
                                     <option value="Male" {{ old('gender', $s->gender) == 'Male' ? 'selected' : '' }}>
                                         Male
@@ -245,15 +245,15 @@
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <label class="form-label fw-semibold">Phone Number</label>
+                                <label class="form-label fw-semibold">{{ __('app.Phone Number') }}</label>
                                 <input type="text" name="phone_number" class="form-control"
                                     value="{{ old('phone_number', $s->phone_number) }}">
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label fw-semibold">Group</label>
+                                <label class="form-label fw-semibold">{{ __('app.Group') }} <span class="text-danger">*</span></label>
                                 <select name="group_id" class="form-select" required>
-                                    <option value="">-- Select Group --</option>
+                                    <option value="">-- {{ __('app.Select Group') }} --</option>
                                     @foreach ($groups as $g)
                                         <option value="{{ $g->group_id }}"
                                             {{ (string) old('group_id', $s->group_id) === (string) $g->group_id ? 'selected' : '' }}>
@@ -264,7 +264,7 @@
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">{{ __('app.Status') }} <span class="text-danger">*</span></label>
                                 <select name="status" class="form-select rounded-3 py-2" required>
                                     <option value="1" {{ old('status', $s->status) == 1 ? 'selected' : '' }}>Active
                                     </option>
@@ -277,9 +277,9 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('app.Cancel') }}</button>
                         <button class="btn btn-dark">
-                            <i class="bi bi-check2-circle me-1"></i> Update
+                            <i class="bi bi-check2-circle me-1"></i> {{ __('app.Update') }}
                         </button>
                     </div>
 
@@ -318,7 +318,7 @@
             <div class="modal-content border-0 shadow rounded-4">
 
                 <div class="modal-header">
-                    <h5 class="modal-title fw-semibold">Student Detail</h5>
+                    <h5 class="modal-title fw-semibold">{{ __('app.Student Detail') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -335,27 +335,27 @@
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="text-secondary small mb-1 d-block">Student Name</label>
+                            <label class="text-secondary small mb-1 d-block">{{ __('app.Student Name') }}</label>
                             <div class="fw-semibold">{{ $s->student_name ?: '-' }}</div>
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="text-secondary small mb-1 d-block">Gender</label>
+                            <label class="text-secondary small mb-1 d-block">{{ __('app.Gender') }}</label>
                             <div class="fw-semibold">{{ $s->gender ?: '-' }}</div>
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="text-secondary small mb-1 d-block">Phone Number</label>
+                            <label class="text-secondary small mb-1 d-block">{{ __('app.Phone Number') }}</label>
                             <div class="fw-semibold">{{ $s->phone_number ?: '-' }}</div>
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="text-secondary small mb-1 d-block">Group</label>
+                            <label class="text-secondary small mb-1 d-block">{{ __('app.Group') }}</label>
                             <div class="fw-semibold">{{ $s->group?->group_name ?: '-' }}</div>
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="text-secondary small mb-1 d-block">Status</label>
+                            <label class="text-secondary small mb-1 d-block">{{ __('app.Status') }}</label>
                             <div>
                                 @if ($s->status == 1)
                                     <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
@@ -370,14 +370,14 @@
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="text-secondary small mb-1 d-block">Created At</label>
+                            <label class="text-secondary small mb-1 d-block">{{ __('app.created_at') }}</label>
                             <div class="fw-semibold">
                                 {{ $s->created_at ? $s->created_at->timezone('Asia/Jakarta')->format('d M Y H:i') : '-' }}
                             </div>
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="text-secondary small mb-1 d-block">Updated At</label>
+                            <label class="text-secondary small mb-1 d-block">{{ __('app.updated_at') }}</label>
                             <div class="fw-semibold">
                                 {{ $s->updated_at ? $s->updated_at->timezone('Asia/Jakarta')->format('d M Y H:i') : '-' }}
                             </div>
@@ -387,7 +387,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('app.Close') }}</button>
                 </div>
 
             </div>
