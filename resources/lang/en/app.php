@@ -140,4 +140,6 @@ return [
     'returned_by' => 'Returned By',
     'borrow_information' => 'Borrow Information',
     'returned' => 'Returned',
+    'Total Days late' => 'Total Days late',
+    'save_return' => 'Save Return',
 ];
