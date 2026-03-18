@@ -232,5 +232,29 @@ class SubmissionController extends Controller
         return back()->with('success','All submissions cancelled.');
     }
 
+     public function addStudent(Request $request, $id)
+    {
+        $submission = StudentSubmission::findOrFail($id);
+
+        $student = Student::firstOrCreate(
+            [
+                'student_name' => $submission->student_name,
+                'phone_number' => $submission->phone_number,
+            ],
+            [
+                'gender' => $submission->gender,
+                'group_id' => $submission->group_id,
+            ]
+        );
+
+        $submission->update([
+            'student_id' => $student->student_id,
+            'is_student_existing' => true,
+            'is_student_added' => true,
+        ]);
+
+        return back()->with('success', 'Student added successfully.');
+    }
+
 }
 
