@@ -115,60 +115,86 @@
 
                 <div class="justify-content-end mb-3">
                     <form method="GET" action="{{ route('borrows.index') }}" class="row g-2 align-items-end mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label small text-muted mb-1">{{ __('app.find_by') }}</label>
+                            <select name="filter" class="form-select" onchange="this.form.submit()">
+                                <option value="">{{ __('app.find_by') }}</option>
 
-                        <div class="col-md-4">
-                            <label class="form-label small text-muted mb-1">{{ __('app.Search student name...') }}</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                                <input type="text" name="search" value="{{ request('search') }}" class="form-control"
-                                    placeholder="{{ __('app.Search student name...') }}">
+                                <option value="student_name" {{ request('filter') == 'student_name' ? 'selected' : '' }}>
+                                    {{ __('app.search_by_student_name') }}
+                                </option>
+
+                                <option value="item_name" {{ request('filter') == 'item_name' ? 'selected' : '' }}>
+                                    {{ __('app.Search by item name...') }}
+                                </option>
+
+                                <option value="status" {{ request('filter') == 'status' ? 'selected' : '' }}>
+                                    {{ __('app.borrow_status') }}
+                                </option>
+
+                                <option value="group_name" {{ request('filter') == 'group_name' ? 'selected' : '' }}>
+                                    {{ __('app.Search by group name...') }}
+                                </option>
+                            </select>
+                        </div>
+
+                        @if (request('filter') == 'student_name')
+                            <div class="col-md-4">
+                                <label
+                                    class="form-label small text-muted mb-1">{{ __('app.Search student name...') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                                    <input type="text" name="search" value="{{ request('search') }}"
+                                        class="form-control" placeholder="{{ __('app.Search student name...') }}">
+                                </div>
                             </div>
-                        </div>
+                        @endif
+                        @if (request('filter') == 'item_name')
+                            <div class="col-md-4">
+                                <label class="form-label small text-muted mb-1">{{ __('app.items') }}</label>
+                                <select name="item_id" class="form-select" onchange="this.form.submit()">
+                                    <option value="">{{ __('app.all') }}</option>
+                                    @foreach ($items as $it)
+                                        <option value="{{ $it->Itemid }}"
+                                            {{ (string) request('item_id') === (string) $it->Itemid ? 'selected' : '' }}>
+                                            {{ $it->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+                        @if (request('filter') == 'group_name')
+                            <div class="col-md-4">
+                                <label
+                                    class="form-label small text-muted mb-1">{{ __('app.Search by group name...') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                                    <input type="text" name="search" value="{{ request('search') }}"
+                                        class="form-control" placeholder="{{ __('app.Search by group name...') }}">
+                                </div>
+                            </div>
+                        @endif
 
-                        <div class="col-md-2">
-                            <label class="form-label small text-muted mb-1">{{ __('app.borrow_status') }}</label>
-                            <select name="status" class="form-select" onchange="this.form.submit()">
-                                <option value="">{{ __('app.all') }}</option>
-                                <option value="BORROWED" {{ request('status') == 'BORROWED' ? 'selected' : '' }}>
-                                    {{ __('app.item_borrowed') }}
-                                </option>
-                                <option value="RETURNED" {{ request('status') == 'RETURNED' ? 'selected' : '' }}>
-                                    {{ __('app.returned') }}
-                                </option>
-                                <option value="OVERDUE" {{ request('status') == 'OVERDUE' ? 'selected' : '' }}>
-                                    {{ __('app.overdue_borrow') }}
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label small text-muted mb-1">{{ __('app.groups') }}</label>
-                            <select name="group_id" class="form-select" onchange="this.form.submit()">
-                                <option value="">{{ __('app.all') }}</option>
-                                @foreach ($groups as $g)
-                                    <option value="{{ $g->group_id }}"
-                                        {{ (string) request('group_id') === (string) $g->group_id ? 'selected' : '' }}>
-                                        {{ $g->group_name }}
+                        @if (request('filter') == 'status')
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted mb-1">{{ __('app.borrow_status') }}</label>
+                                <select name="status" class="form-select" onchange="this.form.submit()">
+                                    <option value="">{{ __('app.all') }}</option>
+                                    <option value="BORROWED" {{ request('status') == 'BORROWED' ? 'selected' : '' }}>
+                                        {{ __('app.item_borrowed') }}
                                     </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label small text-muted mb-1">{{ __('app.items') }}</label>
-                            <select name="item_id" class="form-select" onchange="this.form.submit()">
-                                <option value="">{{ __('app.all') }}</option>
-                                @foreach ($items as $it)
-                                    <option value="{{ $it->Itemid }}"
-                                        {{ (string) request('item_id') === (string) $it->Itemid ? 'selected' : '' }}>
-                                        {{ $it->name }}
+                                    <option value="RETURNED" {{ request('status') == 'RETURNED' ? 'selected' : '' }}>
+                                        {{ __('app.returned') }}
                                     </option>
-                                @endforeach
-                            </select>
-                        </div>
+                                    <option value="OVERDUE" {{ request('status') == 'OVERDUE' ? 'selected' : '' }}>
+                                        {{ __('app.overdue_borrow') }}
+                                    </option>
+                                </select>
+                            </div>
+                        @endif
 
-                        <div class="col-12 d-flex gap-2">
-                            <button class="btn btn-primary">{{ __('app.search') }}</button>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">{{ __('app.search') }}</button>
                             <a href="{{ route('borrows.index') }}" class="btn btn-danger">{{ __('app.reset') }}</a>
                         </div>
                     </form>
@@ -180,6 +206,8 @@
                             <tr>
                                 <th style="width:60px;">#</th>
                                 <th>{{ __('app.students') }}</th>
+                                <th>{{ __('app.Gender') }}</th>
+                                <th>{{ __('app.groups') }}</th>
                                 <th>{{ __('app.item') }}</th>
                                 <th>{{ __('app.qty') }}</th>
                                 <th>{{ __('app.borrow_date') }}</th>
@@ -192,7 +220,6 @@
                             @forelse($borrows ?? [] as $i => $borrow)
                                 <tr class="border-bottom">
                                     <td>{{ $i + 1 }}</td>
-
                                     <td>
                                         <div class="fw-semibold">{{ $borrow->student->student_name ?? 'N/A' }}</div>
                                         <small class="text-muted">
@@ -202,18 +229,98 @@
                                             @endif
                                         </small>
                                     </td>
+                                    <td>{{ $borrow->student->gender ?? 'N/A' }}</td>
+                                    <td>{{ $borrow->student->group->group_name ?? 'N/A' }}</td>
 
                                     <td>
                                         <div class="fw-semibold">{{ $borrow->item->name ?? 'N/A' }}</div>
                                     </td>
 
                                     <td>{{ $borrow->qty ?? 1 }}</td>
+                                    <style>
+                                        td.datetime {
+                                            white-space: nowrap;
+                                            line-height: 1.3;
+                                        }
 
-                                    <td>{{ $borrow->borrow_date ? \Carbon\Carbon::parse($borrow->borrow_date)->format('d M Y H:i') : '-' }}
-                                    </td>
-                                    <td>{{ $borrow->return_date ? \Carbon\Carbon::parse($borrow->return_date)->format('d M Y H:i') : '-' }}
-                                    </td>
+                                        td.datetime .date {
+                                            display: block;
+                                            font-size: 14px;
+                                        }
 
+                                        td.datetime .time {
+                                            display: block;
+                                            font-size: 12px;
+                                            color: #000000;
+                                            margin-top: 2px;
+                                        }
+
+                                        @media (max-width: 576px) {
+                                            td.datetime .date {
+                                                font-size: 13px;
+                                            }
+
+                                            td.datetime .time {
+                                                font-size: 13px;
+                                            }
+                                        }
+                                    </style>
+
+                                    <td class="datetime">
+                                        @if ($borrow->borrow_date)
+                                            <span
+                                                class="date">{{ \Carbon\Carbon::parse($borrow->borrow_date)->format('d M Y') }}</span>
+                                            <span
+                                                class="time">{{ \Carbon\Carbon::parse($borrow->borrow_date)->format('H:i') }}</span>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    {{-- <td>
+                                        {!! $borrow->return_date
+                                            ? \Carbon\Carbon::parse($borrow->return_date)->format('d M Y') .
+                                                '<br>' .
+                                                \Carbon\Carbon::parse($borrow->return_date)->format('H:i')
+                                            : '-' !!}
+                                    </td> --}}
+                                    <style>
+    td.datetime {
+        white-space: nowrap;
+        line-height: 1.3;
+        vertical-align: middle;
+    }
+
+    td.datetime .date {
+        display: block;
+        font-size: 14px;
+    }
+
+    td.datetime .time {
+        display: block;
+        font-size: 12px;
+        color: #6c757d;
+        margin-top: 2px;
+    }
+
+    @media (max-width: 576px) {
+        td.datetime .date {
+            font-size: 13px;
+        }
+
+        td.datetime .time {
+            font-size: 11px;
+        }
+    }
+</style>
+{{-- Return Date --}}
+<td class="datetime">
+    @if ($borrow->return_date)
+        <span class="date">{{ \Carbon\Carbon::parse($borrow->return_date)->format('d M Y') }}</span>
+        <span class="time">{{ \Carbon\Carbon::parse($borrow->return_date)->format('H:i') }}</span>
+    @else
+        -
+    @endif
+</td>
                                     <td>
                                         @php
                                             $st = $borrow->status ?? 'BORROWED';

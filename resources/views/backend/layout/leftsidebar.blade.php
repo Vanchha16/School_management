@@ -108,7 +108,7 @@
          <div class="brand">
              <div class="brand-badge">
                  <a href="{{ url('dashboard') }}" style="text-decoration: none; color:inherit;">
-                     <img src="{{ asset('assets/img/photo_2026-03-13_15-04-21.jpg') }}" alt="Profile"
+                     <img src="{{ asset('assets/img/photo_2024-05-27_08-46-50.jpg') }}" alt="Profile"
                          class="rounded-circle border" style="width:38px; height:38px; object-fit:cover;">
                  </a>
              </div>

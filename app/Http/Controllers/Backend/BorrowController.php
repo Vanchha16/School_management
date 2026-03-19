@@ -26,6 +26,7 @@ class BorrowController extends Controller
         $students = Student::orderBy('student_name')->get();
         $items = Item::orderBy('name')->get();
         $groups = Group::orderBy('group_name')->get();
+
         $query = Borrow::with([
             'student.group',
             'item',
@@ -33,32 +34,28 @@ class BorrowController extends Controller
             'returnedByUser',
         ]);
 
+        $filter = $request->filter;
+$search = $request->search;
 
-        if ($request->filled('search')) {
-            $search = $request->search;
+if ($filter == 'student_name' && $request->filled('search')) {
+    $query->whereHas('student', function ($q) use ($search) {
+        $q->where('student_name', 'like', "%{$search}%");
+    });
+}
 
-            $query->whereHas('student', function ($q) use ($search) {
-                $q->where('student_name', 'like', "%{$search}%")
-                    ->orWhere('phone_number', 'like', "%{$search}%");
-            });
-        }
+if ($filter == 'item_name' && $request->filled('item_id')) {
+    $query->where('item_id', $request->item_id);
+}
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
+if ($filter == 'group_name' && $request->filled('search')) {
+    $query->whereHas('student.group', function ($q) use ($search) {
+        $q->where('group_name', 'like', "%{$search}%");
+    });
+}
 
-        if ($request->filled('item_id')) {
-            $query->where('item_id', $request->item_id);
-        }
-
-        if ($request->filled('group_id')) {
-            $groupId = $request->group_id;
-
-            $query->whereHas('student', function ($q) use ($groupId) {
-                $q->where('group_id', $groupId);
-            });
-        }
-
+if ($filter == 'status' && $request->filled('status')) {
+    $query->where('status', $request->status);
+}
         $activeBorrows = Borrow::with([
             'student',
             'item',
@@ -138,7 +135,7 @@ class BorrowController extends Controller
 
         return redirect()->route('borrows.index')->with('success', 'Borrow saved.');
     }
-   
+
     public function storeReturn(Request $request)
     {
         $data = $request->validate([
@@ -321,50 +318,50 @@ class BorrowController extends Controller
         return view('backend.page.borrows.history', compact('histories'));
     }
     public function update(Request $request)
-{
-    $borrow = Borrow::findOrFail($request->borrow_id);
+    {
+        $borrow = Borrow::findOrFail($request->borrow_id);
 
-    // Prevent editing returned borrow
-    if ($borrow->status === 'RETURNED') {
-        return back()->withErrors([
-            'error' => 'Cannot edit a returned borrow record.'
+        // Prevent editing returned borrow
+        if ($borrow->status === 'RETURNED') {
+            return back()->withErrors([
+                'error' => 'Cannot edit a returned borrow record.'
+            ]);
+        }
+
+        $oldItemId = $borrow->item_id;
+        $oldQty = $borrow->qty;
+
+        $newItemId = $request->item_id;
+        $newQty = $request->qty;
+
+        // Restore old stock
+        $oldItem = Item::find($oldItemId);
+        if ($oldItem) {
+            $oldItem->increment('qty', $oldQty);
+        }
+
+        // Check new stock
+        $newItem = Item::findOrFail($newItemId);
+
+        if ($newItem->qty < $newQty) {
+
+            // rollback old stock restore
+            $oldItem->decrement('qty', $oldQty);
+
+            return back()->withErrors([
+                'error' => 'Not enough stock for selected item.'
+            ]);
+        }
+
+        // reduce new stock
+        $newItem->decrement('qty', $newQty);
+
+        $borrow->update([
+            'student_id' => $request->student_id,
+            'item_id' => $newItemId,
+            'qty' => $newQty
         ]);
+
+        return back()->with('success', 'Borrow updated successfully.');
     }
-
-    $oldItemId = $borrow->item_id;
-    $oldQty = $borrow->qty;
-
-    $newItemId = $request->item_id;
-    $newQty = $request->qty;
-
-    // Restore old stock
-    $oldItem = Item::find($oldItemId);
-    if ($oldItem) {
-        $oldItem->increment('qty', $oldQty);
-    }
-
-    // Check new stock
-    $newItem = Item::findOrFail($newItemId);
-
-    if ($newItem->qty < $newQty) {
-
-        // rollback old stock restore
-        $oldItem->decrement('qty', $oldQty);
-
-        return back()->withErrors([
-            'error' => 'Not enough stock for selected item.'
-        ]);
-    }
-
-    // reduce new stock
-    $newItem->decrement('qty', $newQty);
-
-    $borrow->update([
-        'student_id' => $request->student_id,
-        'item_id' => $newItemId,
-        'qty' => $newQty
-    ]);
-
-    return back()->with('success', 'Borrow updated successfully.');
-}
 }
