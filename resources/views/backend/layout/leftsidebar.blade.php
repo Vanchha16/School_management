@@ -1,4 +1,5 @@
- <div class="d-lg-none mobile-topbar bg-white border-bottom px-3 py-2 d-flex align-items-center justify-content-between ">
+ <div
+     class="d-lg-none mobile-topbar bg-white border-bottom px-3 py-2 d-flex align-items-center justify-content-between ">
      <button class="btn btn-dark btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
          <i class="bi bi-list"></i>
      </button>
@@ -11,10 +12,10 @@
                  class="btn btn-light rounded-circle d-flex align-items-center justify-content-center position-relative flex-shrink-0"
                  style="width:44px; height:44px;">
                  <i class="bi bi-bell"></i>
-                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                 {{-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                      style="font-size:10px;">
                      3
-                 </span>
+                 </span> --}}
              </button>
 
              @php
@@ -161,7 +162,21 @@
                              <i class="bi bi-box-seam me-2"></i> {{ __('app.items') }}
                          </a>
                      </li>
+                     <li>
+                         <a href="{{ route('borrows.history') }}" class="nav-pill @yield('history_active')">
+                             <i class="fa-sharp fa-regular fa-clock-rotate-left"></i>
+                             {{ __('app.manage_item_history') }}
+                         </a>
+                     </li>
+                     <li>
+                         @php $role = strtolower(auth()->user()->role ?? ''); @endphp
 
+                         @if (in_array($role, ['admin', 'super admin', 'superadmin']))
+                             <a href="{{ url('admin/users') }}" class="nav-pill @yield('users_active')">
+                                 <i class="fa-utility-fill fa-semibold fa-user"></i>{{ __('app.users') }}
+                             </a>
+                         @endif
+                     </li>
                      <li class="nav-item">
                          <a href="{{ route('borrows.index') }}"
                              class="nav-link {{ request()->routeIs('borrows.*') ? 'active fw-bold text-dark' : 'text-secondary' }}">
@@ -171,12 +186,21 @@
 
                      <li class="nav-item">
                          <a href="{{ route('submissions.index') }}"
-                             class="nav-link {{ request()->routeIs('submissions.*') ? 'active fw-bold text-dark' : 'text-secondary' }}">
-                             <i class="bi bi-inbox me-2"></i> {{ __('app.submissions') }}
+                             class="nav-link d-flex align-items-center {{ request()->routeIs('submissions.*') ? 'active fw-bold text-dark' : 'text-secondary' }}">
+                             <i class="bi bi-inbox me-2"></i>
+                             {{ __('app.submissions') }}
+
+                             @if (($pendingSubmissionCount ?? 0) > 0)
+                                 <span
+                                     class="ms-auto d-inline-flex align-items-center justify-content-center bg-danger text-white"
+                                     style="width:22px;height:22px;border-radius:50%;font-size:12px;font-weight:700;">
+                                     {{ $pendingSubmissionCount }}
+                                 </span>
+                             @endif
                          </a>
                      </li>
                      <a href="{{ route('borrows.late_returns') }}" class="nav-pill @yield('late_return_active')">
-                         <i class="fa-sharp fa-regular fa-hand-holding-box"></i>
+                         <i class="bi bi-hourglass-split"></i>
                          {{ __('app.returned_late') }}
 
                          @if (($lateReturnedCount ?? 0) > 0)
@@ -188,7 +212,7 @@
                          @endif
                      </a>
                      <a href="{{ route('borrows.overdue') }}" class="nav-pill @yield('overdue_borrow_active')">
-                         <i class="fa-sharp fa-regular fa-hand-holding-box"></i>
+                         <i class="bi bi-clock-history"></i>
                          {{ __('app.overdue_borrow') }}
 
                          @if (($overdueCount ?? 0) > 0)
@@ -229,8 +253,18 @@
              </a>
              <a href="{{ url('admin/register-student') }}" class="nav-pill @yield('register_student_active')"><i
                      class="fa-sharp fa-regular fa-hand-holding-box"></i>{{ __('app.register_student') }}</a>
-             <a href="{{ url('admin/submissions') }}" class="nav-pill @yield('submission_active')"><i
-                     class="bi bi-inbox me-1"></i>{{ __('app.submissions') }}</a>
+
+             <a href="{{ url('admin/submissions') }}" class="nav-pill @yield('submission_active')">
+                 <i class="bi bi-inbox me-1"></i>
+                 {{ __('app.submissions') }}
+
+                 @if (($pendingSubmissionCount ?? 0) > 0)
+                     <span class="ms-auto d-inline-flex align-items-center justify-content-center bg-danger text-white"
+                         style="width:22px;height:22px;border-radius:50%;font-size:12px;font-weight:700;">
+                         {{ $pendingSubmissionCount }}
+                     </span>
+                 @endif
+             </a>
              @php $role = strtolower(auth()->user()->role ?? ''); @endphp
 
              @if (in_array($role, ['admin', 'super admin', 'superadmin']))
@@ -263,11 +297,13 @@
              <div class="mt-3 pt-2 border-top sidebar-language-switch">
                  <div class="small text-muted px-2 mb-2">{{ __('app.language') }}</div>
                  <div class="d-flex gap-2 px-2">
-                     <a href="{{ route('language.switch', 'en') }}" class="btn btn-sm btn-light w-100">{{ __('app.english') }}</a>
-                     <a href="{{ route('language.switch', 'kh') }}" class="btn btn-sm btn-light w-100">{{ __('app.khmer') }}</a>
+                     <a href="{{ route('language.switch', 'en') }}"
+                         class="btn btn-sm btn-light w-100">{{ __('app.english') }}</a>
+                     <a href="{{ route('language.switch', 'kh') }}"
+                         class="btn btn-sm btn-light w-100">{{ __('app.khmer') }}</a>
                  </div>
              </div>
-         </div> 
+         </div>
 
          {{-- <div class="mt-auto p-2">
              <div class="soft-card p-3">

@@ -28,7 +28,7 @@
                             @endif
 
                             <div>
-                                <h2 class="fw-bold mb-1 text-white">My Profile</h2>
+                                <h2 class="fw-bold mb-1 text-white">{{ __('app.my_profile') }}</h2>
                                 <div class="text-white-50 mb-1">
                                     Manage your account information and password
                                 </div>
@@ -40,7 +40,7 @@
 
                         <div>
                             <a href="{{ route('dashboard') }}" class="btn btn-light rounded-pill px-4">
-                                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+                                <i class="bi bi-arrow-left me-1"></i> {{ __('app.back_to_dashboard') }}
                             </a>
                         </div>
                     </div>
@@ -97,8 +97,8 @@
                     <div class="card border-0 shadow-sm rounded-4">
                         <div class="card-body p-4">
                             <div class="mb-3">
-                                <h4 class="fw-bold mb-1">Profile Information</h4>
-                                <div class="text-secondary">Update your account name, email address, and profile photo.
+                                <h4 class="fw-bold mb-1">{{ __('app.Profile Information') }}</h4>
+                                <div class="text-secondary">{{ __('app.Update your account\'s profile information and email address.') }}
                                 </div>
                             </div>
 
@@ -108,7 +108,7 @@
                                 @method('PATCH')
 
                                 <div class="col-12">
-                                    <label for="name" class="form-label fw-semibold">Name</label>
+                                    <label for="name" class="form-label fw-semibold">{{ __('app.Name') }}</label>
                                     <input id="name" name="name" type="text" class="form-control"
                                         value="{{ old('name', $user->name) }}" required>
                                     @error('name')
@@ -117,7 +117,7 @@
                                 </div>
 
                                 <div class="col-12">
-                                    <label for="email" class="form-label fw-semibold">Email</label>
+                                    <label for="email" class="form-label fw-semibold">{{ __('app.Email') }}</label>
                                     <input id="email" name="email" type="email" class="form-control"
                                         value="{{ old('email', $user->email) }}" required>
                                     @error('email')
@@ -126,7 +126,7 @@
                                 </div>
 
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-dark">Save Info</button>
+                                    <button type="submit" class="btn btn-dark">{{ __('app.Save') }}</button>
                                 </div>
                             </form>
 
@@ -134,7 +134,7 @@
 
                             {{-- Photo form --}}
                             <div>
-                                <label class="form-label fw-semibold">Profile Photo</label>
+                                <label class="form-label fw-semibold">{{ __('app.Profile Photo') }}</label>
 
                                 <div class="d-flex align-items-center gap-3 flex-wrap mb-3">
                                     @if ($user->photo)
@@ -183,15 +183,15 @@
                     <div class="card border-0 shadow-sm rounded-4">
                         <div class="card-body p-4">
                             <div class="mb-3">
-                                <h4 class="fw-bold mb-1">Update Password</h4>
-                                <div class="text-secondary">Use a strong password to keep your account secure.</div>
+                                <h4 class="fw-bold mb-1">{{ __('app.Update Password') }}</h4>
+                                <div class="text-secondary">{{ __('app.Use a strong password to keep your account secure.') }}</div>
                             </div>
 
                             @include('profile.partials.update-password-form')
                         </div>
                     </div>
 
-                    <div class="card border-0 shadow-sm rounded-4 border border-danger-subtle">
+                    {{-- <div class="card border-0 shadow-sm rounded-4 border border-danger-subtle">
                         <div class="card-body p-4">
                             <div class="mb-3">
                                 <h4 class="fw-bold text-danger mb-1">Delete Account</h4>
@@ -202,7 +202,7 @@
 
                             @include('profile.partials.delete-user-form')
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
             </div>

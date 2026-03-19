@@ -12,37 +12,45 @@ class StudentController extends Controller
 {
     public function index(Request $request)
     {
-        $q = $request->get('q');
-
-        $studentsQuery = Student::query();
-
-        if ($q) {
-            $studentsQuery->where(function ($qq) use ($q) {
-                $qq->where('student_name', 'like', "%{$q}%")
-                    ->orWhere('phone_number', 'like', "%{$q}%")
-                    ->orWhere('group_name', 'like', "%{$q}%");
-            });
-
-            if (strtolower($q) === 'active') $studentsQuery->orWhere('status', 1);
-            if (strtolower($q) === 'inactive') $studentsQuery->orWhere('status', 0);
-        }
-
-        $students = $studentsQuery->orderBy('student_id', 'desc')->paginate(6);
-
-        $statTotal = Student::count();
-        $statActive = Student::where('status', 1)->count();
-        $statInactive = Student::where('status', 0)->count();
-        // ✅ ADD THIS HERE
         $groups = Group::orderBy('group_name')->get();
-        $students = Student::with('group')->latest()->paginate(10);
-        // ✅ return with groups
-        return view('backend.page.students.index', compact(
-            'students',
-            'groups',
-            'statTotal',
-            'statActive',
-            'statInactive'
-        ));
+
+    $studentsQuery = Student::with('group');
+
+    if ($request->filled('q')) {
+        $q = trim($request->q);
+
+        $studentsQuery->where(function ($query) use ($q) {
+            $query->where('student_name', 'like', "%{$q}%")
+                ->orWhere('phone_number', 'like', "%{$q}%")
+                ->orWhereHas('group', function ($groupQuery) use ($q) {
+                    $groupQuery->where('group_name', 'like', "%{$q}%");
+                });
+
+            if (strtolower($q) === 'active') {
+                $query->orWhere('status', 1);
+            }
+
+            if (strtolower($q) === 'inactive') {
+                $query->orWhere('status', 0);
+            }
+        });
+    }
+
+    $students = $studentsQuery->orderByDesc('student_id')
+        ->paginate(10)
+        ->withQueryString();
+
+    $statTotal = Student::count();
+    $statActive = Student::where('status', 1)->count();
+    $statInactive = Student::where('status', 0)->count();
+
+    return view('backend.page.students.index', compact(
+        'students',
+        'groups',
+        'statTotal',
+        'statActive',
+        'statInactive'
+    ));
     }
 
     public function store(Request $request)

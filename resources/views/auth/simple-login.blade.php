@@ -46,21 +46,22 @@
                     @csrf
 
                     <div class="mb-3">
-    <label class="form-label fw-semibold">Username or Email</label>
-    <input type="text" name="login" class="form-control" value="{{ old('login') }}" required autofocus>
-</div>
+                        <label class="form-label fw-semibold">Username or Email</label>
+                        <input type="text" name="login" class="form-control" value="{{ old('login') }}" required
+                            autofocus>
+                    </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Password</label>
                         <input type="password" name="password" class="form-control" required>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    {{-- <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="remember" id="remember">
                             <label class="form-check-label" for="remember">Remember me</label>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <button class="btn btn-dark w-100 py-2">Login</button>
                 </form>

@@ -24,8 +24,8 @@
         {{-- Header --}}
         <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
             <div>
-                <h2 class="fw-bold mb-1">Users</h2>
-                <div class="text-secondary">Manage system users (admin accounts).</div>
+                <h2 class="fw-bold mb-1">{{ __('app.users') }}</h2>
+                <div class="text-secondary">{{ __('app.Manage system users (admin accounts).') }}</div>
             </div>
 
             <div class="d-flex flex-wrap align-items-center gap-2">
@@ -34,14 +34,15 @@
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
                         <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0"
-                            placeholder="Search name or email..." style="min-width: 320px;">
+                            placeholder="{{ __('app.Search name or email...') }}" style="min-width: 320px;">
                     </div>
-                    <button class="btn btn-outline-secondary ms-2">Search</button>
+                    <button class="btn btn-outline-secondary ms-2">{{ __('app.search') }}</button>
                 </form>
+                <a href="{{ url()->current() }}" class="btn btn-danger">{{ __('app.reset') }}</a>
 
                 {{-- Add --}}
                 <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                    <i class="bi bi-plus-lg me-1"></i> Add User
+                    <i class="bi bi-plus-lg me-1"></i> {{ __('app.Add User') }}
                 </button>
             </div>
         </div>
@@ -51,7 +52,7 @@
             <div class="col-12 col-md-4">
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body">
-                        <div class="text-secondary small">Total Users</div>
+                        <div class="text-secondary small">{{ __('app.Total Users') }}</div>
                         <div class="fs-3 fw-bold">{{ $statTotal ?? 0 }}</div>
                     </div>
                 </div>
@@ -66,11 +67,11 @@
                         <thead>
                             <tr class="text-secondary small">
                                 <th style="width:60px;">#</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th class="text-end" style="width:180px;">Actions</th>
+                                <th>{{ __('app.Name') }}</th>
+                                <th>{{ __('app.Email') }}</th>
+                                <th>{{ __('app.Role') }}</th>
+                                <th>{{ __('app.Status') }}</th>
+                                <th class="text-end" style="width:180px;">{{ __('app.Actions') }}</th>
                             </tr>
                         </thead>
 
@@ -136,39 +137,39 @@
                 @csrf
 
                 <div class="modal-header">
-                    <h5 class="modal-title fw-semibold">Add User</h5>
+                    <h5 class="modal-title fw-semibold">{{ __('app.Add User') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-12">
-                            <label class="form-label fw-semibold">Name <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">{{ __('app.Name') }} <span class="text-danger">*</span></label>
                             <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">{{ __('app.Email') }} <span class="text-danger">*</span></label>
                             <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">{{ __('app.Password') }} <span class="text-danger">*</span></label>
                             <input type="password" name="password" class="form-control" minlength="6" required>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">{{ __('app.Role') }} <span class="text-danger">*</span></label>
                             <select name="role" class="form-select" required>
                                 <option value="admin" {{ old('role', 'admin') == 'admin' ? 'selected' : '' }}>Admin
                                 </option>
                                 <option value="staff" {{ old('role') == 'staff' ? 'selected' : '' }}>Staff</option>
-                                <option value="student"{{ old('role') == 'student' ? 'selected' : '' }}>Student</option>
+                                {{-- <option value="student"{{ old('role') == 'student' ? 'selected' : '' }}>Student</option> --}}
                             </select>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">{{ __('app.Status') }} <span class="text-danger">*</span></label>
                             <select name="status" class="form-select" required>
                                 <option value="1" selected>Active</option>
                                 <option value="0">Inactive</option>
@@ -196,26 +197,26 @@
                     @method('PUT')
 
                     <div class="modal-header">
-                        <h5 class="modal-title fw-semibold">Edit User</h5>
+                        <h5 class="modal-title fw-semibold">{{ __('app.Edit User') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label fw-semibold">Name <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">{{ __('app.Name') }} <span class="text-danger">*</span></label>
                                 <input type="text" name="name" class="form-control" value="{{ $u->name }}"
                                     required>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">{{ __('app.Email') }} <span class="text-danger">*</span></label>
                                 <input type="email" name="email" class="form-control" value="{{ $u->email }}"
                                     required>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label fw-semibold">New Password <small
+                                <label class="form-label fw-semibold">{{ __('app.Password') }} <small
                                         class="text-muted">(optional)</small></label>
                                 <input type="password" name="password" class="form-control" minlength="6">
                             </div>
@@ -227,8 +228,8 @@
                                     </option>
                                     <option value="staff" {{ old('role', $u->role) == 'staff' ? 'selected' : '' }}>Staff
                                     </option>
-                                    <option value="student"{{ old('role', $u->role) == 'student' ? 'selected' : '' }}>
-                                        Student</option>
+                                    {{-- <option value="student"{{ old('role', $u->role) == 'student' ? 'selected' : '' }}>
+                                        Student</option> --}}
                                 </select>
                             </div>
                             <div class="col-md-6">

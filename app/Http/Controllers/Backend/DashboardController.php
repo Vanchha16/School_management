@@ -26,7 +26,7 @@ public function index()
     $borrowedItems = Borrow::where('status', 'BORROWED')->sum('qty');
 
     $pendingSubmissions = StudentSubmission::where('is_borrow_approved', false)->count();
-
+    
     $recentSubmissions = StudentSubmission::with(['group', 'item'])
         ->latest()
         ->take(5)

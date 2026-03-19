@@ -30,7 +30,7 @@
                                     </span>
                                     <span>
                                         <i class="bi bi-clock me-1"></i>
-                                        {{ now()->timezone('Asia/Jakarta')->format('H:i') }} WIB
+                                        {{ now()->timezone('Asia/Jakarta')->format('H:i') }} 
                                     </span>
                                 </div>
                             </div>
@@ -38,7 +38,7 @@
 
                         <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2">
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="{{ route('students.index') }}" class="btn btn-light rounded-pill px-3 fw-medium">
+                                <a href="{{ route('students.index') }}" class="btn btn-outline-light rounded-pill px-3 fw-medium">
                                     <i class="bi bi-people me-1"></i> {{ __('app.students') }}
                                 </a>
 
@@ -157,13 +157,13 @@
                                         </li>
 
                                         <li>
-                                            <a class="dropdown-item rounded-3 py-2" href="{{ route('profile') }}">
+                                            <a class="dropdown-item rounded-3 py-2" href="#">
                                                 <i class="bi bi-gear me-2"></i> {{ __('app.account_settings') }}
                                             </a>
                                         </li>
 
                                         <li>
-                                            <a class="dropdown-item rounded-3 py-2" href="{{ route('profile') }}">
+                                            <a class="dropdown-item rounded-3 py-2" href="#">
                                                 <i class="bi bi-shield-lock me-2"></i> {{ __('app.change_password') }}
                                             </a>
                                         </li>

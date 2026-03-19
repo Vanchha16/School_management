@@ -24,16 +24,18 @@ class SubmissionController extends Controller
     {
         $q = $request->get('q');
 
-        $submissions = StudentSubmission::with(['group','item'])
-            ->when($q,function($query) use ($q){
-                $query->where('student_name','like',"%{$q}%")
-                      ->orWhere('phone_number','like',"%{$q}%");
+        $submissions = StudentSubmission::with(['group', 'item'])
+            ->when($q, function ($query) use ($q) {
+                $query->where('student_name', 'like', "%{$q}%")
+                    ->orWhere('phone_number', 'like', "%{$q}%");
             })
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
-        return view('backend.page.submissions.index',compact('submissions'));
+        $pendingSubmissionCount = StudentSubmission::where('is_borrow_approved', false)->count();
+
+        return view('backend.page.submissions.index', compact('submissions', 'pendingSubmissionCount'));
     }
 
 
@@ -57,7 +59,7 @@ class SubmissionController extends Controller
             'notes' => 'nullable|string'
         ]);
 
-        $existingStudent = Student::where('student_name',$request->student_name)->first();
+        $existingStudent = Student::where('student_name', $request->student_name)->first();
 
         /*
         |--------------------------------
@@ -65,7 +67,7 @@ class SubmissionController extends Controller
         |--------------------------------
         */
 
-        if($request->item_id === 'other'){
+        if ($request->item_id === 'other') {
 
             // create item automatically if not exists
             $item = Item::firstOrCreate(
@@ -75,14 +77,13 @@ class SubmissionController extends Controller
                     'status' => 1
                 ]
             );
+        } else {
 
-        }else{
+            $item = Item::where('Itemid', $request->item_id)->firstOrFail();
 
-            $item = Item::where('Itemid',$request->item_id)->firstOrFail();
-
-            if($item->qty < $request->qty){
+            if ($item->qty < $request->qty) {
                 return back()->withErrors([
-                    'qty'=>'Not enough stock available.'
+                    'qty' => 'Not enough stock available.'
                 ])->withInput();
             }
         }
@@ -110,7 +111,7 @@ class SubmissionController extends Controller
             'is_borrow_approved' => false,
         ]);
 
-        return back()->with('success','Submitted successfully. Please wait for approval.');
+        return back()->with('success', 'Submitted successfully. Please wait for approval.');
     }
 
 
@@ -125,24 +126,24 @@ class SubmissionController extends Controller
     {
         $submission = StudentSubmission::findOrFail($id);
 
-        if(!$submission->student_id){
+        if (!$submission->student_id) {
             return back()->withErrors([
-                'error'=>'Please add the student first.'
+                'error' => 'Please add the student first.'
             ]);
         }
 
-        if($submission->is_borrow_approved){
-            return back()->with('success','Borrow already approved.');
+        if ($submission->is_borrow_approved) {
+            return back()->with('success', 'Borrow already approved.');
         }
 
-        $item = Item::where('Itemid',$submission->item_id)->first();
+        $item = Item::where('Itemid', $submission->item_id)->first();
 
-        if(!$item){
-            return back()->withErrors(['error'=>'Item not found']);
+        if (!$item) {
+            return back()->withErrors(['error' => 'Item not found']);
         }
 
-        if($item->qty < $submission->qty){
-            return back()->withErrors(['error'=>'Not enough stock available']);
+        if ($item->qty < $submission->qty) {
+            return back()->withErrors(['error' => 'Not enough stock available']);
         }
 
 
@@ -169,7 +170,7 @@ class SubmissionController extends Controller
         |--------------------------------------------------
         */
 
-        $item->decrement('qty',$submission->qty);
+        $item->decrement('qty', $submission->qty);
 
 
         /*
@@ -178,7 +179,7 @@ class SubmissionController extends Controller
         |--------------------------------------------------
         */
 
-        $student = Student::where('student_id',$submission->student_id)->first();
+        $student = Student::where('student_id', $submission->student_id)->first();
 
         ItemHistory::create([
             'borrow_id' => $borrow->id,
@@ -188,20 +189,19 @@ class SubmissionController extends Controller
             'approved_by' => Auth::id(),
             'returned_by' => null,
             'action' => 'Borrowed',
-            'details' =>
-                (Auth::user()->name ?? 'System')
-                .' borrowed '.$borrow->qty
-                .' x '.$item->name
-                .' for '.($student->student_name ?? '-'),
+            'details' => (Auth::user()->name ?? 'System')
+                . ' borrowed ' . $borrow->qty
+                . ' x ' . $item->name
+                . ' for ' . ($student->student_name ?? '-'),
             'action_at' => now()
         ]);
 
 
         $submission->update([
-            'is_borrow_approved'=>true
+            'is_borrow_approved' => true
         ]);
 
-        return back()->with('success','Borrow approved successfully.');
+        return back()->with('success', 'Borrow approved successfully.');
     }
 
 
@@ -215,7 +215,7 @@ class SubmissionController extends Controller
     public function remove($id)
     {
         StudentSubmission::findOrFail($id)->delete();
-        return back()->with('success','Submission removed.');
+        return back()->with('success', 'Submission removed.');
     }
 
 
@@ -229,10 +229,9 @@ class SubmissionController extends Controller
     public function cancelAll()
     {
         StudentSubmission::query()->delete();
-        return back()->with('success','All submissions cancelled.');
+        return back()->with('success', 'All submissions cancelled.');
     }
-
-     public function addStudent(Request $request, $id)
+    public function addStudent(Request $request, $id)
     {
         $submission = StudentSubmission::findOrFail($id);
 
@@ -255,6 +254,4 @@ class SubmissionController extends Controller
 
         return back()->with('success', 'Student added successfully.');
     }
-
 }
-

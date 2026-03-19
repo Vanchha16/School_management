@@ -103,7 +103,7 @@
                                         @else
                                             <form method="POST" action="{{ route('submissions.addStudent', $row->id) }}">
                                                 @csrf
-                                                <button class="btn btn-sm btn-dark w-100">Add Student</button>
+                                                <button class="btn btn-sm btn-dark w-100">{{ __('app.Add Student') }}</button>
                                             </form>
                                         @endif
 

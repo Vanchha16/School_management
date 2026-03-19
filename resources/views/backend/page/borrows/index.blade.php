@@ -127,7 +127,7 @@
 
                         <div class="col-md-2">
                             <label class="form-label small text-muted mb-1">{{ __('app.borrow_status') }}</label>
-                            <select name="status" class="form-select">
+                            <select name="status" class="form-select" onchange="this.form.submit()">
                                 <option value="">{{ __('app.all') }}</option>
                                 <option value="BORROWED" {{ request('status') == 'BORROWED' ? 'selected' : '' }}>
                                     {{ __('app.item_borrowed') }}
@@ -143,7 +143,7 @@
 
                         <div class="col-md-3">
                             <label class="form-label small text-muted mb-1">{{ __('app.groups') }}</label>
-                            <select name="group_id" class="form-select">
+                            <select name="group_id" class="form-select" onchange="this.form.submit()">
                                 <option value="">{{ __('app.all') }}</option>
                                 @foreach ($groups as $g)
                                     <option value="{{ $g->group_id }}"
@@ -156,7 +156,7 @@
 
                         <div class="col-md-3">
                             <label class="form-label small text-muted mb-1">{{ __('app.items') }}</label>
-                            <select name="item_id" class="form-select">
+                            <select name="item_id" class="form-select" onchange="this.form.submit()">
                                 <option value="">{{ __('app.all') }}</option>
                                 @foreach ($items as $it)
                                     <option value="{{ $it->Itemid }}"
@@ -242,23 +242,22 @@
                                         @endif
 
                                         <button type="button" class="btn btn-sm btn-outline-secondary"
-    data-bs-toggle="modal"
-    data-bs-target="#borrowDetailModal"
-    data-student="{{ $borrow->student->student_name ?? '-' }}"
-    data-item="{{ $borrow->item->name ?? '-' }}"
-    data-qty="{{ $borrow->qty ?? '-' }}"
-    data-status="{{ $borrow->status ?? '-' }}"
-    data-condition="{{ $borrow->condition ?? '-' }}"
-    data-borrow-date="{{ optional($borrow->borrow_date)->format('d M Y H:i') ?? '-' }}"
-    data-due-date="{{ optional($borrow->due_date)->format('d M Y H:i') ?? '-' }}"
-    data-return-date="{{ optional($borrow->return_date)->format('d M Y H:i') ?? '-' }}"
-    data-approved-by="{{ $borrow->approvedByUser->name ?? '-' }}"
-    data-returned-by="{{ $borrow->returnedByUser->name ?? '-' }}"
-    data-notes="{{ $borrow->notes ?? '-' }}"
-    data-return-notes="{{ $borrow->return_notes ?? '-' }}"
-    style="margin-bottom: 5px">
-    View
-</button>
+                                            data-bs-toggle="modal" data-bs-target="#borrowDetailModal"
+                                            data-student="{{ $borrow->student->student_name ?? '-' }}"
+                                            data-item="{{ $borrow->item->name ?? '-' }}"
+                                            data-qty="{{ $borrow->qty ?? '-' }}"
+                                            data-status="{{ $borrow->status ?? '-' }}"
+                                            data-condition="{{ $borrow->condition ?? '-' }}"
+                                            data-borrow-date="{{ optional($borrow->borrow_date)->format('d M Y H:i') ?? '-' }}"
+                                            data-due-date="{{ optional($borrow->due_date)->format('d M Y H:i') ?? '-' }}"
+                                            data-return-date="{{ optional($borrow->return_date)->format('d M Y H:i') ?? '-' }}"
+                                            data-approved-by="{{ $borrow->approvedByUser->name ?? '-' }}"
+                                            data-returned-by="{{ $borrow->returnedByUser->name ?? '-' }}"
+                                            data-notes="{{ $borrow->notes ?? '-' }}"
+                                            data-return-notes="{{ $borrow->return_notes ?? '-' }}"
+                                            style="margin-bottom: 5px">
+                                            View
+                                        </button>
                                         @php
                                             $status = $borrow->status ?? 'BORROWED';
                                         @endphp

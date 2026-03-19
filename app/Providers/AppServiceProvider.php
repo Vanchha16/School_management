@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use App\Models\Borrow;
+use App\Models\StudentSubmission;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
 class AppServiceProvider extends ServiceProvider
@@ -14,22 +15,25 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-    public function boot(): void
-    {
-        \Illuminate\Pagination\Paginator::useBootstrapFive();
+    
+public function boot(): void
+{
+    \Illuminate\Pagination\Paginator::useBootstrapFive();
+    View::composer('backend.layout.master', function ($view) {
+        $pendingSubmissionCount = StudentSubmission::where('is_borrow_approved', false)->count();
 
-        View::composer('*', function ($view) {
+        $overdueCount = Borrow::where('status', 'OVERDUE')->count();
 
-        // overdue = borrow_date older than 3 days AND not returned
-        $overdueCount = Borrow::query()
-            ->whereNull('return_date')
-            ->where('borrow_date', '<', now()->subDays(3))
+        $lateReturnedCount = Borrow::where('status', 'RETURNED')
+            ->whereNotNull('return_date')
+            ->whereColumn('return_date', '>', 'due_date')
             ->count();
 
-        $view->with('overdueCount', $overdueCount);
-        if(session()->has('locale')){
-        App::setLocale(session('locale'));
-    }
+        $view->with(compact(
+            'pendingSubmissionCount',
+            'overdueCount',
+            'lateReturnedCount'
+        ));
     });
-    }
+}
 }

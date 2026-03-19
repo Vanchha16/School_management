@@ -33,7 +33,7 @@
                 <div class="text-secondary">{{ __('app.Add, view, edit, and delete groups.') }}</div>
             </div>
 
-            <div class="d-flex flex-wrap align-items-center gap-2">
+            <div class="d-flex flex-wrap align-items-start gap-2">
                 {{-- Search --}}
                 <form method="GET" action="{{ url()->current() }}" class="d-flex flex-wrap gap-2 align-items-center">
                     <div class="input-group" style="min-width: 320px;">
@@ -151,7 +151,7 @@
                         type="text"
                         name="group_name"
                         class="form-control"
-                        placeholder="e.g., Grade 10 / Class A"
+                        placeholder="group"
                         required
                     >
                 </div>
