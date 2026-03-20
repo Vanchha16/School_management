@@ -4,7 +4,7 @@
 @section('overdue_borrow_active', 'active')
 @section('contents')
 
-    <style>
+    {{-- <style>
       
         /* Mobile Responsive Styles */
        @media (max-width: 776px) {
@@ -48,7 +48,7 @@
                 font-size: 11px;
             }
         }
-    </style>
+    </style> --}}
     <div class="container-fluid" style="padding:3%;">
         <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
             <div>
