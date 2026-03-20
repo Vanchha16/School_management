@@ -16,36 +16,9 @@
         }
 
         /* Mobile Responsive Styles */
-        @media (max-width: 767px) {
-            /* Hide Update column on mobile */
-            /* th:last-child,
-            td:last-child {
+       @media (max-width: 776px) {
+            .update_hide {
                 display: none;
-            }
-            .update_hide{
-                display: none;
-            } */
-
-            /* Add action button column */
-            .table thead tr::after {
-                content: '';
-            }
-
-            /* Adjust table for mobile */
-            .table {
-                font-size: 0.875rem;
-            }
-
-            /* Make columns narrower on mobile */
-            th[style*="width"],
-            td[style*="width"] {
-                width: auto !important;
-            }
-
-            /* Stack badge and text better on mobile */
-            .badge {
-                display: inline-block;
-                margin: 2px 0;
             }
         }
 
@@ -241,7 +214,7 @@
                                 </tr>
 
                                 <!-- Mobile Update Button Row -->
-                                <tr class="d-md-none bg-light">
+                                <tr class=" bg-light d-md-none">
                                     <td colspan="8" class="py-2">
                                         <button type="button" class="btn btn-sm btn-primary w-100" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
                                             <i class="bi bi-pencil"></i> {{ __('app.Update Call Status') }}
