@@ -87,7 +87,7 @@
     <div class="container py-4" style="max-width:700px">
 
         <div class="text-center mb-3">
-            <h3 class="mb-1">{{ __('app.Form Borrow Item') }}</h3>
+            <h3 class="mb-1">{{ __('app.IT_DEPT') }}</h3>
             <div class="text-muted">{{ __('app.fill_in_your_info') }}</div>
         </div>
 
@@ -147,6 +147,23 @@
 
 
                     <!-- GROUP -->
+                    
+                    
+                    <!-- STUDENT -->
+                    <div class="mb-3">
+                        <label class="form-label">{{ __('app.Student Name') }} *</label>
+                        
+                        <input type="text" id="student_name" name="student_name" class="form-control"
+                        list="students_list" autocomplete="off" required>
+                        
+                        <datalist id="students_list">
+                            @foreach ($students as $student)
+                            <option value="{{ $student->student_name }}"></option>
+                            @endforeach
+                        </datalist>
+                        
+                        <small id="student_help" class="text-muted"></small>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">{{ __('app.groups') }} *</label>
 
@@ -161,25 +178,6 @@
 
                         <input type="hidden" name="group_id" id="group_id">
                     </div>
-
-
-                    <!-- STUDENT -->
-                    <div class="mb-3">
-                        <label class="form-label">{{ __('app.Student Name') }} *</label>
-
-                        <input type="text" id="student_name" name="student_name" class="form-control"
-                            list="students_list" autocomplete="off" required>
-
-                        <datalist id="students_list">
-                            @foreach ($students as $student)
-                                <option value="{{ $student->student_name }}"></option>
-                            @endforeach
-                        </datalist>
-
-                        <small id="student_help" class="text-muted"></small>
-                    </div>
-
-
                     <!-- GENDER -->
                     <div class="mb-3">
                         <label class="form-label">{{ __('app.Gender') }} *</label>
@@ -221,19 +219,14 @@
 
                                 </option>
                             @endforeach
-                            <option value="other">Other (not in list)</option>
-
+                            {{-- <option value="other">Other (not in list)</option> --}}
                         </select>
-                        <div class="mb-3 d-none" id="otherItemBox">
+                        {{-- <div class="mb-3 d-none" id="otherItemBox">
                             <label class="form-label">{{ __('app.Other Items') }} *</label>
 
                             <input type="text" name="other_item" id="other_item" class="form-control"
                                 placeholder="{{ __('app.Enter item name...') }}" value="{{ old('other_item') }}">
-
-                            {{-- <small class="text-muted">
-                                Enter the item name if it is not in the list.
-                            </small> --}}
-                        </div>
+                        </div> --}}
 
                     </div>
 

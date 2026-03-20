@@ -21,7 +21,7 @@ public function index(Request $request)
     }
 
     // Add borrowed_qty = sum(qty) from borrows where status = BORROWED
-    $items = Item::query()
+    $items = $itemsQuery
     ->withSum(['borrows as borrowed_qty' => function ($q) {
         $q->where('status', 'BORROWED');
     }], 'qty')
@@ -45,7 +45,7 @@ public function index(Request $request)
         'description' => 'nullable|string|max:1000',
         'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2024',
     ]);
-
+   
     $path = null;
     if ($request->hasFile('image')) {
         $path = $request->file('image')->store('items', 'public');

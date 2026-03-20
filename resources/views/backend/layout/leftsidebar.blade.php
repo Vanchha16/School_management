@@ -234,7 +234,11 @@
                              class="btn btn-sm btn-light w-100">{{ __('app.khmer') }}</a>
                      </div>
                  </div>
-             </div>
+                  <div class="mt-auto">
+            <span style="color: gray; font-size: 12px;">Version 1.0.0</span>
+         </div>
+                </div>
+             
          </div>
          <div class="px-2 mt-2">
              <a href="{{ route('admin.dashboard') }}" class="nav-pill @yield('dashboard_active')">
@@ -304,9 +308,9 @@
                          class="btn btn-sm btn-light w-100">{{ __('app.khmer') }}</a>
                  </div>
              </div>
-         </div>
-         <div class="mt-auto">
-            <span>Version 1.0.0</span>
+             <div class="mt-auto">
+                <span style="color: gray; font-size: 12px;">Version 1.0.0</span>
+             </div>
          </div>
          {{-- <div class="mt-auto p-2">
              <div class="soft-card p-3">

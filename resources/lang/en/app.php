@@ -64,7 +64,7 @@ return [
     'overdue_borrow' => 'Overdue Borrow',
     'super_admin' => 'Super Admin',
     'maths_teacher' => 'Maths Teacher',
-    'Form Borrow Item' => 'Form Borrow Item',
+    'IT_DEPT' => 'IT Dept',
     'fill_in_your_info' => 'Fill in your info',
     'Search or type item...' => 'Search or type item...',
     'notes' => 'Notes',
