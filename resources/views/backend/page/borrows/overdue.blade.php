@@ -21,10 +21,10 @@
             /* th:last-child,
             td:last-child {
                 display: none;
-            } */
+            }
             .update_hide{
                 display: none;
-            }
+            } */
 
             /* Add action button column */
             .table thead tr::after {
