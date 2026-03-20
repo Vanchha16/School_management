@@ -5,16 +5,7 @@
 @section('contents')
 
     <style>
-        .content-wrapper,
-        .content,
-        .container,
-        .container-lg,
-        .container-md,
-        .container-sm {
-            max-width: 100% !important;
-            width: 100% !important;
-        }
-
+      
         /* Mobile Responsive Styles */
        @media (max-width: 776px) {
             .update_hide {
