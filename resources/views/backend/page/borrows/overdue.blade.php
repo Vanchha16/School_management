@@ -14,8 +14,77 @@
             max-width: 100% !important;
             width: 100% !important;
         }
-    </style>
 
+        /* Mobile Responsive Styles */
+        @media (max-width: 767px) {
+            /* Hide Update column on mobile */
+            /* th:last-child,
+            td:last-child {
+                display: none;
+            } */
+            .update_hide{
+                display: none;
+            }
+
+            /* Add action button column */
+            .table thead tr::after {
+                content: '';
+            }
+
+            /* Adjust table for mobile */
+            .table {
+                font-size: 0.875rem;
+            }
+
+            /* Make columns narrower on mobile */
+            th[style*="width"],
+            td[style*="width"] {
+                width: auto !important;
+            }
+
+            /* Stack badge and text better on mobile */
+            .badge {
+                display: inline-block;
+                margin: 2px 0;
+            }
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            border-radius: 0.5rem;
+        }
+        td.datetime {
+            white-space: nowrap;
+            line-height: 1.3;
+            vertical-align: middle;
+        }
+
+        td.datetime .date {
+            display: block;
+            font-size: 14px;
+        }
+
+        td.datetime .time {
+            display: block;
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+
+        @media (max-width: 576px) {
+            td.datetime .date {
+                font-size: 13px;
+            }
+
+            td.datetime .time {
+                font-size: 11px;
+            }
+        }
+    </style>
     <div class="container-fluid" style="padding:3%;">
         <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
             <div>
@@ -31,10 +100,24 @@
                     <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0"
                         placeholder="{{ __('app.Search student or item...') }}">
                 </div>
-                <button class="btn btn-primary">{{__('app.search') }}</button>
+                <button class="btn btn-primary">{{ __('app.search') }}</button>
                 <a href="{{ url()->current() }}" class="btn btn-danger">{{ __('app.reset') }}</a>
             </form>
         </div>
+
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0 ps-3">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <div class="card border-0 shadow-sm rounded-4 mb-4 w-100">
             <div class="card-body">
@@ -45,11 +128,13 @@
                             <tr class="text-secondary small">
                                 <th style="width:80px;">#</th>
                                 <th>{{ __('app.students') }}</th>
-                                <th style="width:160px;">{{ __('app.Phone Number') }}</th>
+                                <th style="width:180px;">{{ __('app.Phone Number') }}</th>
                                 <th>{{ __('app.item') }}</th>
                                 <th class="text-center" style="width:160px;">{{ __('app.borrow_date') }}</th>
-                                <th class="text-center" style="width:120px;">{{ __('app.Total Days late') }}</th>
-                                <th class="text-center" style="width:120px;">{{ __('app.Status') }}</th>
+                                <th class="text-center" style="width:130px;">{{ __('app.Total Days late') }}</th>
+                                <th class="text-center" style="width:150px;">Call Status</th>
+                                <th style="width:190px;">Call Note</th>
+                                <th style="width:260px;" class="update_hide">Update</th>
                             </tr>
                         </thead>
 
@@ -57,6 +142,8 @@
                             @forelse($overdues as $k => $b)
                                 @php
                                     $lateDays = (int) \Carbon\Carbon::parse($b->borrow_date)->diffInDays(now());
+                                    $callStatus = $b->call_status ?? 'not_yet_called';
+                                    $modalId = 'updateModal' . $b->id;
                                 @endphp
 
                                 <tr>
@@ -67,13 +154,27 @@
                                     </td>
 
                                     <td>
-                                        {{ $b->student->phone_number ?? '—' }}
+                                        <div>{{ $b->student->phone_number ?? '—' }}</div>
+
+                                        @if(!empty($b->student->phone_number))
+                                            <a href="tel:{{ $b->student->phone_number }}" class="btn btn-sm btn-outline-primary mt-2">
+                                                <i class="bi bi-telephone"></i> Call
+                                            </a>
+                                        @endif
                                     </td>
 
-                                    <td>{{ $b->item->Itemname ?? ($b->item->item_name ?? ($b->item->name ?? '—')) }}</td>
+                                    <td>
+                                        {{ $b->item->Itemname ?? ($b->item->item_name ?? ($b->item->name ?? '—')) }}
+                                    </td>
 
-                                    <td class="text-center">
-                                        {{ \Carbon\Carbon::parse($b->borrow_date)->format('d M Y H:i') }}
+                                    <td class="datetime">
+                                        <span class="date">
+
+                                            {{ \Carbon\Carbon::parse($b->borrow_date)->format('d M Y') }}
+                                        </span>
+                                        <span class="time">
+                                            {{ \Carbon\Carbon::parse($b->borrow_date)->format('H:i') }}
+                                        </span>
                                     </td>
 
                                     <td class="text-center">
@@ -83,12 +184,136 @@
                                     </td>
 
                                     <td class="text-center">
-                                        <span class="badge rounded-pill bg-warning text-dark">Borrowed</span>
+                                        @if($callStatus === 'not_yet_called')
+                                            <span class="badge rounded-pill bg-secondary">Not yet call</span>
+                                        @elseif($callStatus === 'called_done')
+                                            <span class="badge rounded-pill bg-success">Call done</span>
+                                        @elseif($callStatus === 'no_answer')
+                                            <span class="badge rounded-pill bg-warning">No answer</span>
+                                        @endif
+
+                                        @if($b->called_at)
+                                            <div class="small text-muted mt-1">
+                                                {{ $b->called_at->format('d M Y H:i') }}
+                                            </div>
+                                        @endif
+
+                                        @if($b->calledByUser)
+                                            <div class="small text-muted">
+                                                by {{ $b->calledByUser->name }}
+                                            </div>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        {{ $b->call_note ?: '—' }}
+                                    </td>
+
+                                    <!-- Desktop Update Form -->
+                                    <td class="d-none d-md-table-cell">
+                                        <form method="POST" action="{{ route('borrows.overdue.call-status', $b->id) }}" class="phone">
+                                            @csrf
+                                            @method('PATCH')
+
+                                            <select name="call_status" class="form-select form-select-sm mb-2">
+                                                <option value="not_yet_called" {{ $callStatus === 'not_yet_called' ? 'selected' : '' }}>
+                                                    Not yet call
+                                                </option>
+                                                <option value="called_done" {{ $callStatus === 'called_done' ? 'selected' : '' }}>
+                                                    Call done
+                                                </option>
+                                                <option value="no_answer" {{ $callStatus === 'no_answer' ? 'selected' : '' }}>
+                                                    No answer
+                                                </option>
+                                            </select>
+
+                                            <textarea
+                                                name="call_note"
+                                                class="form-control form-control-sm mb-2"
+                                                rows="2"
+                                                placeholder="{{ __('app.Call Note') }}">{{ old('call_note', $b->call_note) }}</textarea>
+
+                                            <button type="submit" class="btn btn-sm btn-primary w-100">
+                                                <i class="bi bi-save"></i> Save
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
+
+                                <!-- Mobile Update Button Row -->
+                                <tr class="d-md-none bg-light">
+                                    <td colspan="8" class="py-2">
+                                        <button type="button" class="btn btn-sm btn-primary w-100" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
+                                            <i class="bi bi-pencil"></i> {{ __('app.Update Call Status') }}
+                                        </button>
+                                    </td>
+                                </tr>
+
+
+                                <!-- Update Modal -->
+                                <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="{{ $modalId }}Label">
+                                                    {{ __('app.Update Call Status') }} - {{ $b->student->student_name ?? 'Unknown' }}
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form method="POST" action="{{ route('borrows.overdue.call-status', $b->id) }}" class="phone">
+                                                <div class="modal-body">
+                                                    @csrf
+                                                    @method('PATCH')
+
+                                                    <div class="mb-3">
+                                                        <label for="call_status_{{ $b->id }}" class="form-label">{{ __('app.Call Status') }}</label>
+                                                        <select name="call_status" id="call_status_{{ $b->id }}" class="form-select">
+                                                            <option value="not_yet_called" {{ $callStatus === 'not_yet_called' ? 'selected' : '' }}>
+                                                                {{ __('app.Not yet call') }}
+                                                            </option>
+                                                            <option value="called_done" {{ $callStatus === 'called_done' ? 'selected' : '' }}>
+                                                                {{ __('app.Call done') }}
+                                                            </option>
+                                                            {{-- <option value="wrong_number" {{ $callStatus === 'wrong_number' ? 'selected' : '' }}>
+                                                                {{ __('app.Wrong number') }}
+                                                            </option> --}}
+                                                             <option value="no_answer" {{ $callStatus === 'no_answer' ? 'selected' : '' }}>
+                                                                {{ __('app.Called - No answer') }}
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="call_note_{{ $b->id }}" class="form-label">{{ __('app.Call Note') }}</label>
+                                                        <textarea
+                                                            name="call_note"
+                                                            id="call_note_{{ $b->id }}"
+                                                            class="form-control"
+                                                            rows="4"
+                                                            placeholder="Write note...">{{ old('call_note', $b->call_note) }}</textarea>
+                                                    </div>
+
+                                                    <div class="alert alert-info alert-sm mb-0">
+                                                        <small>
+                                                            <strong>{{ __('app.students') }}:</strong> {{ $b->student->student_name ?? '—' }}<br>
+                                                            <strong>{{ __('app.items') }}:</strong> {{ $b->item->Itemname ?? ($b->item->item_name ?? ($b->item->name ?? '—')) }}<br>
+                                                            <strong>{{ __('app.Total Days late') }}:</strong> {{ $lateDays }} {{ __('app.days') }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('app.Cancel') }}</button>
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="bi bi-save"></i> {{ __('app.Save Changes') }}
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center text-danger py-3">
+                                    <td colspan="9" class="text-center text-danger py-3">
                                         No overdue borrows
                                     </td>
                                 </tr>

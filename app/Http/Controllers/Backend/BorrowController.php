@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
+
 class BorrowController extends Controller
 {
     public function index(Request $request)
@@ -35,27 +36,27 @@ class BorrowController extends Controller
         ]);
 
         $filter = $request->filter;
-$search = $request->search;
+        $search = $request->search;
 
-if ($filter == 'student_name' && $request->filled('search')) {
-    $query->whereHas('student', function ($q) use ($search) {
-        $q->where('student_name', 'like', "%{$search}%");
-    });
-}
+        if ($filter == 'student_name' && $request->filled('search')) {
+            $query->whereHas('student', function ($q) use ($search) {
+                $q->where('student_name', 'like', "%{$search}%");
+            });
+        }
 
-if ($filter == 'item_name' && $request->filled('item_id')) {
-    $query->where('item_id', $request->item_id);
-}
+        if ($filter == 'item_name' && $request->filled('item_id')) {
+            $query->where('item_id', $request->item_id);
+        }
 
-if ($filter == 'group_name' && $request->filled('search')) {
-    $query->whereHas('student.group', function ($q) use ($search) {
-        $q->where('group_name', 'like', "%{$search}%");
-    });
-}
+        if ($filter == 'group_name' && $request->filled('search')) {
+            $query->whereHas('student.group', function ($q) use ($search) {
+                $q->where('group_name', 'like', "%{$search}%");
+            });
+        }
 
-if ($filter == 'status' && $request->filled('status')) {
-    $query->where('status', $request->status);
-}
+        if ($filter == 'status' && $request->filled('status')) {
+            $query->where('status', $request->status);
+        }
         $activeBorrows = Borrow::with([
             'student',
             'item',
@@ -267,7 +268,7 @@ if ($filter == 'status' && $request->filled('status')) {
             ->whereNull('return_date')
             ->where('borrow_date', '<', now()->subDays(3))
             ->whereIn('status', ['BORROWED', 'OVERDUE'])
-            ->with(['student', 'item']);
+            ->with(['student', 'item', 'calledByUser']);
 
         if ($q) {
             $query->where(function ($qq) use ($q) {
@@ -363,5 +364,27 @@ if ($filter == 'status' && $request->filled('status')) {
         ]);
 
         return back()->with('success', 'Borrow updated successfully.');
+    }
+    public function updateCallStatus(Request $request, Borrow $borrow)
+    {
+        $request->validate([
+            'call_status' => 'required|in:not_yet_called,called_done,no_answer',
+            'call_note' => 'nullable|string|max:1000',
+        ]);
+
+        // if ($request->call_status === 'wrong_number' && blank($request->call_note)) {
+        //     return back()->withErrors([
+        //         'call_note' => 'Please write note when phone number is wrong.',
+        //     ]);
+        // }
+
+        $borrow->update([
+            'call_status' => $request->call_status,
+            'call_note' => $request->call_note,
+            'called_at' => $request->call_status === 'not_yet_called' ? null : now(),
+            'called_by' => $request->call_status === 'not_yet_called' ? null : Auth::id(),
+        ]);
+
+        return back()->with('success', __('app.Call status updated successfully.'));
     }
 }

@@ -284,43 +284,45 @@
                                             : '-' !!}
                                     </td> --}}
                                     <style>
-    td.datetime {
-        white-space: nowrap;
-        line-height: 1.3;
-        vertical-align: middle;
-    }
+                                        td.datetime {
+                                            white-space: nowrap;
+                                            line-height: 1.3;
+                                            vertical-align: middle;
+                                        }
 
-    td.datetime .date {
-        display: block;
-        font-size: 14px;
-    }
+                                        td.datetime .date {
+                                            display: block;
+                                            font-size: 14px;
+                                        }
 
-    td.datetime .time {
-        display: block;
-        font-size: 12px;
-        color: #6c757d;
-        margin-top: 2px;
-    }
+                                        td.datetime .time {
+                                            display: block;
+                                            font-size: 12px;
+                                            color: #6c757d;
+                                            margin-top: 2px;
+                                        }
 
-    @media (max-width: 576px) {
-        td.datetime .date {
-            font-size: 13px;
-        }
+                                        @media (max-width: 576px) {
+                                            td.datetime .date {
+                                                font-size: 13px;
+                                            }
 
-        td.datetime .time {
-            font-size: 11px;
-        }
-    }
-</style>
-{{-- Return Date --}}
-<td class="datetime">
-    @if ($borrow->return_date)
-        <span class="date">{{ \Carbon\Carbon::parse($borrow->return_date)->format('d M Y') }}</span>
-        <span class="time">{{ \Carbon\Carbon::parse($borrow->return_date)->format('H:i') }}</span>
-    @else
-        -
-    @endif
-</td>
+                                            td.datetime .time {
+                                                font-size: 11px;
+                                            }
+                                        }
+                                    </style>
+                                    {{-- Return Date --}}
+                                    <td class="datetime">
+                                        @if ($borrow->return_date)
+                                            <span
+                                                class="date">{{ \Carbon\Carbon::parse($borrow->return_date)->format('d M Y') }}</span>
+                                            <span
+                                                class="time">{{ \Carbon\Carbon::parse($borrow->return_date)->format('H:i') }}</span>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>
                                         @php
                                             $st = $borrow->status ?? 'BORROWED';

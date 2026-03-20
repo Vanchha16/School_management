@@ -185,5 +185,15 @@ return [
     'Welcome back, :name' => 'Welcome back, :name',
     'find_by' => 'Find by',
     'search_by_student_name' => 'Search by student name',
-
+    'save_return' => 'Save Return',
+    'close' => 'Close',
+    'Call Status' => 'Call Status',
+    'Call Note' => 'Call Note',
+    'Update Call Status' => 'Update Call Status',
+    'Not yet call' => 'Not yet called',
+    'Called - No answer' => 'Called - No answer',
+    'Save Changes' => 'Save Changes',
+    'Call done' => 'Call done',
+    'Call status updated successfully.' => 'Call status updated successfully.',
+    'days' => 'days',
 ];

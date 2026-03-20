@@ -93,20 +93,25 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
     // Borrows
     Route::get('/borrows', [BorrowController::class, 'index'])->name('borrows.index');
     Route::post('/borrows/borrow', [BorrowController::class, 'storeBorrow'])->name('borrows.borrow');
     Route::post('/borrows/return', [BorrowController::class, 'storeReturn'])->name('borrows.return');
-    Route::put('/borrows/update', [BorrowController::class, 'update'])
-        ->name('borrows.update');
+    Route::put('/borrows/update', [BorrowController::class, 'update'])->name('borrows.update');
     Route::post('/borrows/{borrow}/undo-return', [BorrowController::class, 'undoReturn'])->name('borrows.undoReturn');
     Route::delete('/borrows/{borrow}', [BorrowController::class, 'destroy'])->name('borrows.destroy');
+    Route::patch('/borrows/{borrow}/call-status', [BorrowController::class, 'updateCallStatus'])
+        ->name('borrows.overdue.call-status');
+
+    // FIXED: protect these routes too
+    Route::get('/late-returns', [BorrowController::class, 'lateReturns'])->name('borrows.late_returns');
+    Route::get('/overdue-borrows', [BorrowController::class, 'overdueBorrows'])->name('borrows.overdue');
 
     // Items
     Route::get('/items', [ItemController::class, 'index'])->name('items.index');
     Route::get('/items/{itemid}', [ItemController::class, 'show'])->name('items.show');
     Route::post('/items', [ItemController::class, 'store'])->name('items.store');
-
     Route::put('/items/{itemid}', [ItemController::class, 'update'])->name('items.update');
     Route::delete('/items/{itemid}', [ItemController::class, 'destroy'])->name('items.destroy');
 
@@ -117,10 +122,11 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
 
     // Students
     Route::get('/students', [StudentController::class, 'index'])->name('students.index');
-    Route::get('/students/{student_id}', [StudentController::class, 'show'])->name('students.show'); // ✅ fixes students.show
+    Route::get('/students/{student_id}', [StudentController::class, 'show'])->name('students.show');
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
     Route::put('/students/{student_id}', [StudentController::class, 'update'])->name('students.update');
     Route::delete('/students/{student_id}', [StudentController::class, 'destroy'])->name('students.destroy');
+
     Route::get('/register-student', [StudentRegisterController::class, 'create'])->name('student.register');
     Route::post('/register-student', [StudentRegisterController::class, 'store'])->name('student.register.store');
 });

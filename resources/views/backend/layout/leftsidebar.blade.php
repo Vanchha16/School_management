@@ -117,7 +117,7 @@
                      <div style="line-height:1;">IT <span class="text-muted">Room</span></div>
                  </a>
                  <div class="text-muted" style="font-size:12px;font-weight:600;">
-                     {{ auth()->user()->name }} • {{ ucfirst(auth()->user()->role ?? 'User') }}
+                     {{ auth()->user()?->name ?? 'Guest' }} • {{ ucfirst(auth()->user()?->role ?? 'User') }}
                  </div>
              </div>
          </div>
@@ -162,6 +162,7 @@
                              <i class="bi bi-box-seam me-2"></i> {{ __('app.items') }}
                          </a>
                      </li>
+                     
                      <li>
                          <a href="{{ route('borrows.history') }}" class="nav-pill @yield('history_active')">
                              <i class="fa-sharp fa-regular fa-clock-rotate-left"></i>

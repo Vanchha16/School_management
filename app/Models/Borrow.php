@@ -7,25 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 class Borrow extends Model
 {
     protected $fillable = [
-    'student_id',
-    'item_id',
-    'qty',
-    'borrow_date',
-    'due_date',
-    'return_date',
-    'status',
-    'notes',
-    'condition',
-    'return_notes',
-    'approved_by',
-    'returned_by',
-];
+        'student_id',
+        'item_id',
+        'qty',
+        'borrow_date',
+        'due_date',
+        'return_date',
+        'status',
+        'notes',
+        'condition',
+        'return_notes',
+        'approved_by',
+        'returned_by',
+        'call_status',
+        'call_note',
+        'called_at',
+        'called_by',
+    ];
 
     protected $casts = [
         'borrow_date' => 'datetime',
         'due_date' => 'datetime',
         'return_date' => 'datetime',
+        'called_at' => 'datetime',
     ];
+
+
 
     public function student()
     {
@@ -46,5 +53,8 @@ class Borrow extends Model
     {
         return $this->belongsTo(User::class, 'returned_by');
     }
-    
+    public function calledByUser()
+    {
+        return $this->belongsTo(User::class, 'called_by');
+    }
 }

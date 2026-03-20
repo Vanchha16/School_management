@@ -141,7 +141,7 @@
 
                                         {{-- Delete --}}
                                         <form action="{{ route('items.destroy', ['itemid' => $it->Itemid]) }}"
-                                            method="POST" class="d-inline">
+                                            method="POST" class="d-inline" style="margin-right: 4px">
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-outline-danger btn-sm"
