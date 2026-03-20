@@ -305,7 +305,9 @@
                  </div>
              </div>
          </div>
-
+         <div class="mt-auto">
+            <span>Version 1.0.0</span>
+         </div>
          {{-- <div class="mt-auto p-2">
              <div class="soft-card p-3">
                  <div class="d-flex align-items-center gap-2">
