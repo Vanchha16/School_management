@@ -31,14 +31,12 @@
             <div class="d-flex flex-wrap align-items-center gap-2">
                 {{-- Search --}}
                 <form method="GET" action="{{ url()->current() }}" class="d-flex">
-                    <div class="input-group gap-2">
+                    <div class="input-group">
                         <span class="input-group-text bg-white border-end-0">
                             <i class="bi bi-search"></i>
                         </span>
                         <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0"
                             placeholder="{{ __('app.Search by item name...') }}" style="min-width: 320px;">
-                            <button class="btn btn-primary rounded-2">{{ __('app.search') }}</button>
-                           <a href="{{ url()->current() }}" class="btn btn-danger rounded-2">{{ __('app.reset') }}</a>
                     </div>
                 </form>
 
@@ -155,7 +153,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-danger py-4">{{ __('app.no_data_found') }}</td>
+                                    <td colspan="8" class="text-center text-danger py-4">{{ __('app.No Data found') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>

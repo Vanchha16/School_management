@@ -135,9 +135,9 @@ return [
     'qty' => 'ចំនួន',
     'borrow_date' => 'ថ្ងៃខ្ចី',
     'return_date' => 'ថ្ងៃប្រគល់',
-    'IT_DEPT' => 'IT Dept',
-    'fill_in_your_info' => 'សូមបំពេញព័ត៌មានរបស់អ្នក',
-    'Search or type item...' => 'ស្វែងរក ឬបញ្ចូលឈ្មោះសម្ភារៈ...',
+    'Form Borrow Item' => 'ខ្ចីសម្ភារៈ IT Room',
+    'fill_in_your_info' => 'Form នេះអាចបំពេញបានតែនៅក្នុងបន្ទប់ IT ប៉ុណ្ណោះ។',
+    'Search or type item...' => 'ស្វែងរក ឬវាយសម្ភារៈ...',
     'notes' => 'កំណត់សម្គាល់',
     'Other Items' => 'សម្ភារៈផ្សេងៗ',
     'Enter item name...' => 'បញ្ចូលឈ្មោះសម្ភារៈ...',
@@ -202,5 +202,8 @@ return [
     'Save Changes' => 'រក្សាប្រែប្រួល',
     'Call status updated successfully.' => 'ស្ថានភាពការហៅបានអាប់ដេតដោយជោគជ័យ',
     'days' => 'ថ្ងៃ',
-
+    'This form was already submitted and is still pending approval.' => 'ទម្រង់នេះបានដាក់ស្នើរួចហើយ និងនៅតែរង់ចាំការអនុម័ត',
+    'This phone number is already used by another student.' => 'លេខទូរស័ព្ទនេះត្រូវបានប្រើដោយសិស្សផ្សេងទៀតរួចហើយ',
+    'Not enough stock available.' => 'ស្តុកមិនគ្រប់គ្រប់គ្រាន់',
+    
 ];

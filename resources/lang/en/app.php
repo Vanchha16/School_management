@@ -64,8 +64,8 @@ return [
     'overdue_borrow' => 'Overdue Borrow',
     'super_admin' => 'Super Admin',
     'maths_teacher' => 'Maths Teacher',
-    'IT_DEPT' => 'IT Dept',
-    'fill_in_your_info' => 'Fill in your info',
+    'Form Borrow Item' => 'Borrow Item IT Room',
+    'fill_in_your_info' => 'This form can only be filled in IT room.',
     'Search or type item...' => 'Search or type item...',
     'notes' => 'Notes',
     'return_date' => 'Return Date',
@@ -196,4 +196,7 @@ return [
     'Call done' => 'Call done',
     'Call status updated successfully.' => 'Call status updated successfully.',
     'days' => 'days',
+    'This form was already submitted and is still pending approval.' => 'This form was already submitted and is still pending approval.',
+    'This phone number is already used by another student.' => 'This phone number is already used by another student.',
+    'Not enough stock available.' => 'Not enough stock available.',
 ];

@@ -234,11 +234,7 @@
                              class="btn btn-sm btn-light w-100">{{ __('app.khmer') }}</a>
                      </div>
                  </div>
-                  <div class="mt-auto">
-            <span style="color: gray; font-size: 12px;">Version 1.0.0</span>
-         </div>
-                </div>
-             
+             </div>
          </div>
          <div class="px-2 mt-2">
              <a href="{{ route('admin.dashboard') }}" class="nav-pill @yield('dashboard_active')">
@@ -256,8 +252,8 @@
                  <i class="fa-sharp fa-regular fa-clock-rotate-left"></i>
                  {{ __('app.manage_item_history') }}
              </a>
-             {{-- <a href="{{ url('admin/register-student') }}" class="nav-pill @yield('register_student_active')"><i
-                     class="fa-sharp fa-regular fa-hand-holding-box"></i>{{ __('app.register_student') }}</a> --}}
+             <a href="{{ url('admin/register-student') }}" class="nav-pill @yield('register_student_active')"><i
+                     class="fa-sharp fa-regular fa-hand-holding-box"></i>{{ __('app.register_student') }}</a>
 
              <a href="{{ url('admin/submissions') }}" class="nav-pill @yield('submission_active')">
                  <i class="bi bi-inbox me-1"></i>
@@ -308,10 +304,8 @@
                          class="btn btn-sm btn-light w-100">{{ __('app.khmer') }}</a>
                  </div>
              </div>
-             <div class="mt-auto">
-                <span style="color: gray; font-size: 12px;">Version 1.0.0</span>
-             </div>
          </div>
+
          {{-- <div class="mt-auto p-2">
              <div class="soft-card p-3">
                  <div class="d-flex align-items-center gap-2">
