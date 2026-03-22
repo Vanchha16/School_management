@@ -132,9 +132,9 @@
                                 <th>{{ __('app.item') }}</th>
                                 <th class="text-center" style="width:160px;">{{ __('app.borrow_date') }}</th>
                                 <th class="text-center" style="width:130px;">{{ __('app.Total Days late') }}</th>
-                                <th class="text-center" style="width:150px;">Call Status</th>
-                                <th style="width:190px;">Call Note</th>
-                                <th style="width:260px;" class="update_hide">Update</th>
+                                <th class="text-center" style="width:150px;">{{ __('app.Call Status') }}</th>
+                                <th style="width:190px;">{{ __('app.Call Note') }}</th>
+                                <th style="width:260px;" class="update_hide">{{ __('app.Update') }}</th>
                             </tr>
                         </thead>
 
@@ -217,13 +217,13 @@
 
                                             <select name="call_status" class="form-select form-select-sm mb-2">
                                                 <option value="not_yet_called" {{ $callStatus === 'not_yet_called' ? 'selected' : '' }}>
-                                                    Not yet call
+                                                    {{ __('app.Not yet call') }}
                                                 </option>
                                                 <option value="called_done" {{ $callStatus === 'called_done' ? 'selected' : '' }}>
-                                                    Call done
+                                                    {{ __('app.Call done') }}
                                                 </option>
                                                 <option value="no_answer" {{ $callStatus === 'no_answer' ? 'selected' : '' }}>
-                                                    No answer
+                                                    {{ __('app.Called - No answer') }}
                                                 </option>
                                             </select>
 
