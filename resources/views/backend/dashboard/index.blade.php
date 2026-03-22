@@ -157,13 +157,13 @@
                                         </li>
 
                                         <li>
-                                            <a class="dropdown-item rounded-3 py-2" href="#">
+                                            <a class="dropdown-item rounded-3 py-2" href="{{ route('profile') }}">
                                                 <i class="bi bi-gear me-2"></i> {{ __('app.account_settings') }}
                                             </a>
                                         </li>
 
                                         <li>
-                                            <a class="dropdown-item rounded-3 py-2" href="#">
+                                            <a class="dropdown-item rounded-3 py-2" href="{{ route('profile') }}">
                                                 <i class="bi bi-shield-lock me-2"></i> {{ __('app.change_password') }}
                                             </a>
                                         </li>
