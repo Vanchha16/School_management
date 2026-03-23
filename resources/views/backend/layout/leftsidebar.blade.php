@@ -172,7 +172,7 @@
                      <li>
                          @php $role = strtolower(auth()->user()->role ?? ''); @endphp
 
-                         @if (in_array($role, ['admin', 'super admin', 'superadmin']))
+                         @if (in_array($role, ['admin']))
                              <a href="{{ url('admin/users') }}" class="nav-pill @yield('users_active')">
                                  <i class="fa-utility-fill fa-semibold fa-user"></i>{{ __('app.users') }}
                              </a>
