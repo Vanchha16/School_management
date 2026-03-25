@@ -13,7 +13,7 @@ return [
     'english' => 'English',
     'khmer' => 'Khmer',
     'online' => 'Online',
-    'Close' => 'Close',
+    'close' => 'Close',
     'my_profile' => 'My Profile',
     'account_settings' => 'Account Settings',
     'change_password' => 'Change Password',
@@ -188,7 +188,7 @@ return [
     'borrow_details' => 'Borrow Details',
     'item_name_en' => 'Item Name (English)',
     'item_name_kh' => 'Item Name (Khmer)',
-
+    'Update Call Status' => 'Update Call Status',
     'item_detail' => 'Item Details',
     'delete' => 'Delete',
     'back' => 'Back',
@@ -196,5 +196,15 @@ return [
     'Upload image' => 'Upload image',
     'Remove image' => 'Remove image',
     'This phone number is already used by another student.' => 'This phone number is already used by another student.',
+    'Not yet call' => 'Not yet call',
+    'Select Call Status' => 'Select Call Status',
+    'Called' => 'Called',
+    'Not Called' => 'Not Called',   
+    'Called - No answer' => 'Called - No answer',
+    'Call done' => 'Call done',
+    'Call Status' => 'Call status',
+    'Call Note' => 'Call Note',
+    'Save Changes' => 'Save Changes',
 
+    'save_return' => 'Save Return',
 ];
