@@ -118,8 +118,10 @@
                         <div class="col-md-3">
                             <label class="form-label small text-muted mb-1">{{ __('app.find_by') }}</label>
                             <select name="filter" class="form-select" onchange="this.form.submit()">
-                                <option value="">{{ __('app.find_by') }}</option>
-
+                                {{-- <option value="">{{ __('app.find_by') }}</option> --}}
+                                <option value="group_name" {{ request('filter') == 'group_name' ? 'selected' : '' }}>
+                                    {{ __('app.Search by group name...') }}
+                                </option>
                                 <option value="student_name" {{ request('filter') == 'student_name' ? 'selected' : '' }}>
                                     {{ __('app.search_by_student_name') }}
                                 </option>
@@ -130,10 +132,6 @@
 
                                 <option value="status" {{ request('filter') == 'status' ? 'selected' : '' }}>
                                     {{ __('app.borrow_status') }}
-                                </option>
-
-                                <option value="group_name" {{ request('filter') == 'group_name' ? 'selected' : '' }}>
-                                    {{ __('app.Search by group name...') }}
                                 </option>
                             </select>
                         </div>
@@ -157,7 +155,7 @@
                                     @foreach ($items as $it)
                                         <option value="{{ $it->Itemid }}"
                                             {{ (string) request('item_id') === (string) $it->Itemid ? 'selected' : '' }}>
-                                            {{ $it->name }}
+                                            {{ $it->display_name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -233,7 +231,7 @@
                                     <td>{{ $borrow->student->group->group_name ?? 'N/A' }}</td>
 
                                     <td>
-                                        <div class="fw-semibold">{{ $borrow->item->name ?? 'N/A' }}</div>
+                                        <div class="fw-semibold">{{ $borrow->item->display_name ?? 'N/A' }}</div>
                                     </td>
 
                                     <td>{{ $borrow->qty ?? 1 }}</td>
@@ -353,7 +351,7 @@
                                         <button type="button" class="btn btn-sm btn-outline-secondary"
                                             data-bs-toggle="modal" data-bs-target="#borrowDetailModal"
                                             data-student="{{ $borrow->student->student_name ?? '-' }}"
-                                            data-item="{{ $borrow->item->name ?? '-' }}"
+                                            data-item="{{ $borrow->item->display_name ?? '-' }}"
                                             data-qty="{{ $borrow->qty ?? '-' }}"
                                             data-status="{{ $borrow->status ?? '-' }}"
                                             data-condition="{{ $borrow->condition ?? '-' }}"
@@ -452,7 +450,7 @@
                                 <select name="item_id" class="form-select" required>
                                     <option value="">-- {{ __('app.select_item') }} --</option>
                                     @foreach ($items as $it)
-                                        <option value="{{ $it->Itemid }}">{{ $it->name }}</option>
+                                        <option value="{{ $it->Itemid }}">{{ $it->display_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -511,7 +509,7 @@
                                     <option value="">-- {{ __('app.select_active_borrow') }} --</option>
                                     @foreach ($activeBorrows as $b)
                                         <option value="{{ $b->id }}">
-                                            {{ $b->student->student_name ?? 'N/A' }} - {{ $b->item->name ?? 'N/A' }}
+                                            {{ $b->student->student_name ?? 'N/A' }} - {{ $b->item->display_name ?? 'N/A' }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -709,7 +707,7 @@
                                         <option value="{{ $it->Itemid }}"
                                             @if ($it->qty == 0) disabled @endif>
 
-                                            {{ $it->name }}
+                                            {{ $it->display_name }}
 
                                             @if ($it->qty == 0)
                                                 (Out of stock)

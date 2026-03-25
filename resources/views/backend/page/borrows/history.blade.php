@@ -74,7 +74,7 @@
                                     </td>
 
                                     <td>
-                                        {{ $history->borrow->item->name ?? '-' }}
+                                        {{ $history->borrow->item->display_name ?? '-' }}
                                     </td>
 
                                     <td>

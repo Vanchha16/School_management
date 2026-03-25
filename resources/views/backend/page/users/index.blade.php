@@ -81,7 +81,7 @@
                                     <td class="text-secondary">{{ $users->firstItem() + $key }}</td>
                                     <td class="fw-semibold">{{ $u->name }}</td>
                                     <td>{{ $u->email }}</td>
-                                    <td>{{ $u->role ?? 'Admin'}}</td>
+                                    <td>{{ $u->role ?? 'Admin' }}</td>
                                     <td>
                                         @if (($u->status ?? 1) == 1)
                                             <span

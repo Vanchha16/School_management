@@ -89,53 +89,74 @@ class BorrowController extends Controller
         ));
     }
 
-    public function storeBorrow(Request $request)
-    {
-        $data = $request->validate([
-            'student_id' => ['required', 'exists:students,student_id'],
-            'item_id'    => ['required', 'exists:items,Itemid'],
-            'qty'        => ['required', 'integer', 'min:1'],
-            'due_date'   => ['nullable', 'date', 'after_or_equal:today'],
-            'notes'      => ['nullable', 'string', 'max:1000'],
-        ]);
+ public function storeBorrow(Request $request)
+{
+    $data = $request->validate([
+        'student_id' => ['required', 'exists:students,student_id'],
+        'item_id'    => ['required'],
+        'qty'        => ['required', 'integer', 'min:1'],
+        'due_date'   => ['nullable', 'date', 'after_or_equal:today'],
+        'notes'      => ['nullable', 'string', 'max:1000'],
+    ]);
 
-        $item = Item::where('Itemid', $data['item_id'])->firstOrFail();
+    if ($data['item_id'] === 'other') {
+        return back()
+            ->withErrors(['item_id' => 'Please choose an item from the list.'])
+            ->withInput();
+    }
 
-        if (($item->qty ?? 0) < $data['qty']) {
+    $item = Item::where('Itemid', $data['item_id'])->firstOrFail();
+
+    $isSocket = stripos($item->name ?? '', 'socket') !== false;
+
+    if ($isSocket) {
+        if (!in_array((int) $data['qty'], [1, 2, 3], true)) {
             return back()
-                ->withErrors(['qty' => "Not enough stock. Available: {$item->qty}"])
+                ->withErrors(['qty' => 'Socket can only use qty 1, 2, or 3.'])
                 ->withInput();
         }
-
-        $borrow = Borrow::create([
-            'student_id'  => $data['student_id'],
-            'item_id'     => $data['item_id'],
-            'qty'         => $data['qty'],
-            'borrow_date' => now('Asia/Jakarta'),
-            'due_date'    => $data['due_date'] ?? null,
-            'status'      => 'BORROWED',
-            'notes'       => $data['notes'] ?? null,
-            'approved_by' => Auth::id(),
-        ]);
-
-        $item->decrement('qty', $data['qty']);
-
-        $student = Student::where('student_id', $data['student_id'])->first();
-
-        ItemHistory::create([
-            'borrow_id'   => $borrow->id,
-            'student_id'  => $borrow->student_id,
-            'item_id'     => $borrow->item_id,
-            'user_id'     => Auth::id(),
-            'approved_by' => $borrow->approved_by,
-            'returned_by' => null,
-            'action'      => 'Borrowed',
-            'details'     => (Auth::user()?->name ?? 'System') . ' borrowed ' . $borrow->qty . ' x ' . ($item->name ?? '-') . ' for ' . ($student->student_name ?? '-') . '.',
-            'action_at'   => $borrow->borrow_date,
-        ]);
-
-        return redirect()->route('borrows.index')->with('success', 'Borrow saved.');
+    } else {
+        if ((int) $data['qty'] !== 1) {
+            return back()
+                ->withErrors(['qty' => 'This item can only use qty 1.'])
+                ->withInput();
+        }
     }
+
+    if (($item->qty ?? 0) < $data['qty']) {
+        return back()
+            ->withErrors(['qty' => "Not enough stock. Available: {$item->qty}"])
+            ->withInput();
+    }
+
+    $borrow = Borrow::create([
+        'student_id'  => $data['student_id'],
+        'item_id'     => $data['item_id'],
+        'qty'         => $data['qty'],
+        'borrow_date' => now('Asia/Jakarta'),
+        'due_date'    => $data['due_date'] ?? null,
+        'status'      => 'BORROWED',
+        'notes'       => $data['notes'] ?? null,
+        'approved_by' => Auth::id(),
+    ]);
+
+    $item->decrement('qty', $data['qty']);
+
+    $student = Student::where('student_id', $data['student_id'])->first();
+
+    ItemHistory::create([
+        'item_id'      => $item->Itemid,
+        'borrow_id'    => $borrow->id,
+        'student_id'   => $student?->student_id,
+        'student_name' => $student?->student_name,
+        'action'       => 'BORROWED',
+        'details'      => (Auth::user()?->name ?? 'System') . ' borrowed ' . $borrow->qty . ' x ' . ($item->name ?? '-') . ' for ' . ($student->student_name ?? '-') . '.',
+        'acted_by'     => Auth::id(),
+        'acted_at'     => now('Asia/Jakarta'),
+    ]);
+
+    return redirect()->back()->with('success', 'Borrow created successfully.');
+}
 
     public function storeReturn(Request $request)
     {
@@ -177,7 +198,7 @@ class BorrowController extends Controller
             'approved_by' => $borrow->approved_by,
             'returned_by' => $borrow->returned_by,
             'action'      => 'Returned',
-            'details'     => (Auth::user()?->name ?? 'System') . ' returned ' . $borrow->qty . ' x ' . ($borrow->item->name ?? '-') . ' from ' . ($borrow->student->student_name ?? '-') . '.',
+            'details'     => (Auth::user()?->name ?? 'System') . ' returned ' . $borrow->qty . ' x ' . ($borrow->item->display_name ?? '-') . ' from ' . ($borrow->student->student_name ?? '-') . '.',
             'action_at'   => $returnDate,
         ]);
 
@@ -222,7 +243,7 @@ class BorrowController extends Controller
             'approved_by' => $borrow->approved_by,
             'returned_by' => $oldReturnedBy,
             'action'      => 'Undo return',
-            'details'     => (Auth::user()?->name ?? 'System') . ' undid the return for ' . $borrow->qty . ' x ' . ($borrow->item->name ?? '-') . ' from ' . ($borrow->student->student_name ?? '-') . '.',
+            'details'     => (Auth::user()?->name ?? 'System') . ' undid the return for ' . $borrow->qty . ' x ' . ($borrow->item->display_name ?? '-') . ' from ' . ($borrow->student->student_name ?? '-') . '.',
             'action_at'   => now('Asia/Jakarta'),
         ]);
 
@@ -368,15 +389,15 @@ class BorrowController extends Controller
     public function updateCallStatus(Request $request, Borrow $borrow)
     {
         $request->validate([
-            'call_status' => 'required|in:not_yet_called,called_done,no_answer',
+            'call_status' => 'required|in:not_yet_called,called_done,no_answer,wrong_number',
             'call_note' => 'nullable|string|max:1000',
         ]);
 
-        // if ($request->call_status === 'wrong_number' && blank($request->call_note)) {
-        //     return back()->withErrors([
-        //         'call_note' => 'Please write note when phone number is wrong.',
-        //     ]);
-        // }
+        if ($request->call_status === 'wrong_number' && blank($request->call_note)) {
+            return back()->withErrors([
+                'call_note' => 'Please write note when phone number is wrong.',
+            ]);
+        }
 
         $borrow->update([
             'call_status' => $request->call_status,
@@ -385,6 +406,6 @@ class BorrowController extends Controller
             'called_by' => $request->call_status === 'not_yet_called' ? null : Auth::id(),
         ]);
 
-        return back()->with('success', __('app.Call status updated successfully.'));
+        return back()->with('success', 'Call status updated successfully.');
     }
 }

@@ -48,7 +48,7 @@
                             @csrf
                             @method('PUT')
 
-                            <h4 class="fw-bold mb-2">{{ $item->name }}</h4>
+                            <h4 class="fw-bold mb-2">{{ $item->display_name }}</h4>
 
                             <label class="form-label fw-semibold">{{ __('app.description') }}</label>
                             <textarea name="description" class="form-control" rows="4" placeholder="{{ __('app.Write detail about this item...') }}">{{ old('description', $item->description) }}</textarea>

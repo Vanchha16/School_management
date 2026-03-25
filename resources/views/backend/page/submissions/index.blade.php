@@ -49,6 +49,7 @@
                             <th>{{ __('app.Phone Number') }}</th>
                             <th>{{ __('app.Group') }}</th>
                             <th>{{ __('app.item') }}</th>
+                            <th>{{ __('app.notes') }}</th>
                             <th>{{ __('app.Image') }}</th>
                             <th>{{ __('app.qty') }}</th>
                             <th>{{ __('app.Status') }}</th>
@@ -64,7 +65,7 @@
                                 <td>
 
                                     @if ($row->item && $row->item_id)
-                                        {{ $row->item->name }}
+                                        {{ $row->item->display_name }}
                                     @else
                                         <span class="badge bg-warning text-dark">
                                             {{ $row->other_item ?? '-' }}
@@ -72,7 +73,9 @@
                                     @endif
 
                                 </td>
+                                <td>{{ $row->note ?? '-' }}</td>
                                 <td>
+
                                     @if (!empty($row->item?->image))
                                         <img src="{{ asset('storage/' . $row->item->image) }}" width="60" height="60"
                                             style="object-fit:cover;border-radius:8px;">

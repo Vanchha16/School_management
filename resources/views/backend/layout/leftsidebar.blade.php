@@ -172,7 +172,7 @@
                      <li>
                          @php $role = strtolower(auth()->user()->role ?? ''); @endphp
 
-                         @if (in_array($role, ['admin']))
+                         @if (in_array($role, ['admin', 'super admin', 'superadmin']))
                              <a href="{{ url('admin/users') }}" class="nav-pill @yield('users_active')">
                                  <i class="fa-utility-fill fa-semibold fa-user"></i>{{ __('app.users') }}
                              </a>
@@ -252,6 +252,9 @@
                  <i class="fa-sharp fa-regular fa-clock-rotate-left"></i>
                  {{ __('app.manage_item_history') }}
              </a>
+             {{-- <a href="{{ url('admin/register-student') }}" class="nav-pill @yield('register_student_active')"><i
+                     class="fa-sharp fa-regular fa-hand-holding-box"></i>{{ __('app.register_student') }}</a> --}}
+
              <a href="{{ url('admin/submissions') }}" class="nav-pill @yield('submission_active')">
                  <i class="bi bi-inbox me-1"></i>
                  {{ __('app.submissions') }}

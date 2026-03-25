@@ -345,7 +345,7 @@
                                     <div class="text-secondary small">
                                         {{ $submission->group?->group_name ?? '-' }}
                                         •
-                                        {{ $submission->item?->name ?? '-' }}
+                                        {{ $submission->item?->display_name ?? '-' }}
                                     </div>
                                 </div>
 
@@ -399,7 +399,7 @@
                                 <div class="flex-grow-1">
                                     <div class="fw-semibold">{{ $borrow->student?->student_name ?? '-' }}</div>
                                     <div class="text-secondary small">
-                                        {{ $borrow->item?->name ?? '-' }} • {{ __('app.qty') }}:
+                                        {{ $borrow->item?->display_name ?? '-' }} • {{ __('app.qty') }}:
                                         {{ $borrow->qty ?? 0 }}
                                     </div>
                                 </div>

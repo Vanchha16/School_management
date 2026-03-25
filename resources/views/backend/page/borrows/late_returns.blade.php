@@ -72,7 +72,7 @@
 
                                     <td class="fw-semibold">{{ $b->student->student_name ?? '—' }}</td>
 
-                                    <td>{{ $b->item->name ?? '—' }}</td>
+                                    <td>{{ $b->item->display_name ?? '—' }}</td>
 
                                     <td class="text-center">
                                         {{ $borrow->format('d M Y H:i') }}

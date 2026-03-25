@@ -47,5 +47,4 @@ return [
     'overdue_borrow' => 'Overdue Borrow',
     'super_admin' => 'Super Admin',
     'maths_teacher' => 'Maths Teacher',
-    
 ];

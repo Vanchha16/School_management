@@ -108,7 +108,7 @@
                                     </td>
 
                                     <td>
-                                        <div class="fw-semibold">{{ $it->name }}</div>
+                                        <div class="fw-semibold">{{ $it->display_name }}</div>
                                     </td>
 
                                     <td class="fw-medium text-end">{{ $it->borrowed_qty ?? 0 }}</td>
@@ -141,7 +141,7 @@
 
                                         {{-- Delete --}}
                                         <form action="{{ route('items.destroy', ['itemid' => $it->Itemid]) }}"
-                                            method="POST" class="d-inline" style="margin-right: 4px">
+                                            method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-outline-danger btn-sm"
@@ -212,9 +212,12 @@
 
                         <div class="col-12 col-md-7">
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">{{ __('app.item_name') }} <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" placeholder=""
-                                    required>
+                                <label class="form-label fw-semibold">{{ __('app.item_name_en') }} <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">{{ __('app.item_name_kh') }}</label>
+                                <input type="text" name="name_kh" class="form-control" value="{{ old('name_kh') }}">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">{{ __('app.item_description') }}</label>
@@ -292,10 +295,15 @@
 
                             <div class="col-12 col-md-7">
                                 <div class="mb-3">
-                                    <label class="form-label fw-semibold">{{ __('app.item_name') }} <span
+                                    <label class="form-label fw-semibold">{{ __('app.item_name_en') }} <span
                                             class="text-danger">*</span></label>
                                     <input type="text" name="name" class="form-control"
-                                        value="{{ $it->name }}" required>
+                                        value="{{ old('name', $it->name) }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">{{ __('app.item_name_kh') }}</label>
+                                    <input type="text" name="name_kh" class="form-control"
+                                        value="{{ old('name_kh', $it->name_kh) }}">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">{{ __('app.item_description') }}</label>
