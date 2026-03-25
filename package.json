@@ -12,7 +12,7 @@
     "alpinejs": "^3.4.2",
     "axios": "^1.11.0",
     "laravel-vite-plugin": "^2.0.0",
-    "tailwindcss": "^4.1.11",
+    "tailwindcss": "^4.2.2",
     "vite": "^7.0.7"
   }
 }
