@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function () {
             itemPreview.style.display = 'block';
         }
 
-        const isSocket = lowerName.includes('socket');
+         const isSocket = lowerName.includes('socket ') || lowerName.includes('ព្រី');
         setQtyOptions(isSocket);
     }
 
