@@ -154,7 +154,7 @@
                         <label class="form-label">{{ __('app.Student Name') }} *</label>
 
                         <input type="text" id="student_name" name="student_name" class="form-control"
-                            list="students_list" autocomplete="off" required>
+                            list="students_list" autocomplete="off" value="{{ old('student_name') }}" required>
 
                         <datalist id="students_list">
                             @foreach ($students as $student)
@@ -168,7 +168,7 @@
                         <label class="form-label">{{ __('app.groups') }} *</label>
 
                         <input type="text" id="group_search" name="group_search" class="form-control"
-                            list="groups_list" placeholder="Type group name" autocomplete="off" required>
+                            list="groups_list" placeholder="Type group name" autocomplete="off" value="{{ old('group_search') }}" required>
 
                         <datalist id="groups_list">
                             @foreach ($groups as $g)
@@ -186,8 +186,8 @@
 
                         <select id="gender" name="gender" class="form-select" required>
                             <option value="">-- {{ __('app.select_gender') }} --</option>
-                            <option value="Male">{{ __('app.male') }}</option>
-                            <option value="Female">{{ __('app.female') }}</option>
+                            <option value="Male" {{ old('gender') == 'Male' ? 'selected' : '' }}>{{ __('app.male') }}</option>
+                            <option value="Female" {{ old('gender') == 'Female' ? 'selected' : '' }}>{{ __('app.female') }}</option>
                         </select>
                     </div>
 
@@ -196,7 +196,7 @@
                     <div class="mb-3">
                         <label class="form-label">{{ __('app.Phone Number') }} *</label>
 
-                        <input type="text" id="phone_number" name="phone_number" class="form-control" required>
+                        <input type="text" id="phone_number" name="phone_number" class="form-control" value="{{ old('phone_number') }}" required>
                     </div>
 
 
@@ -215,7 +215,8 @@
 
                             @foreach ($items as $item)
                                 <option value="{{ $item->Itemid }}" data-name="{{ $item->display_name }}"
-                                    data-image="{{ $item->image ? asset('storage/' . $item->image) : '' }}">
+                                    data-image="{{ $item->image ? asset('storage/' . $item->image) : '' }}"
+                                    {{ old('item_id') == $item->Itemid ? 'selected' : '' }}>
                                     {{ $item->display_name }}
                                 </option>
                             @endforeach
@@ -356,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
             itemPreview.style.display = 'block';
         }
 
-         const isSocket = lowerName.includes('socket') || lowerName.includes('ព្រី');
+        const isSocket = lowerName.includes('socket') || lowerName.includes('ព្រី');
         setQtyOptions(isSocket);
     }
 
