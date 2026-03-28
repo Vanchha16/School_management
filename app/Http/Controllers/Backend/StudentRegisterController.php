@@ -36,7 +36,7 @@ class StudentRegisterController extends Controller
                     return $q->where('group_id', $request->group_id);
                 }),
             ],
-            'phone_number' => ['nullable', 'string', 'max:50', 'unique:students,phone_number'],
+            'phone_number' => ['required', 'regex:/^0[0-9]{8,9}$/', 'unique:students,phone_number'],
             'group_id' => ['required', 'exists:groups,group_id'],
         ], $messages);
 

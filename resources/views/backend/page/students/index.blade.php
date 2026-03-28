@@ -21,7 +21,7 @@
             <div class="d-flex flex-wrap align-items-center gap-2">
                 <form method="GET" action="{{ url()->current() }}" class="d-flex gap-2 align-items-center">
                     <div class="input-group gap-2">
-                        <span class="input-group-text bg-white border-end-0 " style="margin-right:-2%">
+                        <span class="input-group-text bg-white border-end-0" style="margin-right:-2%">
                             <i class="bi bi-search"></i>
                         </span>
                         <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0"
@@ -151,7 +151,7 @@
     {{-- Add Student Modal --}}
     <div class="modal fade" id="addStudentModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <form class="modal-content" method="POST" action="{{ route('students.store') }}">
+            <form class="modal-content" method="POST" action="{{ route('students.store') }}" id="addStudentForm">
                 @csrf
 
                 <div class="modal-header">
@@ -164,7 +164,11 @@
 
                         <div class="col-12">
                             <label class="form-label fw-semibold">Student Name <span class="text-danger">*</span></label>
-                            <input type="text" name="student_name" class="form-control" required>
+                            <input type="text" name="student_name" class="form-control"
+                                value="{{ old('student_name') }}" required>
+                            @error('student_name')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-12 col-md-6">
@@ -172,14 +176,26 @@
                                     class="text-danger">*</span></label>
                             <select name="gender" class="form-select" required>
                                 <option value="">-- {{ __('app.select_gender') }} --</option>
-                                <option value="Male">{{ __('app.male') }}</option>
-                                <option value="Female">{{ __('app.female') }}</option>
+                                <option value="Male" {{ old('gender') == 'Male' ? 'selected' : '' }}>
+                                    {{ __('app.male') }}
+                                </option>
+                                <option value="Female" {{ old('gender') == 'Female' ? 'selected' : '' }}>
+                                    {{ __('app.female') }}
+                                </option>
                             </select>
+                            @error('gender')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-semibold">{{ __('app.Phone Number') }}</label>
-                            <input type="text" name="phone_number" class="form-control">
+                            <input type="text" name="phone_number" id="add_phone_number" class="form-control"
+                                value="{{ old('phone_number') }}" maxlength="10" inputmode="numeric" required>
+                            <div id="add_phone_error" class="text-danger small mt-1"></div>
+                            @error('phone_number')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-12">
@@ -187,18 +203,31 @@
                             <select name="group_id" class="form-select" required>
                                 <option value="">-- {{ __('app.select_group') }} --</option>
                                 @foreach ($groups as $g)
-                                    <option value="{{ $g->group_id }}">{{ $g->group_name }}</option>
+                                    <option value="{{ $g->group_id }}"
+                                        {{ old('group_id') == $g->group_id ? 'selected' : '' }}>
+                                        {{ $g->group_name }}
+                                    </option>
                                 @endforeach
                             </select>
+                            @error('group_id')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-semibold">{{ __('app.Status') }} <span
                                     class="text-danger">*</span></label>
                             <select name="status" class="form-select rounded-3 py-2" required>
-                                <option value="1" selected>{{ __('app.active') }}</option>
-                                <option value="0">{{ __('app.inactive') }}</option>
+                                <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>
+                                    {{ __('app.active') }}
+                                </option>
+                                <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>
+                                    {{ __('app.inactive') }}
+                                </option>
                             </select>
+                            @error('status')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
 
                     </div>
@@ -210,7 +239,6 @@
                         <i class="bi bi-check2-circle me-1"></i> Save
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
@@ -256,6 +284,9 @@
                                 <label class="form-label fw-semibold">{{ __('app.Phone Number') }}</label>
                                 <input type="text" name="phone_number" class="form-control"
                                     value="{{ old('phone_number', $s->phone_number) }}">
+                                @error('phone_number')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-12">
@@ -299,29 +330,6 @@
         </div>
     @endforeach
 
-    <div class="modal fade" id="addGroupModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog-centered">
-            <form class="modal-content" method="POST" action="{{ route('groups.store') }}">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title fw-semibold">Add Group</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-                    <label class="form-label fw-semibold">Group Name <span class="text-danger">*</span></label>
-                    <input type="text" name="group_name" class="form-control" placeholder="Group Name" required>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-dark">
-                        <i class="bi bi-check2-circle me-1"></i> Save
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
     @foreach ($students as $s)
         <div class="modal fade" id="viewStudentModal{{ $s->student_id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -398,11 +406,57 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light"
-                            data-bs-dismiss="modal">{{ __('app.Close') }}</button>
+                            data-bs-dismiss="modal">{{ __('app.close') }}</button>
                     </div>
 
                 </div>
             </div>
         </div>
     @endforeach
+
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const addStudentModal = new bootstrap.Modal(document.getElementById('addStudentModal'));
+                addStudentModal.show();
+            });
+        </script>
+    @endif
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addForm = document.getElementById('addStudentForm');
+            const phoneInput = document.getElementById('add_phone_number');
+            const phoneError = document.getElementById('add_phone_error');
+
+            if (!addForm || !phoneInput || !phoneError) return;
+
+            phoneInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+                phoneError.textContent = '';
+                this.setCustomValidity('');
+            });
+
+            phoneInput.addEventListener('keypress', function(e) {
+                if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+
+            addForm.addEventListener('submit', function(e) {
+                const value = phoneInput.value.trim();
+
+                phoneError.textContent = '';
+                phoneInput.setCustomValidity('');
+
+                if (value !== '' && !/^0[0-9]{8,9}$/.test(value)) {
+                    e.preventDefault();
+                    phoneError.textContent =
+                        '{{ __('app.Phone number must be 9 or 10 digits and start with 0.') }}';
+                    phoneInput.setCustomValidity('Invalid phone number');
+                    phoneInput.reportValidity();
+                }
+            });
+        });
+    </script>
 @endsection
