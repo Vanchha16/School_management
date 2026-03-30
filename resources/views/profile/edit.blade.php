@@ -68,10 +68,7 @@
                         <hr class="my-4">
 
                         <div class="text-start">
-                            <div class="mb-3">
-                                <div class="text-secondary small">Role</div>
-                                <div class="fw-semibold">Administrator</div>
-                            </div>
+                            
 
                             <div class="mb-3">
                                 <div class="text-secondary small">Joined</div>
