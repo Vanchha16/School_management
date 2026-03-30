@@ -36,7 +36,7 @@
                         <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0"
                             placeholder="{{ __('app.Search name or email...') }}" style="min-width: 320px;">
                     </div>
-                    <button class="btn btn-outline-secondary ms-2">{{ __('app.search') }}</button>
+                    <button class="btn btn-primary ms-2">{{ __('app.search') }}</button>
                 </form>
                 <a href="{{ url()->current() }}" class="btn btn-danger">{{ __('app.reset') }}</a>
 

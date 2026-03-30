@@ -54,7 +54,7 @@
                 </form>
 
                 {{-- Add --}}
-                <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#addGroupModal">
+                <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addGroupModal">
                     <i class="bi bi-people me-1"></i> {{ __('app.add_group') }}
                 </button>
             </div>

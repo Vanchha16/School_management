@@ -56,7 +56,7 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $messages = [
-            'student_name.unique' => 'This student name already exists in this group.',
+            'student_name.unique' => 'This student name already exists',
             'phone_number.unique' => 'This phone number already exists.',
         ];
 
@@ -92,7 +92,7 @@ class StudentController extends Controller
         $student = Student::where('student_id', $student_id)->firstOrFail();
 
         $messages = [
-            'student_name.unique' => 'This student name already exists in this group.',
+            'student_name.unique' => 'This student name already exists.',
         ];
 
         $data = $request->validate([

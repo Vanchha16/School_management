@@ -1,6 +1,7 @@
 @extends('backend.layout.master')
 
-@section('title', 'Submission')
+@section('title', 'Submissions')
+@section('submission_active', 'active')
 @section('contents')
 
     <div class="container-fluid py-4">
@@ -31,11 +32,11 @@
                         placeholder="{{ __('app.Search student name...') }}">
                     <button class="btn btn-primary">{{ __('app.search') }}</button>
                 </form>
-                <a href="{{ url()->current() }}" class="btn btn-danger">{{ __('app.reset') }}</a>
+                <a href="{{ url()->current() }}" class="btn btn-secondary">{{ __('app.reset') }}</a>
                 <form method="POST" action="{{ route('submissions.cancelAll') }}"
                     onsubmit="return confirm('Are you sure you want to cancel all submissions?');">
                     @csrf
-                    <button type="submit" class="btn btn-warning">{{ __('app.delete all') }}</button>
+                    <button type="submit" class="btn btn-danger">{{ __('app.delete all') }}</button>
                 </form>
             </div>
         </div>

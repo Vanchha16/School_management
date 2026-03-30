@@ -206,4 +206,9 @@ return [
     'Call Note' => 'កំណត់សម្គាល់ការទូរស័ព្ទ',
     'Call done' => 'បានទូរស័ព្ទ',
     'Save Changes' => 'រក្សាប្រែប្រួល',
+    'Phone number must be 9 or 10 digits and start with 0.' => 'លេខទូរស័ព្ទត្រូវមាន 9 ឬ 10 ខ្ទង់ និងចាប់ផ្តើមដោយ 0',
+    'Not enough stock available.' => 'ស្តុកមិនគ្រប់គ្រាន់',
+    'This student is already in this group.' => 'សិស្សនេះមានរួចហើយក្នុងក្រុមនេះ',
+    'This student name already exists.' => 'ឈ្មោះសិស្សនេះមានរួចហើយ',
+    'This student name already exists in this group.' => 'ឈ្មោះសិស្សនេះមានរួចហើយក្នុងក្រុមនេះ',
 ];

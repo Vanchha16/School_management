@@ -160,7 +160,7 @@
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
 
-                                        <button type="submit" class="btn btn-primary">Add Photo</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
                                     </form>
                                 @else
                                     <form method="POST" action="{{ route('profile.photo.update') }}"

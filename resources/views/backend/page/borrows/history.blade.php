@@ -25,7 +25,7 @@
                     </div>
 
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-dark w-100">
+                        <button type="submit" class="btn btn-primary w-100">
                             <i class="bi bi-search"></i> {{ __('app.search') }}
                         </button>
                     </div>
@@ -105,10 +105,9 @@
                         </tbody>
                     </table>
                 </div>
-
                 <div class="mt-3">
                    {{ $histories->appends(request()->query())->links() }}
-                </div>
+                </div>  
             </div>
         </div>
     </div>

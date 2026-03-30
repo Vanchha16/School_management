@@ -26,7 +26,7 @@
                         </span>
                         <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0"
                             placeholder="{{ __('app.Search student name...') }}" style="min-width: 320px;">
-                        <button type="submit" class="btn btn-dark rounded">
+                        <button type="submit" class="btn btn-primary rounded">
                             {{ __('app.search') }}
                         </button>
                         <a href="{{ url()->current() }}" class="btn btn-danger rounded">{{ __('app.reset') }}</a>

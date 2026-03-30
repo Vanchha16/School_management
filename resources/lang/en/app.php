@@ -207,4 +207,9 @@ return [
     'Save Changes' => 'Save Changes',
 
     'save_return' => 'Save Return',
+    'Phone number must be 9 or 10 digits and start with 0.' => 'Phone number must be 9 or 10 digits and start with 0.',
+    'Not enough stock available.' => 'Not enough stock available.',
+    'This student is already in this group.' => 'This student is already in this group.',
+    'This student name already exists.' => 'This student name already exists.',
+    'This student name already exists in this group.' => 'This student name already exists in this group.',
 ];

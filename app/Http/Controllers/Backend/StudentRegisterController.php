@@ -21,35 +21,30 @@ class StudentRegisterController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $messages = [
-            'student_name.unique' => 'This student name already exists in this group.',
-            'phone_number.unique' => 'This phone number already exists.',
-        ];
+{
+    $messages = [
+        'phone_number.unique' => 'This phone number already exists.',
+        'phone_number.regex' => 'Phone number must be 9 or 10 digits and start with 0.',
+    ];
 
-        $data = $request->validate([
-            'student_name' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('students')->where(function ($q) use ($request) {
-                    return $q->where('group_id', $request->group_id);
-                }),
-            ],
-            'phone_number' => ['required', 'regex:/^0[0-9]{8,9}$/', 'unique:students,phone_number'],
-            'group_id' => ['required', 'exists:groups,group_id'],
-        ], $messages);
+    $data = $request->validate([
+        'student_name' => ['required', 'string', 'max:255'],
+        'gender' => ['required', 'in:Male,Female'],
+        'phone_number' => ['nullable', 'regex:/^0[0-9]{8,9}$/', 'unique:students,phone_number'],
+        'group_id' => ['required', 'exists:groups,group_id'],
+        'status' => ['required', 'in:0,1'],
+    ], $messages);
 
-        Student::create([
-            'student_name' => $data['student_name'],
-            'phone_number' => $data['phone_number'] ?? null,
-            'group_id' => $data['group_id'],
-            'status' => 1,
-        ]);
+    Student::create([
+        'student_name' => trim($request->student_name),
+        'gender' => $request->gender,
+        'phone_number' => $request->phone_number,
+        'group_id' => $request->group_id,
+        'status' => $request->status,
+    ]);
 
-        return redirect()->route('student.register')->with('success', 'Registration successful!');
-    }
-
+    return redirect()->route('students.index')->with('success', 'Student added.');
+}
     public function checkPhone(Request $request)
     {
         $student = Student::where('phone_number', $request->phone_number)->first();

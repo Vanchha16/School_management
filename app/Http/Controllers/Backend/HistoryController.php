@@ -8,32 +8,37 @@ use Illuminate\Http\Request;
 
 class HistoryController extends Controller
 {
-public function index(Request $request)
-{
-    $query = ItemHistory::with([
-        'user',
-        'approvedByUser',
-        'returnedByUser',
-        'borrow.student',
-        'borrow.item'
-    ]);
+    public function index(Request $request)
+    {
+        $query = ItemHistory::with([
+            'user',
+            'approvedByUser',
+            'returnedByUser',
+            'borrow.student',
+            'borrow.item',
+        ]);
 
-    if ($request->filled('student')) {
-        $query->whereHas('borrow.student', function ($q) use ($request) {
-            $q->where('student_name', 'like', '%' . $request->student . '%');
-        });
+        if ($request->filled('student')) {
+            $student = trim($request->student);
+
+            $query->whereHas('borrow.student', function ($q) use ($student) {
+                $q->where('student_name', 'like', "%{$student}%");
+            });
+        }
+
+        if ($request->filled('user')) {
+            $user = trim($request->user);
+
+            $query->whereHas('user', function ($q) use ($user) {
+                $q->where('name', 'like', "%{$user}%");
+            });
+        }
+
+        $histories = $query
+            ->orderByDesc('action_at')
+            ->paginate(10)
+            ->appends($request->query());
+        dd($histories->perPage());
+        return view('backend.page.borrows.history', compact('histories'));
     }
-
-    if ($request->filled('user')) {
-        $query->whereHas('user', function ($q) use ($request) {
-            $q->where('name', 'like', '%' . $request->user . '%');
-        });
-    }
-
-    $histories = $query
-        ->latest('action_at')
-        ->paginate(5);
-
-    return view('backend.page.borrows.history', compact('histories'));
-}
 }

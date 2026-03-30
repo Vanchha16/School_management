@@ -335,7 +335,8 @@ class BorrowController extends Controller
 
         $histories = $query
             ->latest('action_at')
-            ->paginate(5);
+            ->paginate(10)
+            ->appends($request->query());
 
         return view('backend.page.borrows.history', compact('histories'));
     }
