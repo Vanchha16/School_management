@@ -59,24 +59,24 @@
 
                         </form>
                         <div class="row g-3">
-                            <div class="col-12 col-md-4">
+                           <div class="col-12 col-md-4">
                                 <div class="border rounded-4 p-3">
                                     <div class="text-secondary small">{{ __('app.item_qty') }}</div>
-                                    <div class="fs-4 fw-bold">{{ $item->qty }}</div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-md-4">
-                                <div class="border rounded-4 p-3">
-                                    <div class="text-secondary small">{{ __('app.item_available') }}</div>
-                                    <div class="fs-4 fw-bold">{{ number_format($item->available, 2) }}</div>
+                                    <div class="fs-4 fw-bold">{{ $item->qty  }}</div>
                                 </div>
                             </div>
 
                             <div class="col-12 col-md-4">
                                 <div class="border rounded-4 p-3">
                                     <div class="text-secondary small">{{ __('app.item_borrowed') }}</div>
-                                    <div class="fs-4 fw-bold">{{ $item->borrow }}</div>
+                                    <div class="fs-4 fw-bold">{{ $borrowed }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                <div class="border rounded-4 p-3">
+                                    <div class="text-secondary small">{{ __('app.item_available') }}</div>
+                                    <div class="fs-4 fw-bold">{{ $item->qty - $borrowed }}</div>
                                 </div>
                             </div>
                         </div>

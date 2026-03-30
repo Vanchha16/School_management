@@ -118,6 +118,13 @@ class ItemController extends Controller
     public function show($itemid)
     {
         $item = Item::where('Itemid', $itemid)->firstOrFail();
-        return view('backend.page.items.show', compact('item'));
+
+        $borrowed = Borrow::where('item_id', $item->Itemid)
+            ->where('status', 'BORROWED')
+            ->sum('qty');
+
+        $available = $item->qty ?? 0;
+
+        return view('backend.page.items.show', compact('item', 'available', 'borrowed'));
     }
 }
