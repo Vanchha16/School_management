@@ -212,4 +212,7 @@ return [
     'This student is already in this group.' => 'This student is already in this group.',
     'This student name already exists.' => 'This student name already exists.',
     'This student name already exists in this group.' => 'This student name already exists in this group.',
+    'This Student already exists in group' => 'This Student already exists in group',
+    'Do you want to change the student to group' => 'Do you want to change the student to group',
+    'Yes, Change Group' => 'Yes, Change Group',
 ];

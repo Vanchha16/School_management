@@ -144,6 +144,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
+Route::post('/submissions/{id}/confirm-group-change', [SubmissionController::class, 'confirmGroupChange'])
+    ->name('submissions.confirmGroupChange');
 
 
 Route::post('/submissions/{id}/add-student', [SubmissionController::class, 'addStudent'])

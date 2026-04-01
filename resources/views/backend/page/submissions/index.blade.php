@@ -20,6 +20,26 @@
             </div>
         @endif
 
+        @if (session('group_change_submission_id'))
+            <div class="alert alert-warning">
+                <div class="mb-2">
+                    {{ __('app.This Student already exists in group') }}
+                    <strong>{{ session('group_change_old_group') }}</strong>.
+                    {{ __('app.Do you want to change the student to group') }}
+                    <strong>{{ session('group_change_new_group') }}</strong>?
+                </div>
+
+                <form method="POST"
+                    action="{{ route('submissions.confirmGroupChange', session('group_change_submission_id')) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-success">
+                        {{ __('app.Yes, Change Group') }}
+                    </button>
+                    <a href="{{ url()->current() }}" class="btn btn-danger">{{ __('app.Cancel') }}</a>
+                </form>
+            </div>
+        @endif
+
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <div>
                 <h2 class="fw-bold mb-0">{{ __('app.submissions') }}</h2>
@@ -64,7 +84,6 @@
                                 <td>{{ $row->phone_number }}</td>
                                 <td>{{ $row->group->group_name ?? '-' }}</td>
                                 <td>
-
                                     @if ($row->item && $row->item_id)
                                         {{ $row->item->display_name }}
                                     @else
@@ -72,11 +91,9 @@
                                             {{ $row->other_item ?? '-' }}
                                         </span>
                                     @endif
-
                                 </td>
                                 <td>{{ $row->note ?? '-' }}</td>
                                 <td>
-
                                     @if (!empty($row->item?->image))
                                         <img src="{{ asset('storage/' . $row->item->image) }}" width="60" height="60"
                                             style="object-fit:cover;border-radius:8px;">
@@ -122,7 +139,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center text-muted">No submissions found.</td>
+                                <td colspan="9" class="text-center text-muted">No submissions found.</td>
                             </tr>
                         @endforelse
                     </tbody>

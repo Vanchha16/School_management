@@ -211,4 +211,7 @@ return [
     'This student is already in this group.' => 'សិស្សនេះមានរួចហើយក្នុងក្រុមនេះ',
     'This student name already exists.' => 'ឈ្មោះសិស្សនេះមានរួចហើយ',
     'This student name already exists in this group.' => 'ឈ្មោះសិស្សនេះមានរួចហើយក្នុងក្រុមនេះ',
+    'This Student already exists in group' => 'សិស្សនេះមានរួចហើយក្នុងក្រុម',
+    'Do you want to change the student to group' => 'តើអ្នកចង់ផ្លាស់ប្តូរសិស្សទៅក្រុមនេះទេ',
+    'Yes, Change Group' => 'ផ្លាស់ប្តូរក្រុម',
 ];

@@ -109,9 +109,9 @@ class SubmissionController extends Controller
             'qty' => $request->qty,
             'status' => 'BORROWED',
             'note' => $request->notes,
-            'student_id' => $existingStudentByName?->student_id,
-            'is_student_existing' => $existingStudentByName ? true : false,
-            'is_student_added' => $existingStudentByName ? true : false,
+            'student_id' => null,
+            'is_student_existing' => false,
+            'is_student_added' => false,
             'is_borrow_approved' => false,
         ]);
 
@@ -191,8 +191,8 @@ class SubmissionController extends Controller
         return redirect()->to(
             url(
                 'admin/borrows?openBorrow=1'
-                . '&student_id=' . $student->student_id
-                . '&student_name=' . urlencode($student->student_name)
+                    . '&student_id=' . $student->student_id
+                    . '&student_name=' . urlencode($student->student_name)
             )
         )->with('success', 'Submission cleared. You can borrow item now.');
     }
@@ -205,14 +205,29 @@ class SubmissionController extends Controller
             return back()->with('success', 'Student already exists.');
         }
 
-        $phoneExists = Student::where('phone_number', $submission->phone_number)->first();
+        $existingStudent = Student::where('phone_number', $submission->phone_number)->first();
 
-        if ($phoneExists) {
-            return back()->withErrors([
-                'error' => 'This phone number is already used in student database.',
-            ]);
+        // Case 1: phone exists and group is different
+        if ($existingStudent && $existingStudent->group_id != $submission->group_id) {
+            return back()->with('group_change_submission_id', $submission->id)
+                ->with('group_change_student_id', $existingStudent->student_id)
+                ->with('group_change_old_group', $existingStudent->group->group_name ?? 'Unknown')
+                ->with('group_change_new_group', $submission->group->group_name ?? 'Unknown');
+                
         }
 
+        // Case 2: phone exists and same group => just link submission to existing student
+        if ($existingStudent) {
+            $submission->update([
+                'student_id' => $existingStudent->student_id,
+                'is_student_existing' => true,
+                'is_student_added' => true,
+            ]);
+
+            return back()->with('success', 'Existing student linked successfully. Now you can approve borrow.');
+        }
+
+        // Case 3: no existing student => create new one
         $student = Student::create([
             'student_name' => $submission->student_name,
             'gender' => $submission->gender,
@@ -293,5 +308,29 @@ class SubmissionController extends Controller
         StudentSubmission::query()->delete();
 
         return back()->with('success', 'All submissions cancelled successfully.');
+    }
+    public function confirmGroupChange($id)
+    {
+        $submission = StudentSubmission::findOrFail($id);
+
+        $student = Student::where('phone_number', $submission->phone_number)->first();
+
+        if (!$student) {
+            return back()->withErrors([
+                'error' => 'Student with this phone number was not found.',
+            ]);
+        }
+
+        $student->update([
+            'group_id' => $submission->group_id,
+        ]);
+
+        $submission->update([
+            'student_id' => $student->student_id,
+            'is_student_existing' => true,
+            'is_student_added' => true,
+        ]);
+
+        return back()->with('success', 'Student group changed successfully. Now you can approve borrow.');
     }
 }

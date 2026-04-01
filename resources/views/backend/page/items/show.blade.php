@@ -31,7 +31,8 @@
 
                         <div class="mt-3">
                             @if ($item->status == 1)
-                                <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">{{ __('app.item_active') }}</span>
+                                <span
+                                    class="badge rounded-pill bg-success-subtle text-success px-3 py-2">{{ __('app.item_active') }}</span>
                             @else
                                 <span
                                     class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">{{ __('app.item_inactive') }}</span>
@@ -42,7 +43,7 @@
                     {{-- Info --}}
                     <div class="col-12 col-md-8">
 
-                        
+
 
                         <form method="POST" action="{{ route('items.update', ['itemid' => $item->Itemid]) }}">
                             @csrf
@@ -51,7 +52,8 @@
                             <h4 class="fw-bold mb-2">{{ $item->display_name }}</h4>
 
                             <label class="form-label fw-semibold">{{ __('app.description') }}</label>
-                            <textarea name="description" class="form-control" rows="4" placeholder="{{ __('app.Write detail about this item...') }}">{{ old('description', $item->description) }}</textarea>
+                            <textarea name="description" class="form-control" rows="4"
+                                placeholder="{{ __('app.Write detail about this item...') }}">{{ old('description', $item->description) }}</textarea>
                             <br>
                             {{-- <div class="form-text mb-3">{{ __('app.You can update the description here.') }}</div> --}}
 
@@ -59,7 +61,7 @@
 
                         </form>
                         <div class="row g-3">
-                           <div class="col-12 col-md-4">
+                            <div class="col-12 col-md-4">
                                 <div class="border rounded-4 p-3">
                                     <div class="text-secondary small">{{ __('app.item_qty') }}</div>
                                     <div class="fs-4 fw-bold">{{ $item->qty  }}</div>
@@ -110,7 +112,7 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-outline-danger"
                                     onclick="return confirm('Delete this item?')">
-                                    <i class="bi bi-trash me-1"></i>    {{ __('app.delete') }}
+                                    <i class="bi bi-trash me-1"></i> {{ __('app.delete') }}
                                 </button>
                             </form>
                         </div>
