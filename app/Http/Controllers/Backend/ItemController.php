@@ -72,6 +72,7 @@ class ItemController extends Controller
             // Save original image
             $destinationPath = public_path('/assets/uploads/items');
             $imageFile->move($destinationPath, $imageName);
+            Storage::disk('s3')->put('items/' . $imageName, (string) $resizedImage);
 
             // Save filename to DB (optional)
             $input['image'] = $imageName;
