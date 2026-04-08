@@ -50,7 +50,7 @@ class ItemController extends Controller
 
         $path = null;
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->storePublicly('items', 's3');
+            $path = $request->file('image')->store('items', 'public');
         }
 
         Item::create([
@@ -115,9 +115,9 @@ class ItemController extends Controller
         $path = $item->image;
         if ($request->hasFile('image')) {
             if ($item->image) {
-                Storage::disk('s3')->delete($item->image);
+                Storage::disk('public')->delete($item->image);
             }
-            $path = $request->file('image')->storePublicly('items', 's3');
+            $path = $request->file('image')->store('items', 'public');
         }
         $item->image = $path;
 

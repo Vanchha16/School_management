@@ -39,7 +39,7 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->storePublicly('profile', 's3');
+            $path = $request->file('photo')->store('profile', 'public');
             $user->photo = $path;
             $user->save();
         }
@@ -57,9 +57,9 @@ class ProfileController extends Controller
 
         if ($request->hasFile('photo')) {
             if ($user->photo) {
-                Storage::disk('s3')->delete($user->photo);
+                Storage::disk('public')->delete($user->photo);
             }
-            $path = $request->file('photo')->storePublicly('profile', 's3');
+            $path = $request->file('photo')->store('profile', 'public');
             $user->photo = $path;
             $user->save();
         }
@@ -89,7 +89,6 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        
         Auth::logout();
         $user->delete();
 
