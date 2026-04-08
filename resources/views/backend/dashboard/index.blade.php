@@ -4,6 +4,137 @@
 @section('dashboard_active', 'active')
 
 @section('contents')
+    <style>
+        .dropdown_menu-7 {
+            animation: rotateMenu 400ms ease-in-out forwards;
+            transform-origin: top center;
+        }
+
+        @keyframes rotateMenu {
+            0% {
+                transform: rotateX(-90deg);
+                opacity: 0;
+            }
+
+            70% {
+                transform: rotateX(20deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: rotateX(0deg);
+                opacity: 1;
+            }
+        }
+
+        .drop {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+            overflow: visible;
+        }
+
+        .drop:hover {
+            background: #f8fafc;
+            color: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+        }
+
+        .drop i {
+            font-size: 18px;
+        }
+
+        .drop .badge {
+            min-width: 18px;
+            height: 18px;
+            font-size: 10px;
+            line-height: 18px;
+            padding: 0 5px;
+            background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+            color: #fff;
+            border: 2px solid #fff;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.35);
+        }
+
+        .dropdown_menu {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            left: auto;
+            min-width: 260px;
+            margin: 0;
+            padding: 10px;
+            list-style: none;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+            border: 1px solid #e5e7eb;
+            z-index: 999;
+            display: none;
+        }
+
+        .dropdown_menu.show {
+            display: block;
+        }
+
+        .dropdown_menu li {
+            display: block;
+            opacity: 1;
+            margin-bottom: 6px;
+        }
+
+        .dropdown_menu li:last-child {
+            margin-bottom: 0;
+        }
+
+        .dropdown_menu li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #1f2937;
+            background: #f8fafc;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s ease;
+        }
+
+        .dropdown_menu li a i {
+            color: #2563eb;
+            font-size: 16px;
+        }
+
+        .dropdown_menu li a:hover {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            color: #1d4ed8;
+            transform: translateX(4px);
+        }
+
+        .dropdown_menu::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            right: 14px;
+            width: 14px;
+            height: 14px;
+            background: #ffffff;
+            border-left: 1px solid #e5e7eb;
+            border-top: 1px solid #e5e7eb;
+            transform: rotate(45deg);
+        }
+    </style>
     <div class="container-fluid py-4">
 
         <div class="card border-0 shadow-sm rounded-4 mb-4">
@@ -30,7 +161,7 @@
                                     </span>
                                     <span>
                                         <i class="bi bi-clock me-1"></i>
-                                        {{ now()->timezone('Asia/Jakarta')->format('H:i') }} 
+                                        {{ now()->timezone('Asia/Jakarta')->format('H:i') }}
                                     </span>
                                 </div>
                             </div>
@@ -38,7 +169,8 @@
 
                         <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2">
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="{{ route('students.index') }}" class="btn btn-outline-light rounded-pill px-3 fw-medium">
+                                <a href="{{ route('students.index') }}"
+                                    class="btn btn-outline-light rounded-pill px-3 fw-medium">
                                     <i class="bi bi-people me-1"></i> {{ __('app.students') }}
                                 </a>
 
@@ -67,20 +199,71 @@
                                 </ul>
                             </div>
                             <div class="d-flex align-items-center gap-2 position-relative phone-hide">
-                                <button type="button"
-                                    class="btn btn-light rounded-circle d-flex align-items-center justify-content-center position-relative"
-                                    style="width:44px; height:44px;">
-                                    <i class="bi bi-bell"></i>
-                                    {{-- <span
-                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                        style="font-size:10px;">
-                                        
-                                    </span> --}}
-                                </button>
+                                <div class="position-relative d-inline-block">
+                                    <button type="button" id="notification-desktop"
+                                        class="drop btn btn-light rounded-circle d-flex align-items-center justify-content-center position-relative">
+                                        <i class="bi bi-bell"></i>
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
+                                            {{ $pendingSubmissions + $overdueCount }}
+                                        </span>
 
+                                    </button>
+
+                                    <ul class="dropdown_menu dropdown_menu-7" id="dropdown-desktop">
+                                        <li>
+                                            <a href="{{ url('admin/submissions') }}" class="nav-pill @yield('submission_active')">
+                                                <i class="bi bi-inbox"></i>
+                                                {{ __('app.submissions') }}
+                                                @if (($pendingSubmissions ?? 0) > 0)
+                                                    <span
+                                                        class="ms-auto d-inline-flex align-items-center justify-content-center text-white fw-bold"
+                                                        style="
+                                                            min-width: 24px;
+                                                            height: 24px;
+                                                            padding: 0 8px;
+                                                            background: linear-gradient(135deg, #ef4444, #dc2626);
+                                                            border-radius: 999px;
+                                                            font-size: 12px;
+                                                            line-height: 1;
+                                                            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25);
+                                                            border: 2px solid #fff;
+                                                        ">
+                                                        {{ $pendingSubmissions }}
+                                                    </span>
+                                                @endif
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('borrows.overdue') }}" class="nav-pill @yield('overdue_active')">
+                                                <i class="bi bi-exclamation-circle"></i>
+                                                {{ __('app.overdue_borrow') }}
+
+                                                @if (($overdueCount ?? 0) > 0)
+                                                    <span
+                                                        class="ms-auto d-inline-flex align-items-center justify-content-center text-white fw-bold"
+                                                        style="
+                                                            min-width: 24px;
+                                                            height: 24px;
+                                                            padding: 0 8px;
+                                                            background: linear-gradient(135deg, #ef4444, #dc2626);
+                                                            border-radius: 999px;
+                                                            font-size: 12px;
+                                                            line-height: 1;
+                                                            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25);
+                                                            border: 2px solid #fff;
+                                                        ">
+                                                        {{ $overdueCount }}
+                                                    </span>
+                                                @endif
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                                 @php
                                     $user = Auth::user();
-                                    $profilePhoto = !empty($user?->photo) ? asset('storage/' . $user->photo) : null;
+                                    $profilePhoto = !empty($user?->photo)
+                                        ? asset('assets/uploads/profile/' . $user->photo)
+                                        : null;
                                     $userInitial = strtoupper(substr($user->name ?? 'A', 0, 1));
                                 @endphp
 
@@ -94,8 +277,8 @@
                                         <div class="position-relative">
                                             <div class="mb-3" style="margin-bottom:0 !important;">
                                                 @if (!empty($user->photo))
-                                                    <img src="{{ asset('storage/' . $user->photo) }}" alt="Profile"
-                                                        class="rounded-circle border"
+                                                    <img src="{{ asset('assets/uploads/profile/' . $user->photo) }}"
+                                                        alt="Profile" class="rounded-circle border"
                                                         style="width:42px; height:42px; object-fit:cover;">
                                                 @else
                                                     <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase border"
@@ -199,14 +382,14 @@
                                 <div class="text-secondary small">{{ __('app.total_students') }}</div>
                                 <div class="fs-2 fw-bold mt-1">{{ $totalStudents ?? 0 }}</div>
                             </div>
-                            <div class="bg-dark-subtle text-dark rounded-3 p-2">
+                            <div class="bg-success-subtle text-success rounded-3 p-2">
                                 <i class="bi bi-people fs-5"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body">
@@ -238,7 +421,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body">
@@ -255,7 +438,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="row g-3 mb-4">
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
@@ -272,23 +455,29 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
-                                <div class="text-secondary small">{{ __('app.available_items') }}</div>
-                                <div class="fs-2 fw-bold mt-1 text-primary">{{ $availableItems ?? 0 }}</div>
+                                <div class="text-secondary small">{{ __('app.socket_items') }}</div>
+                                <div class="fs-2 fw-bold mt-1 text-dark">{{ $socketItems - $totalOut ?? 0 }}</div>
                             </div>
-                            <div class="bg-info-subtle text-info rounded-3 p-2">
-                                <i class="bi bi-check2-square fs-5"></i>
+                            <div class="rounded-3 d-flex align-items-center justify-content-center"
+                                style="width: 78px; height: 78px;  ">
+                                @if (!empty($imageSocket->image))
+                                    <img src="{{ asset('assets/uploads/thumbnails/items/' . $imageSocket->image) }}" alt=""
+                                        style="max-width: 70%; max-height: 70%; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));border: 1px solid rgba(0, 0, 0, 0.2);">
+                                @else
+                                    <i class="bi bi-hdd-network text-info fs-5"></i>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body">
@@ -304,7 +493,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body">
@@ -321,7 +510,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="row g-3">
             {{-- Recent Submissions --}}
             <div class="col-12 col-xl-6">
@@ -386,8 +575,8 @@
                             <div class="d-flex align-items-start gap-3 py-3 border-bottom">
                                 <div>
                                     @if (!empty($borrow->item?->image))
-                                        <img src="{{ asset('storage/' . $borrow->item->image) }}" width="54"
-                                            height="54" style="object-fit:cover;border-radius:10px;">
+                                        <img src="{{ asset('assets/uploads/items/' . $borrow->item->image) }}"
+                                            width="54" height="54" style="object-fit:cover;border-radius:10px;">
                                     @else
                                         <div class="bg-light rounded-3 d-flex align-items-center justify-content-center"
                                             style="width:54px;height:54px;">
@@ -457,4 +646,20 @@
         </div>
 
     </div>
+    {{-- <script>
+        const noti = document.getElementById('notification');
+        const dropdown = document.getElementById('dropdown');
+
+        noti.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && !noti.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    </script> --}}
+
 @endsection

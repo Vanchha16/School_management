@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class ProfileController extends Controller
 {
-      public function edit(Request $request)
+    public function edit(Request $request)
     {
         return view('profile.edit', [
             'user' => $request->user(),
@@ -27,7 +30,7 @@ class ProfileController extends Controller
 
         $user->update($validated);
 
-        return back()->with('status', 'profile-updated');
+        return back()->with('success', 'profile-updated');
     }
 
     public function storePhoto(Request $request)
@@ -38,16 +41,38 @@ class ProfileController extends Controller
             'photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
-        if ($user->photo) {
-            return back()->withErrors([
-                'photo' => 'Photo already exists. Please use change photo.',
-            ]);
+        if ($request->hasFile('photo')) {
+            $manager = new ImageManager(new Driver);
+
+            $photoFile = $request->file('photo');
+            $imageName = Str::uuid().'.jpg';
+
+            $profilePath = public_path('assets/uploads/profile');
+            $thumbPath = public_path('assets/uploads/thumbnails/profile');
+
+            if (! File::exists($profilePath)) {
+                File::makeDirectory($profilePath, 0755, true);
+            }
+
+            if (! File::exists($thumbPath)) {
+                File::makeDirectory($thumbPath, 0755, true);
+            }
+
+            $mainImage = $manager->read($photoFile->getRealPath())
+                ->cover(400, 400)
+                ->toJpeg(85);
+
+            file_put_contents($profilePath.'/'.$imageName, (string) $mainImage);
+
+            $thumbnailImage = $manager->read($photoFile->getRealPath())
+                ->cover(150, 150)
+                ->toJpeg(80);
+
+            file_put_contents($thumbPath.'/'.$imageName, (string) $thumbnailImage);
+
+            $user->photo = $imageName;
+            $user->save();
         }
-
-        $path = $request->file('photo')->store('users', 'public');
-
-        $user->photo = $path;
-        $user->save();
 
         return back()->with('status', 'photo-added');
     }
@@ -60,16 +85,53 @@ class ProfileController extends Controller
             'photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
-        if ($user->photo && Storage::disk('public')->exists($user->photo)) {
-            Storage::disk('public')->delete($user->photo);
+        if ($request->hasFile('photo')) {
+            $manager = new ImageManager(new Driver);
+
+            $photoFile = $request->file('photo');
+            $imageName = Str::uuid().'.jpg';
+
+            $profilePath = public_path('assets/uploads/profile');
+            $thumbPath = public_path('assets/uploads/thumbnails/profile');
+
+            if (! File::exists($profilePath)) {
+                File::makeDirectory($profilePath, 0755, true);
+            }
+
+            if (! File::exists($thumbPath)) {
+                File::makeDirectory($thumbPath, 0755, true);
+            }
+
+            if ($user->photo) {
+                $oldMain = $profilePath.'/'.$user->photo;
+                $oldThumb = $thumbPath.'/'.$user->photo;
+
+                if (File::exists($oldMain)) {
+                    File::delete($oldMain);
+                }
+
+                if (File::exists($oldThumb)) {
+                    File::delete($oldThumb);
+                }
+            }
+
+            $mainImage = $manager->read($photoFile->getRealPath())
+                ->cover(400, 400)
+                ->toJpeg(85);
+
+            file_put_contents($profilePath.'/'.$imageName, (string) $mainImage);
+
+            $thumbnailImage = $manager->read($photoFile->getRealPath())
+                ->cover(150, 150)
+                ->toJpeg(80);
+
+            file_put_contents($thumbPath.'/'.$imageName, (string) $thumbnailImage);
+
+            $user->photo = $imageName;
+            $user->save();
         }
 
-        $path = $request->file('photo')->store('users', 'public');
-
-        $user->photo = $path;
-        $user->save();
-
-        return back()->with('status', 'photo-updated');
+        return back()->with('success', 'photo-updated');
     }
 
     public function updatePassword(Request $request)
@@ -83,7 +145,7 @@ class ProfileController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return back()->with('status', 'password-updated');
+        return back()->with('success', 'password-updated');
     }
 
     public function destroy(Request $request)

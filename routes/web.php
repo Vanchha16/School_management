@@ -1,9 +1,7 @@
-
 <?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SimpleLoginController;
-
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\BorrowController;
 use App\Http\Controllers\Backend\ItemController;
@@ -16,15 +14,13 @@ use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
-| PUBLIC
+| Public
 |--------------------------------------------------------------------------
 */
 
 Route::get('/', function () {
     return redirect()->route('student.register');
 });
-
-
 
 Route::get('/language/{locale}', function ($locale) {
     if (! in_array($locale, ['en', 'kh'], true)) {
@@ -35,139 +31,56 @@ Route::get('/language/{locale}', function ($locale) {
 
     return redirect()->back();
 })->name('language.switch');
+
 /*
 |--------------------------------------------------------------------------
-| AUTH
+| Auth
 |--------------------------------------------------------------------------
 */
-Route::get('/login', [SimpleLoginController::class, 'show'])->name('login');
-Route::post('/login', [SimpleLoginController::class, 'login'])->name('login.post');
-Route::post('/logout', [SimpleLoginController::class, 'logout'])->name('logout');
-Route::get('admin/late-returns', [\App\Http\Controllers\Backend\BorrowController::class, 'lateReturns'])
-    ->name('borrows.late_returns');
-Route::get('admin/overdue-borrows', [\App\Http\Controllers\Backend\BorrowController::class, 'overdueBorrows'])
-    ->name('borrows.overdue');
-/*
-|--------------------------------------------------------------------------
-| DASHBOARD (after login)
-|--------------------------------------------------------------------------
-| admin/staff -> admin.dashboard
-| student     -> student.register
-*/
-Route::middleware(['auth'])->get('/dashboard', function () {
-    $role = strtolower(auth()->user()->role ?? 'student');
 
-    if (in_array($role, ['admin', 'staff'])) {
-        return redirect()->route('admin.dashboard');
-    }
-
-    return redirect()->route('student.register');
-})->name('dashboard');
-
-Route::prefix('admin')->group(function () {
-    Route::get('submissions', [\App\Http\Controllers\Backend\SubmissionController::class, 'index'])->name('submissions.index');
-    Route::post('submissions', [\App\Http\Controllers\Backend\SubmissionController::class, 'store'])->name('submissions.store');
-
-    Route::post('submissions/{submission}/approve', [\App\Http\Controllers\Backend\SubmissionController::class, 'approve'])->name('submissions.approve');
-    Route::delete('submissions/{submission}', [\App\Http\Controllers\Backend\SubmissionController::class, 'destroy'])->name('submissions.destroy');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [SimpleLoginController::class, 'show'])->name('login');
+    Route::post('/login', [SimpleLoginController::class, 'login'])->name('login.post');
 });
-Route::post('admin/submissions/{submission}/go-manage', [SubmissionController::class, 'goManage'])
-    ->name('submissions.go_manage');
+
+Route::post('/logout', [SimpleLoginController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+
 /*
 |--------------------------------------------------------------------------
-| STUDENT ONLY
+| Student registration (public)
 |--------------------------------------------------------------------------
 */
 
 Route::get('/register-student', [StudentRegisterController::class, 'create'])->name('student.register');
 Route::post('/register-student', [StudentRegisterController::class, 'store'])->name('student.register.store');
 
-
-/*
-|--------------------------------------------------------------------------
-| ADMIN + STAFF (Management)
-|--------------------------------------------------------------------------
-| ✅ admin can do everything because admin is included here
-*/
-Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function () {
-
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-
-    // Borrows
-    Route::get('/borrows', [BorrowController::class, 'index'])->name('borrows.index');
-    Route::post('/borrows/borrow', [BorrowController::class, 'storeBorrow'])->name('borrows.borrow');
-    Route::post('/borrows/return', [BorrowController::class, 'storeReturn'])->name('borrows.return');
-    Route::put('/borrows/update', [BorrowController::class, 'update'])->name('borrows.update');
-    Route::post('/borrows/{borrow}/undo-return', [BorrowController::class, 'undoReturn'])->name('borrows.undoReturn');
-    Route::delete('/borrows/{borrow}', [BorrowController::class, 'destroy'])->name('borrows.destroy');
-    Route::patch('/borrows/{borrow}/call-status', [BorrowController::class, 'updateCallStatus'])
-        ->name('borrows.overdue.call-status');
-
-    // FIXED: protect these routes too
-    Route::get('/late-returns', [BorrowController::class, 'lateReturns'])->name('borrows.late_returns');
-    Route::get('/overdue-borrows', [BorrowController::class, 'overdueBorrows'])->name('borrows.overdue');
-
-    // Items
-    Route::get('/items', [ItemController::class, 'index'])->name('items.index');
-    Route::get('/items/{itemid}', [ItemController::class, 'show'])->name('items.show');
-    Route::post('/items', [ItemController::class, 'store'])->name('items.store');
-    Route::put('/items/{itemid}', [ItemController::class, 'update'])->name('items.update');
-    Route::delete('/items/{itemid}', [ItemController::class, 'destroy'])->name('items.destroy');
-
-    // Groups
-    Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
-    Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
-    Route::delete('/groups/{group_id}', [GroupController::class, 'destroy'])->name('groups.destroy');
-
-    // Students
-    Route::get('/students', [StudentController::class, 'index'])->name('students.index');
-    Route::get('/students/{student_id}', [StudentController::class, 'show'])->name('students.show');
-    Route::post('/students', [StudentController::class, 'store'])->name('students.store');
-    Route::put('/students/{student_id}', [StudentController::class, 'update'])->name('students.update');
-    Route::delete('/students/{student_id}', [StudentController::class, 'destroy'])->name('students.destroy');
-
-    Route::get('/register-student', [StudentRegisterController::class, 'create'])->name('student.register');
-    Route::post('/register-student', [StudentRegisterController::class, 'store'])->name('student.register.store');
-});
-
-/*
-|--------------------------------------------------------------------------
-| ADMIN ONLY (Users)
-|--------------------------------------------------------------------------
-| ✅ Only admin can access /admin/users
-*/
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::post('/users', [UserController::class, 'store'])->name('users.store');
-    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-});
-
-Route::post('/submissions/{id}/confirm-group-change', [SubmissionController::class, 'confirmGroupChange'])
-    ->name('submissions.confirmGroupChange');
-
-
-Route::post('/submissions/{id}/add-student', [SubmissionController::class, 'addStudent'])
-    ->name('submissions.addStudent');
-
-Route::post('/submissions/{id}/approve-borrow', [SubmissionController::class, 'approveBorrow'])
-    ->name('submissions.approveBorrow');
-
-Route::get('/admin/submissions', [SubmissionController::class, 'index'])->name('submissions.index');
-
-Route::delete('/admin/submissions/{id}/remove', [SubmissionController::class, 'remove'])
-    ->name('submissions.remove');
-
-Route::post('/admin/submissions/cancel-all', [SubmissionController::class, 'cancelAll'])
-    ->name('submissions.cancelAll');
-Route::get('/register/check-phone', [App\Http\Controllers\Backend\StudentRegisterController::class, 'checkPhone'])
+Route::get('/register/check-phone', [StudentRegisterController::class, 'checkPhone'])
     ->name('register.checkPhone');
-Route::get('/register/check-student-name', [App\Http\Controllers\Backend\StudentRegisterController::class, 'checkStudentName'])
+
+Route::get('/register/check-student-name', [StudentRegisterController::class, 'checkStudentName'])
     ->name('register.checkStudentName');
 
+/*
+|--------------------------------------------------------------------------
+| Dashboard redirect
+|--------------------------------------------------------------------------
+*/
 
-// Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+Route::middleware('auth')->get('/dashboard', function () {
+    $role = strtolower(auth()->user()->role ?? 'student');
+    return in_array($role, ['admin', 'staff'])
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('student.register');
+})->name('dashboard');
+
+/*
+|--------------------------------------------------------------------------
+| Profile
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -179,10 +92,114 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Admin + Staff
+|--------------------------------------------------------------------------
+*/
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::get('/item-history', [BorrowController::class, 'itemHistory'])->name('borrows.history');
-});
+Route::middleware(['auth', 'role:admin,staff'])
+    ->prefix('admin')
+    ->group(function () {
+        /*
+        |--------------------------------------------------------------------------
+        | Dashboard
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
+        /*
+        |--------------------------------------------------------------------------
+        | Borrows
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/borrows', [BorrowController::class, 'index'])->name('borrows.index');
+        Route::post('/borrows/borrow', [BorrowController::class, 'storeBorrow'])->name('borrows.borrow');
+        Route::post('/borrows/return', [BorrowController::class, 'storeReturn'])->name('borrows.return');
+        Route::put('/borrows/update', [BorrowController::class, 'update'])->name('borrows.update');
+        Route::post('/borrows/{borrow}/undo-return', [BorrowController::class, 'undoReturn'])->name('borrows.undoReturn');
+        Route::delete('/borrows/{borrow}', [BorrowController::class, 'destroy'])->name('borrows.destroy');
 
+        Route::patch('/borrows/{borrow}/call-status', [BorrowController::class, 'updateCallStatus'])
+            ->name('borrows.overdue.call-status');
 
+        Route::get('/late-returns', [BorrowController::class, 'lateReturns'])->name('borrows.late_returns');
+        Route::get('/overdue-borrows', [BorrowController::class, 'overdueBorrows'])->name('borrows.overdue');
+        Route::get('/item-history', [BorrowController::class, 'itemHistory'])->name('borrows.history');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Items
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+        Route::get('/items/{itemid}', [ItemController::class, 'show'])->name('items.show');
+        Route::post('/items', [ItemController::class, 'store'])->name('items.store');
+        Route::put('/items/{itemid}', [ItemController::class, 'update'])->name('items.update');
+        Route::delete('/items/{itemid}', [ItemController::class, 'destroy'])->name('items.destroy');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Groups
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
+        Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
+        Route::delete('/groups/{group_id}', [GroupController::class, 'destroy'])->name('groups.destroy');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Students
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+        Route::get('/students/{student_id}', [StudentController::class, 'show'])->name('students.show');
+        Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+        Route::put('/students/{student_id}', [StudentController::class, 'update'])->name('students.update');
+        Route::delete('/students/{student_id}', [StudentController::class, 'destroy'])->name('students.destroy');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Submissions
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/submissions', [SubmissionController::class, 'index'])->name('submissions.index');
+        Route::post('/submissions', [SubmissionController::class, 'store'])->name('submissions.store');
+
+        Route::post('/submissions/{submission}/approve', [SubmissionController::class, 'approve'])->name('submissions.approve');
+        Route::delete('/submissions/{submission}', [SubmissionController::class, 'destroy'])->name('submissions.destroy');
+        Route::post('/submissions/{submission}/go-manage', [SubmissionController::class, 'goManage'])->name('submissions.go_manage');
+
+        Route::post('/submissions/{id}/change-group', [SubmissionController::class, 'confirmGroupChange'])
+            ->name('submissions.changeGroup');
+
+        Route::post('/submissions/{id}/skip-group-change', [SubmissionController::class, 'skipGroupChange'])
+            ->name('submissions.skipGroupChange');
+
+        Route::post('/submissions/{id}/add-student', [SubmissionController::class, 'addStudent'])
+            ->name('submissions.addStudent');
+
+        Route::post('/submissions/{id}/approve-borrow', [SubmissionController::class, 'approveBorrow'])
+            ->name('submissions.approveBorrow');
+
+        Route::delete('/submissions/{id}/remove', [SubmissionController::class, 'remove'])
+            ->name('submissions.remove');
+
+        Route::post('/submissions/cancel-all', [SubmissionController::class, 'cancelAll'])
+            ->name('submissions.cancelAll');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Admin only
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->group(function () {
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    });

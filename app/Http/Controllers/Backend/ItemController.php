@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Borrow;
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class ItemController extends Controller
 {
@@ -39,35 +42,69 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'        => 'required|string|max:255',
-            'name_kh'     => 'nullable|string|max:255',
-            'qty'         => 'required|integer|min:0',
-            'status'      => 'required|in:0,1',
+            'name' => 'required|string|max:255',
+            'name_kh' => 'nullable|string|max:255',
+            'qty' => 'required|integer|min:0',
+            'status' => 'required|in:0,1',
             'description' => 'nullable|string|max:1000',
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2024',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2024',
         ]);
 
-        $path = null;
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('items', 'public');
+
+            $manager = new ImageManager(new Driver);
+            // Get uploaded file
+            $imageFile = $request->file('image');
+            // Create a unique name
+            $imageName = time().'.'.$imageFile->getClientOriginalExtension();
+
+            // Resize image using Intervention Image
+            $resizedImage = $manager
+                ->read($imageFile->getRealPath())
+                ->resize(150, 150, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->toJpeg(80); // or toPng(), toWebp() as needed
+
+            // Save thumbnail
+            $thumbnailPath = public_path('/assets/uploads/thumbnails/items/'.$imageName);
+            file_put_contents($thumbnailPath, (string) $resizedImage);
+
+            // Save original image
+            $destinationPath = public_path('/assets/uploads/items');
+            $imageFile->move($destinationPath, $imageName);
+
+            // Save filename to DB (optional)
+            $input['image'] = $imageName;
         }
+        // $path = null;
+        // if ($request->hasFile('image')) {
+        //     $path = $request->file('image')->store('items', 'public');
+        // }
 
         Item::create([
-            'name'        => $request->name,
-            'name_kh'     => $request->name_kh,
-            'qty'         => $request->qty,
-            'status'      => $request->status,
+            'name' => $request->name,
+            'name_kh' => $request->name_kh,
+            'qty' => $request->qty,
+            'status' => $request->status,
             'description' => $request->description,
-            'image'       => $path,
-            'available'   => 0,
-            'borrow'      => 0,
+            'image' => $input['image'] = $imageName,
+            'available' => 0,
+            'borrow' => 0,
         ]);
 
         return back()->with('success', 'Item added successfully!');
     }
 
-    public function destroy($itemid)
+    public function destroy(Request $request, $itemid)
     {
+        $request->validate([
+            'password' => 'required|string',
+        ]);
+
+        if (! Hash::check($request->password, auth()->user()->password)) {
+            return back()->withErrors(['password' => 'The password is incorrect password']);
+        }
+
         $item = Item::where('Itemid', $itemid)->firstOrFail();
 
         if ($item->image) {
@@ -79,40 +116,67 @@ class ItemController extends Controller
         return redirect()->route('items.index')->with('success', 'Item deleted!');
     }
 
-    public function edit($itemid)
-    {
-        $item = Item::where('Itemid', $itemid)->firstOrFail();
+    // public function edit($itemid)
+    // {
+    //     $item = Item::where('Itemid', $itemid)->firstOrFail();
 
-        return view('backend.page.items.edit', compact('item'));
-    }
+    //     return view('backend.page.items.edit', compact('item'));
+    // }
 
     public function update(Request $request, $itemid)
     {
+        // 1. Find the item
         $item = Item::where('Itemid', $itemid)->firstOrFail();
 
+        // 2. Validate
         $request->validate([
-            'name'        => 'required|string|max:255',
-            'name_kh'     => 'nullable|string|max:255',
-            'qty'         => 'required|integer|min:0',
-            'status'      => 'required|in:0,1',
+            'name' => 'required|string|max:255',
+            'name_kh' => 'nullable|string|max:255',
+            'qty' => 'required|integer|min:0',
+            'status' => 'required|in:0,1',
             'description' => 'nullable|string|max:1000',
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1024',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
+        // 3. Handle Image Upload
         if ($request->hasFile('image')) {
-            if ($item->image) {
-                Storage::disk('public')->delete($item->image);
+            // Optional: Delete old image files here if you want to save space
+            if ($item->image && file_exists(public_path('/assets/uploads/items/'.$item->image))) {
+                @unlink(public_path('/assets/uploads/items/'.$item->image));
+                @unlink(public_path('/assets/uploads/thumbnails/items/'.$item->image));
             }
-            $item->image = $request->file('image')->store('items', 'public');
+
+            $manager = new ImageManager(new Driver);
+            $imageFile = $request->file('image');
+            $imageName = time().'.'.$imageFile->getClientOriginalExtension();
+
+            // Resize and Save Thumbnail
+            $resizedImage = $manager->read($imageFile->getRealPath())
+                ->resize(150, 150, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->toJpeg(80);
+
+            $thumbnailPath = public_path('/assets/uploads/thumbnails/items/'.$imageName);
+            file_put_contents($thumbnailPath, (string) $resizedImage);
+
+            // Save Original
+            $imageFile->move(public_path('/assets/uploads/items'), $imageName);
+
+            // Update the item instance with the NEW filename
+            $item->image = $imageName;
         }
 
+        // 4. Update other fields
         $item->name = $request->name;
         $item->name_kh = $request->name_kh;
         $item->qty = $request->qty;
         $item->status = $request->status;
         $item->description = $request->description;
+
+        // 5. Save the changes
         $item->save();
 
+        // 6. Trigger that SweetAlert we set up earlier!
         return back()->with('success', 'Item updated successfully!');
     }
 

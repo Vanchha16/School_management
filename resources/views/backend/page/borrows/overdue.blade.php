@@ -80,9 +80,9 @@
                             <th>{{ __('app.item') }}</th>
                             <th class="text-center" style="width:160px;">{{ __('app.borrow_date') }}</th>
                             <th class="text-center" style="width:130px;">{{ __('app.Total Days late') }}</th>
-                            <th class="text-center" style="width:150px;">Call Status</th>
-                            <th style="width:190px;">Call Note</th>
-                            <th style="width:260px;" class="d-none d-md-table-cell">Update</th>
+                            <th class="text-center" style="width:150px;">{{ __('app.Call Status') }}</th>
+                            <th style="width:190px;">{{ __('app.Call Note') }}</th>
+                            <th style="width:260px;" class="d-none d-md-table-cell">{{ __('app.Update') }}</th>
                         </tr>
                     </thead>
 
@@ -128,11 +128,11 @@
 
                                 <td class="text-center">
                                     @if($callStatus === 'not_yet_called')
-                                        <span class="badge rounded-pill bg-secondary">Not yet call</span>
+                                        <span class="badge rounded-pill bg-secondary">{{ __('app.Not yet call') }}</span>
                                     @elseif($callStatus === 'called_done')
-                                        <span class="badge rounded-pill bg-success">Call done</span>
+                                        <span class="badge rounded-pill bg-success">{{ __('app.Call done') }}</span>
                                     @elseif($callStatus === 'no_answer')
-                                        <span class="badge rounded-pill bg-warning text-dark">No answer</span>
+                                        <span class="badge rounded-pill bg-warning text-dark">{{ __('app.No answer') }}</span>
                                     @endif
 
                                     @if($b->called_at)
@@ -157,13 +157,13 @@
 
                                         <select name="call_status" class="form-select form-select-sm mb-2">
                                             <option value="not_yet_called" {{ $callStatus === 'not_yet_called' ? 'selected' : '' }}>
-                                                Not yet call
+                                                {{ __('app.Not yet call') }}
                                             </option>
                                             <option value="called_done" {{ $callStatus === 'called_done' ? 'selected' : '' }}>
-                                                Call done
+                                                {{ __('app.Call done') }}
                                             </option>
                                             <option value="no_answer" {{ $callStatus === 'no_answer' ? 'selected' : '' }}>
-                                                No answer
+                                                {{ __('app.No answer') }}
                                             </option>
                                         </select>
 

@@ -4,22 +4,92 @@
 @section('item_active', 'active')
 
 @section('contents')
+    <style>
+        /* Custom styling to match the screenshot */
+        .custom-toast {
+            position: relative;
+            overflow: hidden;
+            /* Keeps the progress bar inside the rounded corners */
+            animation: slideRotateIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes slideRotateIn {
+            from {
+                transform: translateX(100%) rotate(10deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        /* 2. The Progress Bar "Run Back" */
+        .progress-loader {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            opacity: 0.6;
+            animation: runBack 4s linear forwards;
+        }
+
+        @keyframes runBack {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+
+        /* 3. Smooth exit when closed */
+        .alert.fade.show {
+            transition: all 0.4s ease;
+        }
+    </style>
     <div class="container-fluid py-4">
 
         {{-- Alerts --}}
-        @if (session('success'))
-            <div class="alert alert-success rounded-4">{{ session('success') }}</div>
-        @endif
+        <div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 9999; max-width: 400px;">
 
-        @if ($errors->any())
-            <div class="alert alert-danger rounded-4">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $e)
-                        <li>{{ $e }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+            {{-- Success --}}
+            @if (session('success'))
+                <div class="alert custom-toast alert-success border-0 border-start border-5 border-success shadow-sm rounded-4 fade show bg-white mb-3"
+                    role="alert">
+                    <div class="d-flex align-items-center p-2">
+                        <div class="me-3 fs-4 text-success"><i class="bi bi-check-circle-fill"></i></div>
+                        <div>
+                            <strong class="d-block text-dark">Success</strong>
+                            <span class="text-muted small">{{ session('success') }}</span>
+                        </div>
+                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                    </div>
+                    <div class="progress-loader bg-success"></div>
+                </div>
+            @endif
+
+            {{-- Errors --}}
+            @if ($errors->any())
+                @foreach ($errors->all() as $e)
+                    <div class="alert custom-toast alert-danger border-0 border-start border-5 border-danger shadow-sm rounded-4 fade show bg-white mb-2"
+                        role="alert">
+                        <div class="d-flex align-items-center p-2">
+                            <div class="me-3 fs-4 text-danger"><strong>!</strong></div>
+                            <div>
+                                <strong class="d-block text-dark">Error</strong>
+                                <span class="text-muted small">{{ $e }}</span>
+                            </div>
+                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                        </div>
+                        <div class="progress-loader bg-danger"></div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
 
         {{-- Header --}}
         <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
@@ -103,8 +173,7 @@
 
                                     <td>
                                         <img class="rounded-3 border" style="width:44px;height:44px;object-fit:cover;"
-                                            src="{{ $it->image ? asset('storage/' . $it->image) : asset('assets/img/no-image.png') }}"
-                                            alt="thumb">
+                                            src="{{ asset('assets/uploads/items/' . $it->image) }}" alt="thumb">
                                     </td>
 
                                     <td>
@@ -140,12 +209,25 @@
                                         </button>
 
                                         {{-- Delete --}}
-                                        <form action="{{ route('items.destroy', ['itemid' => $it->Itemid]) }}"
-                                            method="POST" class="d-inline">
+                                        {{-- <button type="button" class="btn btn-danger"
+                                            onclick="confirmDelete({{ $it->Itemid }})">
+                                            Delete Item
+                                        </button> --}}
+                                        {{-- <form action="{{ route('items.destroy', ['itemid' => $it->Itemid]) }}" method="POST" >
                                             @csrf
                                             @method('DELETE')
+                                            <input type="hidden" name="password" id="password-{{ $it->Itemid }}">
+                                        </form> --}}
+                                        <form id="delete-form-{{ $it->Itemid }}"
+                                            action="{{ route('items.destroy', ['itemid' => $it->Itemid]) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <input type="hidden" name="password" id="password-{{ $it->Itemid }}">
+
                                             <button class="btn btn-outline-danger btn-sm"
-                                                onclick="return confirm('Delete this item?')">
+                                                onclick="confirmDelete({{ $it->Itemid }})" type="button">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
@@ -153,7 +235,8 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-danger py-4">{{ __('app.No Data found') }}</td>
+                                    <td colspan="8" class="text-center text-danger py-4">{{ __('app.No Data found') }}
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -172,7 +255,8 @@
     {{-- Add Item Modal --}}
     <div class="modal fade" id="addItemModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <form class="modal-content" method="POST" action="{{ route('items.store') }}" enctype="multipart/form-data">
+            <form class="modal-content" method="POST" action="{{ route('items.store') }}"
+                enctype="multipart/form-data">
                 @csrf
 
                 <div class="modal-header">
@@ -212,8 +296,10 @@
 
                         <div class="col-12 col-md-7">
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">{{ __('app.item_name_en') }} <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+                                <label class="form-label fw-semibold">{{ __('app.item_name_en') }} <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control" value="{{ old('name') }}"
+                                    required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">{{ __('app.item_name_kh') }}</label>
@@ -221,7 +307,8 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">{{ __('app.item_description') }}</label>
-                                <textarea name="description" class="form-control" rows="4" placeholder="{{ __('app.Write detail about this item...') }}">{{ old('description') }}</textarea>
+                                <textarea name="description" class="form-control" rows="4"
+                                    placeholder="{{ __('app.Write detail about this item...') }}">{{ old('description') }}</textarea>
                                 {{-- <div class="form-text">Example: USB flash drive 32GB used for lab computers.</div> --}}
                             </div>
                             <div class="row g-3 mb-3">
@@ -285,7 +372,7 @@
                                 <div class="border border-2 border-secondary-subtle rounded-4 p-3">
                                     <div class="mb-3">
                                         <img class="rounded-3 border" style="width:80px;height:80px;object-fit:cover;"
-                                            src="{{ $it->image ? asset('storage/' . $it->image) : asset('assets/img/no-image.png') }}">
+                                            src="{{ asset('assets/uploads/items/' . $it->image) }}" alt="thumb">
                                     </div>
 
                                     <input class="form-control" type="file" name="image" accept="image/*">
@@ -307,7 +394,8 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">{{ __('app.item_description') }}</label>
-                                    <textarea name="description" class="form-control" rows="4" placeholder="{{ __('app.Write detail about this item...') }}">{{ old('description', $it->description) }}</textarea>
+                                    <textarea name="description" class="form-control" rows="4"
+                                        placeholder="{{ __('app.Write detail about this item...') }}">{{ old('description', $it->description) }}</textarea>
                                     {{-- <div class="form-text">{{ __('app.Example: USB flash drive 32GB used for lab computers.') }}</div> --}}
                                 </div>
                                 <div class="row g-3 mb-3">
@@ -322,9 +410,11 @@
                                         <label class="form-label fw-semibold">{{ __('app.item_status') }} <span
                                                 class="text-danger">*</span></label>
                                         <select name="status" class="form-select rounded-3 py-2" required>
-                                            <option value="1" {{ $it->status == 1 ? 'selected' : '' }}>{{ __('app.item_active') }}</option>
+                                            <option value="1" {{ $it->status == 1 ? 'selected' : '' }}>
+                                                {{ __('app.item_active') }}</option>
                                             </option>
-                                            <option value="0" {{ $it->status == 0 ? 'selected' : '' }}>{{ __('app.item_inactive') }}
+                                            <option value="0" {{ $it->status == 0 ? 'selected' : '' }}>
+                                                {{ __('app.item_inactive') }}
                                             </option>
                                         </select>
                                     </div>
@@ -351,5 +441,53 @@
             </div>
         </div>
     @endforeach
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.custom-toast');
+
+            alerts.forEach(function(alert) {
+                // Match this time (5000ms) to your CSS animation time
+                setTimeout(function() {
+                    let bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                    if (bsAlert) {
+                        bsAlert.close();
+                    }
+                }, 4000);
+            });
+        });
+    </script>
+    {{-- Delete Confirmation with Password --}}
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Confirm Deletion',
+                text: "Please enter your password to confirm.",
+                input: 'password',
+                inputPlaceholder: 'Enter your password',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm Delete',
+                confirmButtonColor: '#dc3545',
+                preConfirm: (password) => {
+                    if (!password) {
+                        Swal.showValidationMessage('Password is required');
+                    }
+                    return password;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Find the hidden input and the form using the ID passed to the function
+                    const passwordInput = document.getElementById('password-' + id);
+                    const form = document.getElementById('delete-form-' + id);
+
+                    if (passwordInput && form) {
+                        passwordInput.value = result.value; // Put the password in the hidden field
+                        form.submit(); // Now the controller will receive the password!
+                    } else {
+                        console.error("Could not find the form or password input for ID: " + id);
+                    }
+                }
+            });
+        }
+    </script>
 
 @endsection

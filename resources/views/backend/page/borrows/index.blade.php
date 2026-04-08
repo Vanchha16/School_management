@@ -47,6 +47,153 @@
             font-size: 13px;
             padding: 6px 10px;
         }
+
+        .ajax-message-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 380px;
+        }
+
+        .ajax-toast {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            color: #1f2937;
+            background: #fff;
+            border-left: 5px solid #22c55e;
+            animation: slideInRight 0.35s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ajax-toast.success {
+            border-left-color: #22c55e;
+            background: linear-gradient(135deg, #f0fdf4, #ffffff);
+        }
+
+        .ajax-toast.error {
+            border-left-color: #ef4444;
+            background: linear-gradient(135deg, #fef2f2, #ffffff);
+        }
+
+        .ajax-toast .icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .ajax-toast.success .icon {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .ajax-toast.error .icon {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .ajax-toast .content {
+            flex: 1;
+        }
+
+        .ajax-toast .title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .ajax-toast .message {
+            font-size: 13px;
+            color: #4b5563;
+            margin: 0;
+        }
+
+        .ajax-toast .close-btn {
+            border: none;
+            background: transparent;
+            font-size: 18px;
+            line-height: 1;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .ajax-toast .close-btn:hover {
+            color: #111827;
+        }
+
+        .ajax-toast .progress {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.06);
+        }
+
+        .ajax-toast.success .progress-bar {
+            height: 100%;
+            background: #22c55e;
+            animation: shrinkBar 3.5s linear forwards;
+        }
+
+        .ajax-toast.error .progress-bar {
+            height: 100%;
+            background: #ef4444;
+            animation: shrinkBar 3.5s linear forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px) scale(0.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes fadeOutToast {
+            to {
+                opacity: 0;
+                transform: translateX(30px) scale(0.96);
+            }
+        }
+
+        @keyframes shrinkBar {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .ajax-message-container {
+                top: 15px;
+                right: 15px;
+                left: 15px;
+                max-width: unset;
+            }
+        }
     </style>
     <div class="container-fluid" style="padding: 3% 1%">
 
@@ -63,7 +210,7 @@
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
-
+        <div id="ajaxMessage" class="ajax-message-container"></div>
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
             <div>
                 <h2 class="mb-1">{{ __('app.borrows') }}</h2>
@@ -71,6 +218,10 @@
             </div>
 
             <div class="d-flex gap-2">
+                <button class="btn btn-success d-flex align-items-center gap-2" data-bs-toggle="modal"
+                    data-bs-target="#restoreBorrowModal">
+                    <span class="fs-5"><i class="fa-sharp fa-thin fa-trash-undo"></i></span> {{ __('app.restore_item') }}
+                </button>
                 <button class="btn btn-dark d-flex align-items-center gap-2" data-bs-toggle="modal"
                     data-bs-target="#borrowModal">
                     <span class="fs-5">+</span> {{ __('app.borrow_item') }}
@@ -216,16 +367,11 @@
                         </thead>
                         <tbody>
                             @forelse($borrows ?? [] as $i => $borrow)
-                                <tr class="border-bottom">
+                                <tr class="border-bottom" id="borrow-row-{{ $borrow->id }}">
                                     <td>{{ $i + 1 }}</td>
                                     <td>
                                         <div class="fw-semibold">{{ $borrow->student->student_name ?? 'N/A' }}</div>
-                                        <small class="text-muted">
-                                            {{-- {{ $borrow->student->student_id ?? '' }} --}}
-                                            @if (!empty($borrow->student?->group?->group_name))
-                                                {{ $borrow->student->group->group_name }}
-                                            @endif
-                                        </small>
+
                                     </td>
                                     <td>{{ $borrow->student->gender ?? 'N/A' }}</td>
                                     <td>{{ $borrow->student->group->group_name ?? 'N/A' }}</td>
@@ -387,10 +533,9 @@
                                             </form>
                                         @else
                                             <form action="{{ route('borrows.undoReturn', $borrow->id) }}" method="POST"
-                                                class="d-inline">
+                                                class="d-inline undo-return-form">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-outline-warning"
-                                                    onclick="return confirm('Undo return? This will set status back to BORROWED.')"
                                                     style="margin-bottom: 5px">
                                                     Undo
                                                 </button>
@@ -498,7 +643,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form action="{{ route('borrows.return') }}" method="POST">
+                <form id="returnForm" action="{{ route('borrows.return') }}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="row g-3">
@@ -509,7 +654,8 @@
                                     <option value="">-- {{ __('app.select_active_borrow') }} --</option>
                                     @foreach ($activeBorrows as $b)
                                         <option value="{{ $b->id }}">
-                                            {{ $b->student->student_name ?? 'N/A' }} - {{ $b->item->display_name ?? 'N/A' }}
+                                            {{ $b->student->student_name ?? 'N/A' }} -
+                                            {{ $b->item->display_name ?? 'N/A' }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -679,7 +825,7 @@
                     <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
-                <form method="POST" action="{{ route('borrows.update') }}">
+                <form id="editBorrowForm" method="POST" action="{{ route('borrows.update') }}">
                     @csrf
                     @method('PUT')
 
@@ -747,6 +893,340 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="restoreBorrowModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title">
+                        <i class="bi bi-trash-fill text-danger me-2"></i>{{ __('app.restore_item') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Student</th>
+                                    <th scope="col">Item</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Borrow Date</th>
+                                    <th scope="col">Return Date</th>
+                                    <th scope="col">Deleted By</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col" class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>
+                                        <strong>Mark Otto</strong><br>
+                                        <small class="text-muted">Group A | Male</small>
+                                    </td>
+                                    <td>Laptop</td>
+                                    <td>1</td>
+                                    <td>Oct 01, 2023</td>
+                                    <td>Oct 05, 2023</td>
+                                    <td>
+                                        <span class="text-primary">Admin_John</span><br>
+                                        <small class="text-muted" style="font-size: 0.75rem;">2023-10-06 14:30</small>
+                                    </td>
+                                    <td><span class="badge rounded-pill bg-danger">Deleted</span></td>
+                                    <td class="text-end">
+                                        <div class="btn-group">
+                                            
+                                            <button class="btn btn-sm btn-success">
+                                                <i class="bi bi-arrow-clockwise"></i> Restore
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showAjaxMessage(message, type = 'success') {
+            const container = document.getElementById('ajaxMessage');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `ajax-toast ${type}`;
+
+            const icon = type === 'success' ? '✓' : '!';
+            const title = type === 'success' ? 'Success' : 'Error';
+
+            toast.innerHTML = `
+            <div class="icon">${icon}</div>
+            <div class="content">
+                <div class="title">${title}</div>
+                <p class="message">${message}</p>
+            </div>
+            <button type="button" class="close-btn">&times;</button>
+            <div class="progress">
+                <div class="progress-bar"></div>
+            </div>
+        `;
+
+            container.appendChild(toast);
+
+            const removeToast = () => {
+                toast.style.animation = 'fadeOutToast 0.25s ease forwards';
+                setTimeout(() => toast.remove(), 250);
+            };
+
+            toast.querySelector('.close-btn').addEventListener('click', removeToast);
+
+            setTimeout(removeToast, 3500);
+        }
+
+        function formatStatus(status) {
+            if (!status) return '-';
+            return status.charAt(0) + status.slice(1).toLowerCase();
+        }
+
+        function statusBadge(status) {
+            let cls = 'secondary';
+            if (status === 'RETURNED') cls = 'success';
+            else if (status === 'BORROWED') cls = 'warning';
+            else if (status === 'OVERDUE') cls = 'danger';
+
+            return `<span class="badge rounded-pill bg-${cls} px-3 py-2">${formatStatus(status)}</span>`;
+        }
+
+        function dateCell(datetime) {
+            if (!datetime || datetime === '-') return '-';
+
+            const parts = datetime.split(' ');
+            if (parts.length >= 4) {
+                return `
+                <span class="date">${parts[0]} ${parts[1]} ${parts[2]}</span>
+                <span class="time">${parts[3]}</span>
+            `;
+            }
+
+            return datetime;
+        }
+
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function buildViewButton(borrow) {
+            return `
+        <button type="button" class="btn btn-sm btn-outline-secondary"
+            data-bs-toggle="modal"
+            data-bs-target="#borrowDetailModal"
+            data-student="${escapeHtml(borrow.student_name)}"
+            data-item="${escapeHtml(borrow.item_name)}"
+            data-qty="${escapeHtml(borrow.qty)}"
+            data-status="${escapeHtml(borrow.status)}"
+            data-condition="${escapeHtml(borrow.condition ?? '-')}"
+            data-borrow-date="${escapeHtml(borrow.borrow_date ?? '-')}"
+            data-due-date="${escapeHtml(borrow.due_date ?? '-')}"
+            data-return-date="${escapeHtml(borrow.return_date ?? '-')}"
+            data-approved-by="${escapeHtml(borrow.approved_by ?? '-')}"
+            data-returned-by="${escapeHtml(borrow.returned_by ?? '-')}"
+            data-notes="${escapeHtml(borrow.notes ?? '-')}"
+            data-return-notes="${escapeHtml(borrow.return_notes ?? '-')}"
+            style="margin-bottom: 5px">
+            View
+        </button>
+    `;
+        }
+
+        function buildActionButtons(borrow) {
+            if (borrow.status === 'RETURNED') {
+                return `
+            ${buildViewButton(borrow)}
+
+            <form action="/admin/borrows/${borrow.id}/undo-return" method="POST" class="d-inline undo-return-form">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm btn-outline-warning" style="margin-bottom: 5px">
+                    Undo
+                </button>
+            </form>
+        `;
+            }
+
+            return `
+        <button class="btn btn-sm btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#editBorrowModal"
+            data-id="${borrow.id}"
+            data-student="${borrow.student_id}"
+            data-item="${borrow.item_id}"
+            data-qty="${borrow.qty}"
+            style="margin-bottom: 5px">
+            Edit
+        </button>
+
+        ${buildViewButton(borrow)}
+
+        <button class="btn btn-sm btn-outline-dark"
+            data-bs-toggle="modal"
+            data-bs-target="#returnModal"
+            data-borrow-id="${borrow.id}"
+            style="margin-bottom: 5px">
+            Return
+        </button>
+
+        <form action="/borrows/${borrow.id}" method="POST" class="d-inline">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-sm btn-outline-danger"
+                onclick="return confirm('Delete this borrow record?')">
+                Delete
+            </button>
+        </form>
+    `;
+        }
+
+        function updateBorrowRow(borrow) {
+            const row = document.getElementById(`borrow-row-${borrow.id}`);
+            if (!row) return;
+
+            const rowNumber = row.querySelector('td:first-child')?.textContent?.trim() || '#';
+
+            row.innerHTML = `
+        <td>${rowNumber}</td>
+        <td><div class="fw-semibold">${borrow.student_name}</div></td>
+        <td>${borrow.gender}</td>
+        <td>${borrow.group_name}</td>
+        <td><div class="fw-semibold">${borrow.item_name}</div></td>
+        <td>${borrow.qty}</td>
+        <td class="datetime">${dateCell(borrow.borrow_date)}</td>
+        <td class="datetime">${dateCell(borrow.return_date)}</td>
+        <td>${statusBadge(borrow.status)}</td>
+        <td class="text-end">${buildActionButtons(borrow)}</td>
+    `;
+        }
+    </script>
+    <script>
+        document.getElementById('returnForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const form = this;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content')
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAjaxMessage(data.message || 'Return failed.', 'danger');
+                    return;
+                }
+
+                updateBorrowRow(data.borrow);
+                showAjaxMessage(data.message, 'success');
+
+                const modalEl = document.getElementById('returnModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+
+                form.reset();
+            } catch (error) {
+                showAjaxMessage('Something went wrong.', 'danger');
+            }
+        });
+    </script>
+    <script>
+        document.getElementById('editBorrowForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const form = this;
+            const formData = new FormData(form);
+            formData.append('_method', 'PUT');
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content')
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAjaxMessage(data.message || 'Update failed.', 'danger');
+                    return;
+                }
+
+                updateBorrowRow(data.borrow);
+                showAjaxMessage(data.message, 'success');
+
+                const modalEl = document.getElementById('editBorrowModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+            } catch (error) {
+                showAjaxMessage('Something went wrong.', 'danger');
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('submit', async function(e) {
+            if (!e.target.classList.contains('undo-return-form')) return;
+
+            e.preventDefault();
+
+            const form = e.target;
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content')
+                    },
+                    body: new FormData(form)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAjaxMessage(data.message || 'Undo failed.', 'danger');
+                    return;
+                }
+
+                updateBorrowRow(data.borrow);
+                showAjaxMessage(data.message, 'success');
+            } catch (error) {
+                showAjaxMessage('Something went wrong.', 'danger');
+            }
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const returnModal = document.getElementById('returnModal');
@@ -857,13 +1337,6 @@
                 );
             }
         });
-        const statusEl = detailModal.querySelector('.js-status');
-        statusEl.textContent = button.getAttribute('data-status');
-
-        if (statusEl.textContent === 'RETURNED') {
-            statusEl.classList.remove('bg-primary');
-            statusEl.classList.add('bg-success');
-        }
     </script>
     <script>
         const editModal = document.getElementById('editBorrowModal');

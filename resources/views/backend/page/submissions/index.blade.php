@@ -10,6 +10,40 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
+@if (session('group_change_request'))
+    @php $change = session('group_change_request'); @endphp
+    <div class="alert alert-warning">
+        <div class="mb-2">
+            {{ __('app.This student') }} <strong>{{ $change['student_name'] }}</strong>
+            {{ __('app.is already in group') }}
+            <strong>{{ $change['current_group'] }}</strong>.
+            {{ __('app.Do you want to change the student to group') }}
+            <strong>{{ $change['new_group'] }}</strong>?
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <form method="POST" action="{{ route('submissions.changeGroup', $change['submission_id']) }}">
+                @csrf
+                <button type="submit" class="btn btn-success">
+                    {{ __('app.Yes, Change Group') }}
+                </button>
+            </form>
+
+            <form method="POST" action="{{ route('submissions.approveBorrow', $change['submission_id']) }}">
+                @csrf
+                <input type="hidden" name="skip_group_change" value="1">
+                <button type="submit" class="btn btn-primary">
+                    {{ __('app.Approve Borrow') }}
+                </button>
+            </form>
+
+            <a href="{{ route('submissions.index') }}" class="btn btn-danger">
+                {{ __('app.Cancel') }}
+            </a>
+        </div>
+    </div>
+@endif
+
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul class="mb-0">
@@ -17,26 +51,6 @@
                         <li>{{ $e }}</li>
                     @endforeach
                 </ul>
-            </div>
-        @endif
-
-        @if (session('group_change_submission_id'))
-            <div class="alert alert-warning">
-                <div class="mb-2">
-                    {{ __('app.This Student already exists in group') }}
-                    <strong>{{ session('group_change_old_group') }}</strong>.
-                    {{ __('app.Do you want to change the student to group') }}
-                    <strong>{{ session('group_change_new_group') }}</strong>?
-                </div>
-
-                <form method="POST"
-                    action="{{ route('submissions.confirmGroupChange', session('group_change_submission_id')) }}">
-                    @csrf
-                    <button type="submit" class="btn btn-success">
-                        {{ __('app.Yes, Change Group') }}
-                    </button>
-                    <a href="{{ url()->current() }}" class="btn btn-danger">{{ __('app.Cancel') }}</a>
-                </form>
             </div>
         @endif
 
@@ -52,7 +66,9 @@
                         placeholder="{{ __('app.Search student name...') }}">
                     <button class="btn btn-primary">{{ __('app.search') }}</button>
                 </form>
+
                 <a href="{{ url()->current() }}" class="btn btn-secondary">{{ __('app.reset') }}</a>
+
                 <form method="POST" action="{{ route('submissions.cancelAll') }}"
                     onsubmit="return confirm('Are you sure you want to cancel all submissions?');">
                     @csrf
@@ -83,6 +99,7 @@
                                 <td>{{ $row->student_name }}</td>
                                 <td>{{ $row->phone_number }}</td>
                                 <td>{{ $row->group->group_name ?? '-' }}</td>
+
                                 <td>
                                     @if ($row->item && $row->item_id)
                                         {{ $row->item->display_name }}
@@ -92,39 +109,57 @@
                                         </span>
                                     @endif
                                 </td>
+
                                 <td>{{ $row->note ?? '-' }}</td>
+
                                 <td>
                                     @if (!empty($row->item?->image))
-                                        <img src="{{ asset('storage/' . $row->item->image) }}" width="60" height="60"
-                                            style="object-fit:cover;border-radius:8px;">
+                                        <img src="{{ asset('storage/' . $row->item->image) }}" width="60"
+                                            height="60" style="object-fit:cover;border-radius:8px;">
                                     @else
                                         <span>No image</span>
                                     @endif
                                 </td>
+
                                 <td>{{ $row->qty }}</td>
+
                                 <td>
                                     @if ($row->is_borrow_approved)
                                         <span class="badge bg-success">Approved</span>
-                                    @else
+                                    @elseif ($row->match_status === 'different_group')
+                                        <span class="badge bg-warning text-dark">Group Change Needed</span>
+                                    @elseif ($row->match_status === 'same_group' || $row->student_id)
                                         <span class="badge bg-warning text-dark">Pending</span>
+                                    @else
+                                        <span class="badge bg-secondary">New Student</span>
                                     @endif
                                 </td>
+
                                 <td>
                                     <div class="d-flex flex-column gap-2">
-                                        @if ($row->is_student_existing || $row->is_student_added)
-                                            <div class="text-success small">{{ __('app.Student already in database') }}</div>
-
-                                            @if (!$row->is_borrow_approved)
-                                                <form method="POST"
-                                                    action="{{ route('submissions.approveBorrow', $row->id) }}">
-                                                    @csrf
-                                                    <button class="btn btn-sm btn-primary w-100">Approve Borrow</button>
-                                                </form>
-                                            @endif
+                                        @if ($row->is_borrow_approved)
+                                            <span class="text-success small">{{ __('app.Borrow already approved') }}</span>
+                                        @elseif ($row->match_status === 'different_group')
+                                            <form method="POST" action="{{ route('submissions.addStudent', $row->id) }}">
+                                                @csrf
+                                                <button class="btn btn-sm btn-warning w-100">
+                                                    {{ __('app.Review Group Change') }}
+                                                </button>
+                                            </form>
+                                        @elseif ($row->match_status === 'same_group' || $row->student_id)
+                                            <form method="POST"
+                                                action="{{ route('submissions.approveBorrow', $row->id) }}">
+                                                @csrf
+                                                <button class="btn btn-sm btn-primary w-100">
+                                                    {{ __('app.Approve Borrow') }}
+                                                </button>
+                                            </form>
                                         @else
                                             <form method="POST" action="{{ route('submissions.addStudent', $row->id) }}">
                                                 @csrf
-                                                <button class="btn btn-sm btn-dark w-100">{{ __('app.Add Student') }}</button>
+                                                <button class="btn btn-sm btn-dark w-100">
+                                                    {{ __('app.Add Student') }}
+                                                </button>
                                             </form>
                                         @endif
 
@@ -132,7 +167,8 @@
                                             onsubmit="return confirm('Remove this submission?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger w-100">Remove</button>
+                                            <button
+                                                class="btn btn-sm btn-outline-danger w-100">{{ __('app.Remove') }}</button>
                                         </form>
                                     </div>
                                 </td>

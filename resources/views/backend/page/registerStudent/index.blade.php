@@ -78,6 +78,7 @@
             background-color: #f1f3f5;
             transform: scale(1.08);
         }
+        
     </style>
 </head>
 
@@ -92,20 +93,50 @@
         </div>
 
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $e)
-                        <li>{{ $e }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // 1. Success Message
+                @if (session('success'))
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Done!',
+                        text: "{{ session('success') }}",
+                        confirmButtonColor: '#198754', // Bootstrap Success Color
+                        timer: 4000
+                    });
+                @endif
 
+                // 2. Validation Errors
+                @if ($errors->any())
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        html: `
+                    <div style="text-align: left;">
+                        <ul class="list-group list-group-flush">
+                            @foreach ($errors->all() as $error)
+                                <li class="list-group-item text-danger border-0 text-center rgb">
+                                    <i class="bi bi-x-circle me-2"></i> {{ $error }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                `,
+                        confirmButtonColor: '#dc3545', // Bootstrap Danger Color
+                    });
+                @endif
 
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+                // 3. Generic Warning/Session Error
+                @if (session('error'))
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Wait a minute...',
+                        text: "{{ session('error') }}",
+                        confirmButtonColor: '#ffc107',
+                    });
+                @endif
+            });
+        </script>
 
 
         <div class="card shadow-sm border-0 p-3">
@@ -145,10 +176,7 @@
                 <form method="POST" action="{{ route('submissions.store') }}" id="registerForm">
                     @csrf
 
-
                     <!-- GROUP -->
-
-
                     <!-- STUDENT -->
                     <div class="mb-3">
                         <label class="form-label">{{ __('app.Student Name') }} *</label>
@@ -156,20 +184,20 @@
                         <input type="text" id="student_name" name="student_name" class="form-control"
                             list="students_list" autocomplete="off" value="{{ old('student_name') }}" required>
 
-                        <datalist id="students_list">
+                        {{-- <datalist id="students_list">
                             @foreach ($students as $student)
                                 <option value="{{ $student->student_name }}"></option>
                             @endforeach
-                        </datalist>
+                        </datalist> --}}
 
                         <small id="student_help" class="text-muted"></small>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">{{ __('app.groups') }} *</label>
+                        <label class="form-label ">{{ __('app.groups') }} *</label>
 
                         <input type="text" id="group_search" name="group_search" class="form-control"
-                            list="groups_list" placeholder="Type group name" autocomplete="off"
-                            value="{{ old('group_search') }}" required>
+                            list="groups_list" placeholder="{{ __('app.Input group name') }}" autocomplete="off"
+                            value="{{ old('group_search') }}" oninput="this.value = this.value.toUpperCase()" required>
 
                         <datalist id="groups_list">
                             @foreach ($groups as $g)
@@ -282,7 +310,7 @@
 
 
                     <button type="submit" class="btn btn-dark w-100" id="submitBtn">
-                        Submit
+                        {{ __('app.Submit') }}
                     </button>
 
                 </form>
@@ -410,6 +438,11 @@
                     phoneNumberInput.setCustomValidity('Invalid phone number');
                     return false;
                 }
+                if (value === '0123456789' || value === '0987654321' || value === '0000000000') {
+                    phoneError.textContent = '{{ __('app.Please enter a valid phone number.') }}';
+                    phoneNumberInput.setCustomValidity('Invalid phone number');
+                    return false;
+                }
 
                 return true;
             }
@@ -429,7 +462,8 @@
 
                 studentTimer = setTimeout(() => {
                     fetch(
-                            `{{ route('register.checkStudentName') }}?student_name=${encodeURIComponent(studentName)}`)
+                            `{{ route('register.checkStudentName') }}?student_name=${encodeURIComponent(studentName)}`
+                            )
                         .then(response => response.json())
                         .then(data => {
                             if (data.exists) {
@@ -501,15 +535,15 @@
 
                     return;
                 }
-
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Submitting...';
+                submitBtn.textContent = '{{ __('app.Submitting...') }}';
             });
 
             updateItemUI(originalSelect.value || '');
             syncGroupId();
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

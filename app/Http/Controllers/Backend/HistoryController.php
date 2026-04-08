@@ -38,7 +38,6 @@ class HistoryController extends Controller
             ->orderByDesc('action_at')
             ->paginate(10)
             ->appends($request->query());
-        dd($histories->perPage());
         return view('backend.page.borrows.history', compact('histories'));
     }
 }

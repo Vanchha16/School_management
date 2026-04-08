@@ -29,24 +29,22 @@ class SubmissionController extends Controller
 
         $submissions->getCollection()->transform(function ($sub) {
             $existing = null;
-            $reason = null;
+            $matchStatus = null;
 
             if (!empty($sub->phone_number)) {
-                $existing = Student::where('phone_number', $sub->phone_number)->first();
-                if ($existing) {
-                    $reason = 'phone';
-                }
-            }
+                $existing = Student::with('group')
+                    ->where('phone_number', $sub->phone_number)
+                    ->first();
 
-            if (!$existing) {
-                $existing = Student::where('student_name', $sub->student_name)->first();
                 if ($existing) {
-                    $reason = 'name';
+                    $matchStatus = ((int) $existing->group_id === (int) $sub->group_id)
+                        ? 'same_group'
+                        : 'different_group';
                 }
             }
 
             $sub->existing_student = $existing;
-            $sub->existing_reason = $reason;
+            $sub->match_status = $matchStatus;
 
             return $sub;
         });
@@ -96,7 +94,7 @@ class SubmissionController extends Controller
 
         if ($duplicateSubmission) {
             return back()
-                ->withErrors(['student_name' => 'This form was already submitted and is still pending approval.'])
+                ->withErrors(['student_name' => __('app.This form was already submitted and is still pending approval.')])
                 ->withInput();
         }
 
@@ -115,7 +113,7 @@ class SubmissionController extends Controller
             'is_borrow_approved' => false,
         ]);
 
-        return back()->with('success', 'Submitted successfully. Please wait for approval.');
+        return back()->with('success', __('app.Submitted successfully. Please wait for approval.'));
     }
 
     public function approve(StudentSubmission $submission)
@@ -197,140 +195,166 @@ class SubmissionController extends Controller
         )->with('success', 'Submission cleared. You can borrow item now.');
     }
 
-    public function addStudent($id)
-    {
-        $submission = StudentSubmission::findOrFail($id);
+   public function addStudent($id)
+{
+    $submission = StudentSubmission::with('group')->findOrFail($id);
 
-        if ($submission->student_id) {
-            return back()->with('success', 'Student already exists.');
-        }
+    if ($submission->student_id) {
+        return back()->with('success', 'Student already exists.');
+    }
 
-        $existingStudent = Student::where('phone_number', $submission->phone_number)->first();
+    $existingStudent = Student::with('group')
+        ->where('phone_number', $submission->phone_number)
+        ->first();
 
-        // Case 1: phone exists and group is different
-        if ($existingStudent && $existingStudent->group_id != $submission->group_id) {
-            return back()->with('group_change_submission_id', $submission->id)
-                ->with('group_change_student_id', $existingStudent->student_id)
-                ->with('group_change_old_group', $existingStudent->group->group_name ?? 'Unknown')
-                ->with('group_change_new_group', $submission->group->group_name ?? 'Unknown');
-                
-        }
+    // Existing student and different group
+    if ($existingStudent && (int) $existingStudent->group_id !== (int) $submission->group_id) {
+        return back()->with('group_change_request', [
+            'submission_id' => $submission->id,
+            'student_id' => $existingStudent->student_id,
+            'student_name' => $existingStudent->student_name,
+            'current_group' => $existingStudent->group->group_name ?? 'Unknown',
+            'new_group' => $submission->group->group_name ?? 'Unknown',
+        ]);
+    }
 
-        // Case 2: phone exists and same group => just link submission to existing student
+    // No existing student -> create new one
+    $student = Student::create([
+        'student_name' => $submission->student_name,
+        'gender' => $submission->gender,
+        'phone_number' => $submission->phone_number,
+        'group_id' => $submission->group_id,
+        'status' => 1,
+    ]);
+
+    $submission->update([
+        'student_id' => $student->student_id,
+        'is_student_added' => true,
+    ]);
+
+    return back()->with('success', __('app.Student added successfully. Now you can approve borrow.'));
+}
+
+  public function approveBorrow(Request $request, $id)
+{
+    $submission = StudentSubmission::findOrFail($id);
+
+    if ($submission->is_borrow_approved) {
+        return back()->with('success', __('app.Borrow already approved'));
+    }
+
+    $studentId = $submission->student_id;
+
+    if (!$studentId && !empty($submission->phone_number)) {
+        $existingStudent = Student::with('group')
+            ->where('phone_number', $submission->phone_number)
+            ->first();
+
         if ($existingStudent) {
-            $submission->update([
-                'student_id' => $existingStudent->student_id,
-                'is_student_existing' => true,
-                'is_student_added' => true,
-            ]);
+            if (
+                !$request->has('skip_group_change') &&
+                (int) $existingStudent->group_id !== (int) $submission->group_id
+            ) {
+                return back()->with('group_change_request', [
+                    'submission_id' => $submission->id,
+                    'student_id' => $existingStudent->student_id,
+                    'student_name' => $existingStudent->student_name,
+                    'current_group' => $existingStudent->group->group_name ?? 'Unknown',
+                    'new_group' => $submission->group->group_name ?? 'Unknown',
+                ]);
+            }
 
-            return back()->with('success', 'Existing student linked successfully. Now you can approve borrow.');
+            $studentId = $existingStudent->student_id;
         }
-
-        // Case 3: no existing student => create new one
-        $student = Student::create([
-            'student_name' => $submission->student_name,
-            'gender' => $submission->gender,
-            'phone_number' => $submission->phone_number,
-            'group_id' => $submission->group_id,
-            'status' => 1,
-        ]);
-
-        $submission->update([
-            'student_id' => $student->student_id,
-            'is_student_added' => true,
-        ]);
-
-        return back()->with('success', 'Student added successfully. Now you can approve borrow.');
     }
 
-    public function approveBorrow($id)
-    {
-        $submission = StudentSubmission::findOrFail($id);
-
-        if (!$submission->student_id) {
-            return back()->withErrors(['error' => 'Please add the student first.']);
-        }
-
-        if ($submission->is_borrow_approved) {
-            return back()->with('success', 'Borrow already approved.');
-        }
-
-        $item = Item::where('Itemid', $submission->item_id)->firstOrFail();
-
-        if ($item->qty < $submission->qty) {
-            return back()->withErrors(['error' => 'Not enough stock to approve this borrow.']);
-        }
-
-        $borrow = Borrow::create([
-            'student_id' => $submission->student_id,
-            'item_id' => $submission->item_id,
-            'borrow_date' => now('Asia/Jakarta'),
-            'qty' => $submission->qty,
-            'status' => 'BORROWED',
-            'notes' => $submission->note,
-            'approved_by' => Auth::id(),
-        ]);
-
-        $item->decrement('qty', $submission->qty);
-
-        $student = Student::where('student_id', $submission->student_id)->first();
-
-        ItemHistory::create([
-            'borrow_id' => $borrow->id,
-            'student_id' => $borrow->student_id,
-            'item_id' => $borrow->item_id,
-            'user_id' => Auth::id(),
-            'approved_by' => $borrow->approved_by,
-            'returned_by' => null,
-            'action' => 'Borrowed',
-            'details' => (Auth::user()?->name ?? 'System') . ' borrowed ' . $borrow->qty . ' x ' . ($item->name ?? '-') . ' for ' . ($student->student_name ?? '-') . '.',
-            'action_at' => $borrow->borrow_date,
-        ]);
-
-        $submission->update([
-            'is_borrow_approved' => true,
-        ]);
-
-        return back()->with('success', 'Borrow approved successfully.');
+    if (!$studentId) {
+        return back()->withErrors(['error' => 'Please add the student first.']);
     }
+
+    $item = Item::where('Itemid', $submission->item_id)->firstOrFail();
+
+    $activeBorrowed = Borrow::where('item_id', $item->Itemid)
+        ->whereIn('status', ['BORROWED', 'OVERDUE'])
+        ->sum('qty');
+    $available = $item->qty - $activeBorrowed;
+
+    if ($available < $submission->qty) {
+        return back()->withErrors(['error' => __('app.Not enough stock to approve this borrow.')]);
+    }
+
+    $borrow = Borrow::create([
+        'student_id' => $studentId,
+        'item_id' => $submission->item_id,
+        'borrow_date' => now('Asia/Phnom_Penh'),
+        'qty' => $submission->qty,
+        'status' => 'BORROWED',
+        'notes' => $submission->note,
+        'approved_by' => Auth::id(),
+    ]);
+
+    $student = Student::where('student_id', $studentId)->first();
+
+    ItemHistory::create([
+        'borrow_id' => $borrow->id,
+        'student_id' => $borrow->student_id,
+        'item_id' => $borrow->item_id,
+        'user_id' => Auth::id(),
+        'approved_by' => $borrow->approved_by,
+        'returned_by' => null,
+        'action' => 'Borrowed',
+        'details' => (Auth::user()?->name ?? 'System') . ' borrowed ' . $borrow->qty . ' x ' . ($item->name ?? '-') . ' for ' . ($student->student_name ?? '-') . '.',
+        'action_at' => $borrow->borrow_date,
+    ]);
+
+    $submission->update([
+        'student_id' => $studentId,
+        'is_student_existing' => true,
+        'is_student_added' => true,
+        'is_borrow_approved' => true,
+    ]);
+
+    return back()->with('success', __('app.Borrow approved successfully.'));
+}
 
     public function remove($id)
     {
         $submission = StudentSubmission::findOrFail($id);
         $submission->delete();
 
-        return back()->with('success', 'Submission removed successfully.');
+        return back()->with('success', __('app.Submission removed successfully.'));
     }
 
     public function cancelAll()
     {
         StudentSubmission::query()->delete();
 
-        return back()->with('success', 'All submissions cancelled successfully.');
+        return back()->with('success', __('app.All submissions cancelled successfully.'));
     }
     public function confirmGroupChange($id)
-    {
-        $submission = StudentSubmission::findOrFail($id);
+{
+    $submission = StudentSubmission::with('group')->findOrFail($id);
 
-        $student = Student::where('phone_number', $submission->phone_number)->first();
+    $student = Student::with('group')
+        ->where('phone_number', $submission->phone_number)
+        ->first();
 
-        if (!$student) {
-            return back()->withErrors([
-                'error' => 'Student with this phone number was not found.',
-            ]);
-        }
-
-        $student->update([
-            'group_id' => $submission->group_id,
+    if (!$student) {
+        return back()->withErrors([
+            'error' => 'Student with this phone number was not found.',
         ]);
-
-        $submission->update([
-            'student_id' => $student->student_id,
-            'is_student_existing' => true,
-            'is_student_added' => true,
-        ]);
-
-        return back()->with('success', 'Student group changed successfully. Now you can approve borrow.');
     }
+
+    $student->update([
+        'group_id' => $submission->group_id,
+    ]);
+
+    $submission->update([
+        'student_id' => $student->student_id,
+        'is_student_existing' => true,
+        'is_student_added' => true,
+    ]);
+
+    return back()->with('success', __('app.Student group changed successfully. Now you can approve borrow.'));
+}
 }

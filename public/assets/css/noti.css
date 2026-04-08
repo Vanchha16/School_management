@@ -1,0 +1,129 @@
+.dropdown_menu-7 {
+    animation: rotateMenu 400ms ease-in-out forwards;
+    transform-origin: top center;
+}
+
+@keyframes rotateMenu {
+    0% {
+        transform: rotateX(-90deg);
+        opacity: 0;
+    }
+
+    70% {
+        transform: rotateX(20deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+.drop {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+    overflow: visible;
+}
+
+.drop:hover {
+    background: #f8fafc;
+    color: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+}
+
+.drop i {
+    font-size: 18px;
+}
+
+.drop .badge {
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+    line-height: 18px;
+    padding: 0 5px;
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    color: #fff;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.35);
+}
+
+.dropdown_menu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    left: auto;
+    min-width: 260px;
+    margin: 0;
+    padding: 10px;
+    list-style: none;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+    border: 1px solid #e5e7eb;
+    z-index: 999;
+    display: none;
+}
+
+.dropdown_menu.show {
+    display: block;
+}
+
+.dropdown_menu li {
+    display: block;
+    opacity: 1;
+    margin-bottom: 6px;
+}
+
+.dropdown_menu li:last-child {
+    margin-bottom: 0;
+}
+
+.dropdown_menu li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #1f2937;
+    background: #f8fafc;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+.dropdown_menu li a i {
+    color: #2563eb;
+    font-size: 16px;
+}
+
+.dropdown_menu li a:hover {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    color: #1d4ed8;
+    transform: translateX(4px);
+}
+
+.dropdown_menu::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    right: 14px;
+    width: 14px;
+    height: 14px;
+    background: #ffffff;
+    border-left: 1px solid #e5e7eb;
+    border-top: 1px solid #e5e7eb;
+    transform: rotate(45deg);
+}

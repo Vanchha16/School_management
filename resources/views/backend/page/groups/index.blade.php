@@ -55,7 +55,7 @@
 
                 {{-- Add --}}
                 <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addGroupModal">
-                    <i class="bi bi-people me-1"></i> {{ __('app.add_group') }}
+                    <i class="bi bi-people me-1"></i> {{ __('app.Add Group') }}
                 </button>
             </div>
         </div>
@@ -139,13 +139,13 @@
                 @csrf
 
                 <div class="modal-header">
-                    <h5 class="modal-title fw-semibold">Add Group</h5>
+                    <h5 class="modal-title fw-semibold">{{ __('app.Add Group') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
                     <label class="form-label fw-semibold">
-                        Group Name <span class="text-danger">*</span>
+                        {{ __('app.Group Name') }} <span class="text-danger">*</span>
                     </label>
                     <input
                         type="text"
@@ -157,9 +157,9 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('app.Cancel') }}</button>
                     <button class="btn btn-dark">
-                        <i class="bi bi-check2-circle me-1"></i> Save
+                        <i class="bi bi-check2-circle me-1"></i> {{ __('app.Save') }}
                     </button>
                 </div>
             </form>

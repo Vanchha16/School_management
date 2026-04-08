@@ -31,7 +31,7 @@
                     </div>
 
                     <div class="col-md-2">
-                        <a href="{{ url()->current() }}" class="btn btn-danger w-100​">
+                        <a href="{{ url()->current() }}" class="btn btn-danger w-100">
                             {{ __('app.reset') }}
                         </a>
                     </div>
