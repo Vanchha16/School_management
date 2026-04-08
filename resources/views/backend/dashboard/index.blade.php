@@ -262,7 +262,7 @@
                                 @php
                                     $user = Auth::user();
                                     $profilePhoto = !empty($user?->photo)
-                                        ? asset('assets/uploads/profile/' . $user->photo)
+                                        ? asset('storage/' . $user->photo)
                                         : null;
                                     $userInitial = strtoupper(substr($user->name ?? 'A', 0, 1));
                                 @endphp
@@ -277,7 +277,7 @@
                                         <div class="position-relative">
                                             <div class="mb-3" style="margin-bottom:0 !important;">
                                                 @if (!empty($user->photo))
-                                                    <img src="{{ asset('assets/uploads/profile/' . $user->photo) }}"
+                                                    <img src="{{ asset('storage/' . $user->photo) }}"
                                                         alt="Profile" class="rounded-circle border"
                                                         style="width:42px; height:42px; object-fit:cover;">
                                                 @else
@@ -467,7 +467,7 @@
                             <div class="rounded-3 d-flex align-items-center justify-content-center"
                                 style="width: 78px; height: 78px;  ">
                                 @if (!empty($imageSocket->image))
-                                    <img src="{{ asset('assets/uploads/thumbnails/items/' . $imageSocket->image) }}" alt=""
+                                    <img src="{{ asset('storage/' . $imageSocket->image) }}" alt=""
                                         style="max-width: 70%; max-height: 70%; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));border: 1px solid rgba(0, 0, 0, 0.2);">
                                 @else
                                     <i class="bi bi-hdd-network text-info fs-5"></i>
@@ -575,7 +575,7 @@
                             <div class="d-flex align-items-start gap-3 py-3 border-bottom">
                                 <div>
                                     @if (!empty($borrow->item?->image))
-                                        <img src="{{ asset('assets/uploads/items/' . $borrow->item->image) }}"
+                                        <img src="{{ asset('storage/' . $borrow->item->image) }}"
                                             width="54" height="54" style="object-fit:cover;border-radius:10px;">
                                     @else
                                         <div class="bg-light rounded-3 d-flex align-items-center justify-content-center"

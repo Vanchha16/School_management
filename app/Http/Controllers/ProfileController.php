@@ -4,11 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -42,35 +39,8 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $manager = new ImageManager(new Driver);
-
-            $photoFile = $request->file('photo');
-            $imageName = Str::uuid().'.jpg';
-
-            $profilePath = public_path('assets/uploads/profile');
-            $thumbPath = public_path('assets/uploads/thumbnails/profile');
-
-            if (! File::exists($profilePath)) {
-                File::makeDirectory($profilePath, 0755, true);
-            }
-
-            if (! File::exists($thumbPath)) {
-                File::makeDirectory($thumbPath, 0755, true);
-            }
-
-            $mainImage = $manager->read($photoFile->getRealPath())
-                ->cover(400, 400)
-                ->toJpeg(85);
-
-            file_put_contents($profilePath.'/'.$imageName, (string) $mainImage);
-
-            $thumbnailImage = $manager->read($photoFile->getRealPath())
-                ->cover(150, 150)
-                ->toJpeg(80);
-
-            file_put_contents($thumbPath.'/'.$imageName, (string) $thumbnailImage);
-
-            $user->photo = $imageName;
+            $path = $request->file('photo')->store('profile', 'public');
+            $user->photo = $path;
             $user->save();
         }
 
@@ -86,48 +56,11 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $manager = new ImageManager(new Driver);
-
-            $photoFile = $request->file('photo');
-            $imageName = Str::uuid().'.jpg';
-
-            $profilePath = public_path('assets/uploads/profile');
-            $thumbPath = public_path('assets/uploads/thumbnails/profile');
-
-            if (! File::exists($profilePath)) {
-                File::makeDirectory($profilePath, 0755, true);
-            }
-
-            if (! File::exists($thumbPath)) {
-                File::makeDirectory($thumbPath, 0755, true);
-            }
-
             if ($user->photo) {
-                $oldMain = $profilePath.'/'.$user->photo;
-                $oldThumb = $thumbPath.'/'.$user->photo;
-
-                if (File::exists($oldMain)) {
-                    File::delete($oldMain);
-                }
-
-                if (File::exists($oldThumb)) {
-                    File::delete($oldThumb);
-                }
+                Storage::disk('public')->delete($user->photo);
             }
-
-            $mainImage = $manager->read($photoFile->getRealPath())
-                ->cover(400, 400)
-                ->toJpeg(85);
-
-            file_put_contents($profilePath.'/'.$imageName, (string) $mainImage);
-
-            $thumbnailImage = $manager->read($photoFile->getRealPath())
-                ->cover(150, 150)
-                ->toJpeg(80);
-
-            file_put_contents($thumbPath.'/'.$imageName, (string) $thumbnailImage);
-
-            $user->photo = $imageName;
+            $path = $request->file('photo')->store('profile', 'public');
+            $user->photo = $path;
             $user->save();
         }
 

@@ -49,7 +49,7 @@ return [
         'custom' => [
                 'driver' => 'local',
                 'root' => storage_path('../public'),
-                'url' => env('APP_URL').'/storage',
+                'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
                 'visibility' => 'public',
                 'throw' => false,
             ],
@@ -59,8 +59,8 @@ return [
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
+            'url' => env('AWS_URL', null),
+            'endpoint' => env('AWS_ENDPOINT', null),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
             'report' => false,
@@ -81,6 +81,8 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('assets/uploads') => storage_path('../public/assets/uploads')
+        
     ],
 
 ];

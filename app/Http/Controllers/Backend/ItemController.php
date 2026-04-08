@@ -8,8 +8,6 @@ use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\ImageManager;
 
 class ItemController extends Controller
 {
@@ -50,37 +48,10 @@ class ItemController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2024',
         ]);
 
+        $path = null;
         if ($request->hasFile('image')) {
-
-            $manager = new ImageManager(new Driver);
-            // Get uploaded file
-            $imageFile = $request->file('image');
-            // Create a unique name
-            $imageName = time().'.'.$imageFile->getClientOriginalExtension();
-
-            // Resize image using Intervention Image
-            $resizedImage = $manager
-                ->read($imageFile->getRealPath())
-                ->resize(150, 150, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->toJpeg(80); // or toPng(), toWebp() as needed
-
-            // Save thumbnail
-            $thumbnailPath = public_path('/assets/uploads/thumbnails/items/'.$imageName);
-            file_put_contents($thumbnailPath, (string) $resizedImage);
-
-            // Save original image
-            $destinationPath = public_path('/assets/uploads/items');
-            $imageFile->move($destinationPath, $imageName);
-            Storage::disk('s3')->put('items/' . $imageName, (string) $resizedImage);
-
-            // Save filename to DB (optional)
-            $input['image'] = $imageName;
+            $path = $request->file('image')->store('items', 'public');
         }
-        // $path = null;
-        // if ($request->hasFile('image')) {
-        //     $path = $request->file('image')->store('items', 'public');
-        // }
 
         Item::create([
             'name' => $request->name,
@@ -88,7 +59,7 @@ class ItemController extends Controller
             'qty' => $request->qty,
             'status' => $request->status,
             'description' => $request->description,
-            'image' => $input['image'] = $imageName,
+            'image' => $path,
             'available' => 0,
             'borrow' => 0,
         ]);
@@ -110,6 +81,7 @@ class ItemController extends Controller
 
         if ($item->image) {
             Storage::disk('public')->delete($item->image);
+            Storage::disk('public')->delete('items/thumbnails/'.basename($item->image));
         }
 
         $item->delete();
@@ -140,32 +112,14 @@ class ItemController extends Controller
         ]);
 
         // 3. Handle Image Upload
+        $path = $item->image;
         if ($request->hasFile('image')) {
-            // Optional: Delete old image files here if you want to save space
-            if ($item->image && file_exists(public_path('/assets/uploads/items/'.$item->image))) {
-                @unlink(public_path('/assets/uploads/items/'.$item->image));
-                @unlink(public_path('/assets/uploads/thumbnails/items/'.$item->image));
+            if ($item->image) {
+                Storage::disk('public')->delete($item->image);
             }
-
-            $manager = new ImageManager(new Driver);
-            $imageFile = $request->file('image');
-            $imageName = time().'.'.$imageFile->getClientOriginalExtension();
-
-            // Resize and Save Thumbnail
-            $resizedImage = $manager->read($imageFile->getRealPath())
-                ->resize(150, 150, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->toJpeg(80);
-
-            $thumbnailPath = public_path('/assets/uploads/thumbnails/items/'.$imageName);
-            file_put_contents($thumbnailPath, (string) $resizedImage);
-
-            // Save Original
-            $imageFile->move(public_path('/assets/uploads/items'), $imageName);
-
-            // Update the item instance with the NEW filename
-            $item->image = $imageName;
+            $path = $request->file('image')->store('items', 'public');
         }
+        $item->image = $path;
 
         // 4. Update other fields
         $item->name = $request->name;
