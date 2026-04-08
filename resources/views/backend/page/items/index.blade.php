@@ -173,7 +173,7 @@
 
                                     <td>
                                         <img class="rounded-3 border" style="width:44px;height:44px;object-fit:cover;"
-                                            src="{{ $it->image ? asset('storage/' . $it->image) : '' }}" alt="thumb">
+                                            src="{{ $it->image ? Storage::url($it->image) : '' }}"" alt="thumb">
                                     </td>
 
                                     <td>
