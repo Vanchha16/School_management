@@ -153,7 +153,7 @@
                         <h4 class="fw-bold mb-1">{{ $user->name ?? 'Admin' }}</h4>
                         <div class="text-secondary mb-2">{{ $user->email ?? '' }}</div>
 
-                        <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+                        <span class="badge rounded-pill bg-success text-white px-3 py-2">
                             Online
                         </span>
 

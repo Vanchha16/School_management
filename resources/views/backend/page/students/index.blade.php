@@ -98,11 +98,11 @@
 
                                     <td>
                                         @if ($s->status == 1)
-                                            <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+                                            <span class="badge rounded-pill bg-success text-white px-3 py-2">
                                                 {{ __('app.active_students') }}
                                             </span>
                                         @else
-                                            <span class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">
+                                            <span class="badge rounded-pill bg-secondary text-white px-3 py-2">
                                                 {{ __('app.inactive_students') }}
                                             </span>
                                         @endif
@@ -376,11 +376,11 @@
                                 <label class="text-secondary small mb-1 d-block">{{ __('app.Status') }}</label>
                                 <div>
                                     @if ($s->status == 1)
-                                        <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+                                        <span class="badge rounded-pill bg-success text-white px-3 py-2">
                                             Active
                                         </span>
                                     @else
-                                        <span class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">
+                                        <span class="badge rounded-pill bg-secondary text-white px-3 py-2">
                                             Inactive
                                         </span>
                                     @endif

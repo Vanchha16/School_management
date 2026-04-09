@@ -32,10 +32,10 @@
                         <div class="mt-3">
                             @if ($item->status == 1)
                                 <span
-                                    class="badge rounded-pill bg-success-subtle text-success px-3 py-2">{{ __('app.item_active') }}</span>
+                                    class="badge rounded-pill bg-success text-white px-3 py-2">{{ __('app.item_active') }}</span>
                             @else
                                 <span
-                                    class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">{{ __('app.item_inactive') }}</span>
+                                    class="badge rounded-pill bg-secondary text-white px-3 py-2">{{ __('app.item_inactive') }}</span>
                             @endif
                         </div>
                     </div>

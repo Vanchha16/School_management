@@ -85,10 +85,10 @@
                                     <td>
                                         @if (($u->status ?? 1) == 1)
                                             <span
-                                                class="badge rounded-pill bg-success-subtle text-success px-3 py-2">Active</span>
+                                                class="badge rounded-pill bg-success text-white px-3 py-2">Active</span>
                                         @else
                                             <span
-                                                class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">Inactive</span>
+                                                class="badge rounded-pill bg-secondary text-white px-3 py-2">Inactive</span>
                                         @endif
                                     </td>
 
