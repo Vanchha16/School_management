@@ -64,8 +64,8 @@ return [
     'overdue_borrow' => 'Overdue Borrow',
     'super_admin' => 'Super Admin',
     'maths_teacher' => 'Maths Teacher',
-    'Form Borrow Item' => 'Borrow Item IT Room',
-    'fill_in_your_info' => 'This form can only be filled in IT room',
+    'Form Borrow Item' => 'Borrow Item IT Department',
+    'fill_in_your_info' => 'This form can only be filled in IT Department',
     'Search or type item...' => 'Search or type item...',
     'notes' => 'Notes',
     'return_date' => 'Return Date',
@@ -241,4 +241,5 @@ return [
     'Student added successfully. Now you can approve borrow.' => 'Student added successfully. Now you can approve borrow.',
     'Return saved.' => 'Return saved.', 
     'socket_items' => 'Socket Items',
+    'Please check if the charger is compatible with the laptop.' => 'Please check if the charger is compatible with the laptop.',
 ];

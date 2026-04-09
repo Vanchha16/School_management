@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Student Registration</title>
-  <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/photo_2024-05-27_08-46-50.jpg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/image.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Noto+Sans+Khmer:wght@100..900&display=swap" rel="stylesheet">
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous"> --}}
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Moul&display=swap');
@@ -22,13 +24,34 @@
             font-size: 19px;
         }
 
+        html[lang="en"] body {
+            font-size: 19px;
+        }
+
         body {
             background: #f6f7fb;
         }
 
         .card {
             border-radius: 16px;
+            z-index: 1;
+            position: relative;
         }
+
+        /* .card::before {
+            content: "";
+            background-image: url('{{ asset('assets/img/Logo.png') }}');
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            opacity: 0.15;
+            z-index: -1;
+        } */
 
         .btn {
             border-radius: 12px;
@@ -92,10 +115,12 @@
 <body>
 
     <div class="container py-4" style="max-width:700px">
-
-        <div class="text-center mb-3">
-            <h3 class="mb-1">{{ __('app.Form Borrow Item') }}</h3>
-            <div class="text-muted">{{ __('app.fill_in_your_info') }}</div>
+        <div class="text-center mb-3 d-flex ">
+            <img src="{{ asset('assets/img/Logo.png') }}" alt="Logo" width="80" class="mb-2">
+            <div class=" text-center w-100" style="margin-right: 10%">
+                <h3 class="mb-1 " style="margin-top: 5px">{{ __('app.Form Borrow Item') }}</h3>
+                <div class="text-muted">{{ __('app.fill_in_your_info') }}</div>
+            </div>
         </div>
 
 
@@ -175,9 +200,8 @@
                     </li>
                 </ul>
             </div>
-
-
             <div class="card-body p-4">
+                <i class="fa-light fa-brake-warning"></i>
 
                 <form method="POST" action="{{ route('submissions.store') }}" id="registerForm">
                     @csrf
@@ -185,7 +209,8 @@
                     <!-- GROUP -->
                     <!-- STUDENT -->
                     <div class="mb-3">
-                        <label class="form-label">{{ __('app.Student Name') }} *</label>
+                        <label class="form-label">{{ __('app.Student Name') }} <i
+                                class="fa-light fa-brake-warning"></i> *</label>
 
                         <input type="text" id="student_name" name="student_name" class="form-control"
                             list="students_list" autocomplete="off" value="{{ old('student_name') }}" required>
@@ -242,8 +267,6 @@
                     <hr>
 
                     {{-- <h5>{{ __('app.borrow_item') }}</h5> --}}
-
-
                     <!-- ITEM SELECT -->
                     <div class="mb-3">
                         <label class="form-label">{{ __('app.item') }} *</label>
@@ -251,35 +274,33 @@
                         <select id="item_id" name="item_id" placeholder="{{ __('app.Search or type item...') }}"
                             required>
                             <option value="">Search item...</option>
-
                             @foreach ($items as $item)
                                 <option value="{{ $item->Itemid }}" data-name="{{ $item->display_name }}"
-                                    {{-- Replaced asset('storage/' . ...) with your new code structure --}}
                                     data-image="{{ $item->image ? Storage::url($item->image) : '' }}"
                                     {{ old('item_id') == $item->Itemid ? 'selected' : '' }}>
                                     {{ $item->display_name }}
                                 </option>
                             @endforeach
                         </select>
-                        <div class="mb-3 d-none" id="otherItemBox">
+                        {{-- <div class="mb-3 d-none" id="otherItemBox">
                             <label class="form-label">{{ __('app.Other Items') }} *</label>
-
                             <input type="text" name="other_item" id="other_item" class="form-control"
                                 placeholder="{{ __('app.Enter item name...') }}" value="{{ old('other_item') }}">
-
-                            {{-- <small class="text-muted">
-                                Enter the item name if it is not in the list.
-                            </small> --}}
-                        </div>
+                        </div> --}}
 
                     </div>
 
 
+                    <div id="error_alert" class="d-none"
+                        style="display:flex; gap:10px; align-items:flex-start; border-left:4px solid #E24B4A; border-radius:0 8px 8px 0; background:#FCEBEB; padding:12px 16px; margin-bottom:1rem; line-height:1.6;">
+                        <img src="{{ asset('assets/img/brake-warning-regular (1).png') }}" id="icon" alt="warning"
+                            width="20" height="20" style="margin-top:2px; flex-shrink:0;">
+                        <span id="alert_text" style="font-size:13px; color:#501313;"></span>
+                    </div>
                     <!-- ITEM PREVIEW -->
                     <div id="itemPreview" class="item-preview-card mb-3">
 
                         <div class="d-flex align-items-center gap-3">
-
                             <img id="previewImage" class="item-preview-image">
 
                             <div>
@@ -354,9 +375,10 @@
             const groupIdInput = document.getElementById('group_id');
             const groupsList = document.getElementById('groups_list');
             const studentHelp = document.getElementById('student_help');
-
+            const erroradapter = document.getElementById('error_alert');
             const form = document.getElementById('registerForm');
             const submitBtn = document.getElementById('submitBtn');
+            const icon = document.getElementById('icon');
 
             function setQtyOptions(isSocket) {
                 qtySelect.innerHTML = '';
@@ -388,13 +410,24 @@
                 const name = selectedOption.getAttribute('data-name') || '';
                 const lowerName = name.toLowerCase().trim();
 
+                erroradapter.classList.add('d-none');
+
+                // Then in the adaptor check:
+                if (lowerName.includes('adaptor laptop') || lowerName.includes('ឆ្នាំងសាក laptop')) {
+                    document.getElementById('alert_text').textContent =
+                        '{{ __('app.Please check if the charger is compatible with the laptop.') }}';
+                    erroradapter.classList.remove('d-none');
+                }
+
                 previewImage.src = image;
                 previewName.textContent = name;
                 itemPreview.style.display = 'block';
 
+
                 const isSocket = lowerName.includes('socket') || lowerName.includes('ព្រី');
                 setQtyOptions(isSocket);
             }
+
 
             new TomSelect('#item_id', {
                 create: false,
@@ -551,6 +584,8 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('assets/js/fcf4581152.js') }}"></script>
+    <script src="https://kit.fontawesome.com/fcf4581152.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -136,7 +136,7 @@ return [
     'qty' => 'ចំនួន',
     'borrow_date' => 'ថ្ងៃខ្ចី',
     'return_date' => 'ថ្ងៃប្រគល់',
-    'Form Borrow Item' => 'ខ្ចីសម្ភារៈ IT Room',
+    'Form Borrow Item' => 'ខ្ចីសម្ភារៈ IT Department',
     'fill_in_your_info' => 'Form នេះអាចបំពេញបានតែនៅក្នុងបន្ទប់ IT ប៉ុណ្ណោះ។',
     'Search or type item...' => 'ស្វែងរក ឬវាយសម្ភារៈ...',
     'notes' => 'កំណត់សម្គាល់',
@@ -215,7 +215,7 @@ return [
     'This student name already exists in this group.' => 'ឈ្មោះសិស្សនេះមានរួចហើយក្នុងក្រុមនេះ',
     'This Student already exists in group' => 'សិស្សនេះមានរួចហើយក្នុងក្រុម',
     'Do you want to change the student to group' => 'តើអ្នកចង់ផ្លាស់ប្តូរសិស្សទៅក្រុមនេះទេ',
-    'Yes, Change Group' => 'ផ្លាស់ប្តូរក្រុម',
+    'Yes, Change Group' => 'ប្តូរក្រុម',
     'Input group name' => 'បញ្ចូលឈ្មោះក្រុម'   ,
     'Borrow approved successfully.' => 'ការខ្ចីត្រូវបានជោគជ័យ។',
     'Submitted successfully. Please wait for approval.' => 'បានដាក់ស្នើដោយជោគជ័យ សូមមេតារង់ចាំ។',
@@ -241,4 +241,5 @@ return [
     'socket_items' => 'ព្រីដែលនៅសល់',
     'No Data found' => 'រកមិនឃើញទិន្នន័យ',
     'restore_item' => 'ស្ដារឡើងវិញ',
+    'Please check if the charger is compatible with the laptop.' => 'សូមពិនិត្យមើលឆ្នាំងសាកអោយត្រូវជាមួយLaptop',
 ];
