@@ -261,7 +261,7 @@
                                 </div>
                                 @php
                                     $user = Auth::user();
-                                    $profilePhoto = !empty($user?->photo) ? asset('storage/' . $user->photo) : null;
+                                    $profilePhoto = !empty($user?->photo) ? Storage::url($user->photo) : null;
                                     $userInitial = strtoupper(substr($user->name ?? 'A', 0, 1));
                                 @endphp
 

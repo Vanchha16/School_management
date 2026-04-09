@@ -89,7 +89,7 @@
     <div class="container-fluid py-4">
         @php
             $user = Auth::user();
-            $profilePhoto = !empty($user?->photo) ? asset('storage/' . $user->photo) : null;
+            $profilePhoto = !empty($user?->photo) ? Storage::url($user->photo) : null;
             $userInitial = strtoupper(substr($user->name ?? 'A', 0, 1));
         @endphp
 
@@ -228,7 +228,7 @@
 
                                 <div class="d-flex align-items-center gap-3 flex-wrap mb-3">
                                     @if ($user->photo)
-                                        <img src="{{ asset('storage/' . $user->photo) }}" alt="Profile"
+                                        <img src="{{ Storage::url($user->photo) }}" alt="Profile"
                                             class="rounded-circle border"
                                             style="width:80px; height:80px; object-fit:cover;">
                                     @else
