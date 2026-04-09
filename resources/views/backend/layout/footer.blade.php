@@ -10,5 +10,17 @@
   <script src="https://kit.fontawesome.com/0f2939e7cf.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
+ <script>
+  window.addEventListener('load', function () {
+    const loader = document.getElementById('page-loader');
+    if (!loader) return;
+
+    loader.style.opacity = '0';
+    setTimeout(function () {
+      loader.style.display = 'none';
+    }, 400);
+  });
+</script>
 </body>
 </html>

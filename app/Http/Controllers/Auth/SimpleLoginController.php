@@ -39,7 +39,7 @@ class SimpleLoginController extends Controller
             return redirect()->route('student.register');
         }
 
-        return redirect()->route('dashboard'); // staff/admin
+        return redirect()->route('loading.page'); // staff/admin
     }
 
     public function logout(Request $request)

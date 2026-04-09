@@ -32,6 +32,9 @@ Route::get('/language/{locale}', function ($locale) {
     return redirect()->back();
 })->name('language.switch');
 
+Route::get('/loading', function () {
+    return view('backend.loading'); // redirects to /dashboard after loading
+})->name('loading.page');
 /*
 |--------------------------------------------------------------------------
 | Auth
