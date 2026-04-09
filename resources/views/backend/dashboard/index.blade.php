@@ -463,10 +463,10 @@
                                 <div class="fs-2 fw-bold mt-1 text-dark">{{ $socketItems - $totalOut ?? 0 }}</div>
                             </div>
                             <div class="rounded-3 d-flex align-items-center justify-content-center"
-                                style="width: 78px; height: 78px;  ">
+                                style="width: 78px; height: 78px;   ">
                                 <img src="{{ $imageSocket->image ? Storage::url($imageSocket->image) : '' }}"
                                     alt="socket" width="54" height="54"
-                                    style="object-fit:cover; border-radius:10px;">
+                                    style="object-fit:cover; border-radius:10px; border: 2px solid #e5e7eb;">
                             </div>
                         </div>
                     </div>
