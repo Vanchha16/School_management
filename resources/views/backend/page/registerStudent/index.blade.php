@@ -9,10 +9,17 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Noto+Sans+Khmer:wght@100..900&display=swap" rel="stylesheet">
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Moul&display=swap');
+
         html[lang="kh"] body {
-            font-family: 'khmer os battambang', sans-serif !important;
+            font-family: 'khmer os battambang', serif;
+            /* Use 'Moul' instead of 'Khmer OS Muol Light' */
+            font-size: 16px;
         }
 
         body {
@@ -78,7 +85,6 @@
             background-color: #f1f3f5;
             transform: scale(1.08);
         }
-        
     </style>
 </head>
 
@@ -141,7 +147,7 @@
 
         <div class="card shadow-sm border-0 p-3">
             <div class="dropdown text-end ">
-                <button class="btn btn-outline-dark rounded-pill px-3 py-2 shadow-sm dropdown-toggle" type="button"
+                {{-- <button class="btn btn-outline-dark rounded-pill px-3 py-2 shadow-sm dropdown-toggle" type="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
                     @if (app()->getLocale() == 'kh')
                         <img src="{{ asset('assets/img/world.png') }}" alt="Khmer" width="22" height="22"
@@ -150,7 +156,7 @@
                         <img src="{{ asset('assets/img/united-states-of-america.png') }}" alt="English" width="22"
                             height="22" class="rounded-circle">{{ __('app.english') }}
                     @endif
-                </button>
+                </button> --}}
 
                 <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2 mt-2 language-menu">
                     <li>
@@ -463,7 +469,7 @@
                 studentTimer = setTimeout(() => {
                     fetch(
                             `{{ route('register.checkStudentName') }}?student_name=${encodeURIComponent(studentName)}`
-                            )
+                        )
                         .then(response => response.json())
                         .then(data => {
                             if (data.exists) {
