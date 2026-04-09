@@ -275,7 +275,7 @@
                                         <div class="position-relative">
                                             <div class="mb-3" style="margin-bottom:0 !important;">
                                                 @if (!empty($user->photo))
-                                                    <img src="{{ asset('storage/' . $user->photo) }}" alt="Profile"
+                                                    <img src="{{ Storage::url($user->photo) }}" alt="Profile"
                                                         class="rounded-circle border"
                                                         style="width:42px; height:42px; object-fit:cover;">
                                                 @else
@@ -464,8 +464,9 @@
                             </div>
                             <div class="rounded-3 d-flex align-items-center justify-content-center"
                                 style="width: 78px; height: 78px;  ">
-                                <img src="{{ asset('storage/' . ($imageSocket->image ?? '')) }}" alt="socket"
-                                    width="54" height="54" style="object-fit:cover; border-radius:10px;">
+                                <img src="{{ $imageSocket->image ? Storage::url($imageSocket->image) : '' }}"
+                                    alt="socket" width="54" height="54"
+                                    style="object-fit:cover; border-radius:10px;">
                             </div>
                         </div>
                     </div>
@@ -569,7 +570,7 @@
                             <div class="d-flex align-items-start gap-3 py-3 border-bottom">
                                 <div>
                                     @if (!empty($borrow->item?->image))
-                                        <img src="{{ asset('storage/' . $borrow->item->image) }}" width="54"
+                                        <img src="{{ Storage::url($borrow->item->image) }}" width="54"
                                             height="54" style="object-fit:cover;border-radius:10px;">
                                     @else
                                         <div class="bg-light rounded-3 d-flex align-items-center justify-content-center"
