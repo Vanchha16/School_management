@@ -3,7 +3,6 @@
     --card-radius: 16px;
     --soft-shadow: 0 10px 30px rgba(17, 24, 39, .08);
 }
-@import url('https://fonts.googleapis.com/css2?family=Moul&display=swap');
 body {
     background: var(--app-bg);
 }
