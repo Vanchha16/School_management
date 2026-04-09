@@ -11,16 +11,24 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
- <script>
-  window.addEventListener('load', function () {
-    const loader = document.getElementById('page-loader');
-    if (!loader) return;
 
-    loader.style.opacity = '0';
-    setTimeout(function () {
-      loader.style.display = 'none';
-    }, 400);
-  });
+<script>
+    // Wait for the entire window (images, styles, scripts) to finish loading
+    window.addEventListener('load', function() {
+        const loader = document.getElementById('page-loader');
+        
+        if (loader) {
+            // Trigger the fade out
+            loader.style.opacity = '0';
+            loader.style.visibility = 'hidden';
+            
+            // Optional: Remove it entirely from the DOM after the 0.5s fade finishes
+            setTimeout(() => {
+                loader.remove();
+            }, 500); 
+        }
+    });
+</script>
 </script>
 </body>
 </html>
