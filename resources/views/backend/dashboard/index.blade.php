@@ -203,7 +203,7 @@
                                     <button type="button" id="notification-desktop"
                                         class="drop btn btn-light rounded-circle d-flex align-items-center justify-content-center position-relative">
                                         <i class="bi bi-bell"></i>
-                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
+                                        <span class="position-absolute start-100 translate-middle badge rounded-pill">
                                             {{ $pendingSubmissions + $overdueCount }}
                                         </span>
 
