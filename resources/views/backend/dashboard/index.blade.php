@@ -261,9 +261,7 @@
                                 </div>
                                 @php
                                     $user = Auth::user();
-                                    $profilePhoto = !empty($user?->photo)
-                                        ? asset('storage/' . $user->photo)
-                                        : null;
+                                    $profilePhoto = !empty($user?->photo) ? asset('storage/' . $user->photo) : null;
                                     $userInitial = strtoupper(substr($user->name ?? 'A', 0, 1));
                                 @endphp
 
@@ -277,8 +275,8 @@
                                         <div class="position-relative">
                                             <div class="mb-3" style="margin-bottom:0 !important;">
                                                 @if (!empty($user->photo))
-                                                    <img src="{{ asset('storage/' . $user->photo) }}"
-                                                        alt="Profile" class="rounded-circle border"
+                                                    <img src="{{ asset('storage/' . $user->photo) }}" alt="Profile"
+                                                        class="rounded-circle border"
                                                         style="width:42px; height:42px; object-fit:cover;">
                                                 @else
                                                     <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase border"
@@ -389,7 +387,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body">
@@ -421,7 +419,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body">
@@ -438,7 +436,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row g-3 mb-4">
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
@@ -455,7 +453,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body">
@@ -466,18 +464,14 @@
                             </div>
                             <div class="rounded-3 d-flex align-items-center justify-content-center"
                                 style="width: 78px; height: 78px;  ">
-                                @if ($imageSocket && !empty($imageSocket->image))
-                                    <img src="{{ asset('storage/' . $imageSocket->image) }}" alt=""
-                                        style="max-width: 70%; max-height: 70%; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));border: 1px solid rgba(0, 0, 0, 0.2);">
-                                @else
-                                    <i class="bi bi-hdd-network text-info fs-5"></i>
-                                @endif
+                                <img src="{{ asset('storage/' . ($imageSocket->image ?? '')) }}" alt="socket"
+                                    width="54" height="54" style="object-fit:cover; border-radius:10px;">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body">
@@ -493,7 +487,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body">
@@ -510,7 +504,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row g-3">
             {{-- Recent Submissions --}}
             <div class="col-12 col-xl-6">
@@ -575,8 +569,8 @@
                             <div class="d-flex align-items-start gap-3 py-3 border-bottom">
                                 <div>
                                     @if (!empty($borrow->item?->image))
-                                        <img src="{{ asset('storage/' . $borrow->item->image) }}"
-                                            width="54" height="54" style="object-fit:cover;border-radius:10px;">
+                                        <img src="{{ asset('storage/' . $borrow->item->image) }}" width="54"
+                                            height="54" style="object-fit:cover;border-radius:10px;">
                                     @else
                                         <div class="bg-light rounded-3 d-flex align-items-center justify-content-center"
                                             style="width:54px;height:54px;">
@@ -646,20 +640,5 @@
         </div>
 
     </div>
-    {{-- <script>
-        const noti = document.getElementById('notification');
-        const dropdown = document.getElementById('dropdown');
-
-        noti.addEventListener('click', function(e) {
-            e.stopPropagation();
-            dropdown.classList.toggle('show');
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!dropdown.contains(e.target) && !noti.contains(e.target)) {
-                dropdown.classList.remove('show');
-            }
-        });
-    </script> --}}
 
 @endsection
