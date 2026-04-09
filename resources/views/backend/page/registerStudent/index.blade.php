@@ -17,9 +17,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Moul&display=swap');
 
         html[lang="kh"] body {
-            font-family: 'khmer os battambang', serif;
+            font-family: 'Khmer OS Siemreap';
             /* Use 'Moul' instead of 'Khmer OS Muol Light' */
-            font-size: 16px;
+            font-size: 19px;
         }
 
         body {
