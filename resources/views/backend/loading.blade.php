@@ -360,7 +360,7 @@
         const stage = document.getElementById('stage');
 
         // The URL to redirect to after loading.
-        const REDIRECT_URL = '{{ url(' / dashboard') }}';
+        const REDIRECT_URL = '{{ url('/dashboard') }}';
 
         steps.forEach(([delay, percent, text]) => {
             setTimeout(() => {
