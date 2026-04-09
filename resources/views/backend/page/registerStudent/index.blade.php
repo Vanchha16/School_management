@@ -147,7 +147,7 @@
 
         <div class="card shadow-sm border-0 p-3">
             <div class="dropdown text-end ">
-                {{-- <button class="btn btn-outline-dark rounded-pill px-3 py-2 shadow-sm dropdown-toggle" type="button"
+                <button class="btn btn-outline-dark rounded-pill px-3 py-2 shadow-sm dropdown-toggle" type="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
                     @if (app()->getLocale() == 'kh')
                         <img src="{{ asset('assets/img/world.png') }}" alt="Khmer" width="22" height="22"
@@ -156,7 +156,7 @@
                         <img src="{{ asset('assets/img/united-states-of-america.png') }}" alt="English" width="22"
                             height="22" class="rounded-circle">{{ __('app.english') }}
                     @endif
-                </button> --}}
+                </button>
 
                 <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2 mt-2 language-menu">
                     <li>
