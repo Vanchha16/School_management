@@ -466,7 +466,7 @@
                             </div>
                             <div class="rounded-3 d-flex align-items-center justify-content-center"
                                 style="width: 78px; height: 78px;  ">
-                                @if (!empty($imageSocket->image))
+                                @if ($imageSocket && !empty($imageSocket->image))
                                     <img src="{{ asset('storage/' . $imageSocket->image) }}" alt=""
                                         style="max-width: 70%; max-height: 70%; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));border: 1px solid rgba(0, 0, 0, 0.2);">
                                 @else

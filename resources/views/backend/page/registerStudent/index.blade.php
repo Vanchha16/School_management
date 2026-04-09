@@ -295,7 +295,7 @@
                         style="display:flex; gap:10px; align-items:flex-start; border-left:4px solid #E24B4A; border-radius:0 8px 8px 0; background:#FCEBEB; padding:12px 16px; margin-bottom:1rem; line-height:1.6;">
                         <img src="{{ asset('assets/img/brake-warning-regular (1).png') }}" id="icon" alt="warning"
                             width="20" height="20" style="margin-top:2px; flex-shrink:0;">
-                        <span id="alert_text" style="font-size:13px; color:#501313;"></span>
+                        <span id="alert_text" style="font-size:13px; color:#ff0000; margin-left:10px;"></span>
                     </div>
                     <!-- ITEM PREVIEW -->
                     <div id="itemPreview" class="item-preview-card mb-3">
@@ -411,9 +411,8 @@
                 const lowerName = name.toLowerCase().trim();
 
                 erroradapter.classList.add('d-none');
-
                 // Then in the adaptor check:
-                if (lowerName.includes('adaptor laptop') || lowerName.includes('ឆ្នាំងសាក laptop')) {
+                if (lowerName.includes('adaptor laptop') || lowerName.includes('ឆ្នាំងសាក laptop') || lowerName.includes('adaptor​ laptop')) {
                     document.getElementById('alert_text').textContent =
                         '{{ __('app.Please check if the charger is compatible with the laptop.') }}';
                     erroradapter.classList.remove('d-none');
