@@ -43,7 +43,7 @@ class StudentRegisterController extends Controller
         'status' => $request->status,
     ]);
 
-    return redirect()->route('students.index')->with('success', 'Student added.');
+    return redirect()->route('student.register')->with('success', 'Student registered successfully.');
 }
     public function checkPhone(Request $request)
     {

@@ -203,7 +203,7 @@
             <div class="card-body p-4">
                 <i class="fa-light fa-brake-warning"></i>
 
-                <form method="POST" action="{{ route('submissions.store') }}" id="registerForm">
+                <form method="POST" action="{{ route('submissions.store.public') }}" id="registerForm">
                     @csrf
 
                     <!-- GROUP -->

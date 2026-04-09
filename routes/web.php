@@ -38,10 +38,8 @@ Route::get('/language/{locale}', function ($locale) {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [SimpleLoginController::class, 'show'])->name('login');
-    Route::post('/login', [SimpleLoginController::class, 'login'])->name('login.post');
-});
+Route::get('/login', [SimpleLoginController::class, 'show'])->name('login');
+Route::post('/login', [SimpleLoginController::class, 'login'])->name('login.post');
 
 Route::post('/logout', [SimpleLoginController::class, 'logout'])
     ->middleware('auth')
@@ -55,6 +53,7 @@ Route::post('/logout', [SimpleLoginController::class, 'logout'])
 
 Route::get('/register-student', [StudentRegisterController::class, 'create'])->name('student.register');
 Route::post('/register-student', [StudentRegisterController::class, 'store'])->name('student.register.store');
+Route::post('/register-student/submit', [SubmissionController::class, 'store'])->name('submissions.store.public');
 
 Route::get('/register/check-phone', [StudentRegisterController::class, 'checkPhone'])
     ->name('register.checkPhone');

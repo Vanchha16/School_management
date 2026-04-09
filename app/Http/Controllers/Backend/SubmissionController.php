@@ -168,32 +168,32 @@ class SubmissionController extends Controller
         return back()->with('success', 'Submission canceled.');
     }
 
-    public function goManage(StudentSubmission $submission)
-    {
-        $student = null;
+    // public function goManage(StudentSubmission $submission)
+    // {
+    //     $student = null;
 
-        if (!empty($submission->phone_number)) {
-            $student = Student::where('phone_number', $submission->phone_number)->first();
-        }
+    //     if (!empty($submission->phone_number)) {
+    //         $student = Student::where('phone_number', $submission->phone_number)->first();
+    //     }
 
-        if (!$student) {
-            $student = Student::where('student_name', $submission->student_name)->first();
-        }
+    //     if (!$student) {
+    //         $student = Student::where('student_name', $submission->student_name)->first();
+    //     }
 
-        if (!$student) {
-            return back()->withErrors(['student' => 'Student not found in database.']);
-        }
+    //     if (!$student) {
+    //         return back()->withErrors(['student' => 'Student not found in database.']);
+    //     }
 
-        $submission->delete();
+    //     $submission->delete();
 
-        return redirect()->to(
-            url(
-                'admin/borrows?openBorrow=1'
-                    . '&student_id=' . $student->student_id
-                    . '&student_name=' . urlencode($student->student_name)
-            )
-        )->with('success', 'Submission cleared. You can borrow item now.');
-    }
+    //     return redirect()->to(
+    //         url(
+    //             'admin/borrows?openBorrow=1'
+    //                 . '&student_id=' . $student->student_id
+    //                 . '&student_name=' . urlencode($student->student_name)
+    //         )
+    //     )->with('success', 'Submission cleared. You can borrow item now.');
+    // }
 
    public function addStudent($id)
 {
