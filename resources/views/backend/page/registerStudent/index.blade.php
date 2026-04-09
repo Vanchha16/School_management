@@ -254,7 +254,8 @@
 
                             @foreach ($items as $item)
                                 <option value="{{ $item->Itemid }}" data-name="{{ $item->display_name }}"
-                                    data-image="{{ $item->image ? asset('storage/' . $item->image) : '' }}"
+                                    {{-- Replaced asset('storage/' . ...) with your new code structure --}}
+                                    data-image="{{ $item->image ? Storage::url($item->image) : '' }}"
                                     {{ old('item_id') == $item->Itemid ? 'selected' : '' }}>
                                     {{ $item->display_name }}
                                 </option>
