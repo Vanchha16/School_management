@@ -33,6 +33,10 @@
                 font-size: 10px;
             }
 
+            label {
+                font-size: 16px;
+            }
+
             .text-muted {
                 font-size: 13px;
             }
@@ -74,7 +78,7 @@
         }
 
         textarea.form-control {
-            min-height: 110px;
+            min-height: 50px;
         }
 
         .item-preview-card {
@@ -145,7 +149,6 @@
                 font-size: 1.1rem;
             }
         }
-        
     </style>
 </head>
 
@@ -330,10 +333,15 @@
 
 
                     <div id="error_alert" class="d-none"
-                        style="display:flex; gap:10px; align-items:flex-start; border-left:4px solid #E24B4A; border-radius:0 8px 8px 0; background:#FCEBEB; padding:12px 16px; margin-bottom:1rem; line-height:1.6;">
-                        <img src="{{ asset('assets/img/brake-warning-regular (1).png') }}" id="icon"
+                        style="display:flex; gap:10px; align-items:flex-start; 
+                            border-left:4px solid #F59E0B; 
+                            border-radius:0 8px 8px 0; 
+                            background:#FFFBEB; 
+                            padding:12px 16px; margin-bottom:1rem; line-height:1.6;">
+                        <img src="{{ asset('assets/img/brake-warning-regular (2).png') }}" id="icon"
                             alt="warning" width="20" height="20" style="margin-top:2px; flex-shrink:0;">
-                        <span id="alert_text" style="font-size:13px; color:#ff0000; margin-left:10px;"></span>
+
+                        <span id="alert_text" style="font-size:13px; color:#D97706; margin-left:10px;"></span>
                     </div>
                     <!-- ITEM PREVIEW -->
                     <div id="itemPreview" class="item-preview-card mb-3">
@@ -370,17 +378,15 @@
                     <!-- NOTES -->
                     <div class="mb-3">
                         <label class="form-label">{{ __('app.notes') }}</label>
-
-                        <textarea name="notes" class="form-control"></textarea>
+                        <textarea name="notes" class="form-control" style="resize: none;"></textarea>
                     </div>
                     <div class="policy">
                         <input type="checkbox" name="policy" id="policy">
-                        <label for="policy" style="font-size: 13px; margin-bottom: 5px;">
+                        <label for="policy" style="font-size: 13px; margin-bottom: 5px; color: red;">
                             {{ __('app.I agree to the') }}
-                            <a href="{{ route('policy.index') }}" target="_blank"
-                                style="color: inherit; text-decoration: underline;">
+                            {{-- <a href="#" style="color: inherit; text-decoration: underline;" id="showpolicy">
                                 {{ __('app.terms and conditions') }}
-                            </a>
+                            </a> --}}
                         </label>
                     </div>
 
@@ -398,7 +404,7 @@
         </div>
 
     </div>
-
+    {{-- @include('backend.page.Policy.index'); --}}
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

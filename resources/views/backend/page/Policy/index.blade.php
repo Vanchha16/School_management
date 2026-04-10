@@ -1,5 +1,5 @@
 
-<div style="max-width: 640px; margin: 1.5rem auto; padding: 0 1rem;">
+<div style="max-width: 640px; margin: 1.5rem auto; padding: 0 1rem; position: absolute; " id="policy" class="d-none">
 
   <div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; max-height: 320px; overflow-y: auto;">
     <p style="font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin: 0 0 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Terms and Conditions</p>
@@ -25,24 +25,16 @@
     <p style="font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 0.4rem;">7. Changes to Terms</p>
     <p style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0 0 0;">We reserve the right to update these Terms at any time. Continued use of the service after any changes constitutes your acceptance of the new Terms. It is your responsibility to review these Terms periodically.</p>
   </div>
-
-  <div id="errorMsg" style="display: none; font-size: 13px; color: var(--color-text-danger); margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; background: var(--color-background-danger); border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-danger);">
-    Please agree to the terms and conditions before submitting.
-  </div>
-
-  <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1.25rem;">
-    <input type="checkbox" id="policy" name="policy" style="margin-top: 2px; cursor: pointer; width: 15px; height: 15px; flex-shrink: 0;">
-    <label for="policy" style="font-size: 13px; color: var(--color-text-secondary); cursor: pointer; line-height: 1.5;">
-      I have read and agree to the <span style="color: var(--color-text-info); text-decoration: underline; cursor: pointer;">Terms and Conditions</span> and <span style="color: var(--color-text-info); text-decoration: underline; cursor: pointer;">Privacy Policy</span>.
-    </label>
-  </div>
-
-  <button id="submitBtn" onclick="handleSubmit()" style="width: 100%; padding: 10px; font-size: 14px; font-weight: 500; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); cursor: pointer; color: var(--color-text-primary); opacity: 0.45; transition: opacity 0.2s, background 0.15s;">
-    Submit
-  </button>
 </div>
 
 <script>
+const policyLink = document.getElementById('showpolicy');
+policyLink.addEventListener('click', function(event) {
+  event.preventDefault();
+  const policy = document.getElementById('policy');
+  policy.style.display = policy.style.display === 'block' ? 'none' : 'block';
+});
+
 const checkbox = document.getElementById('policy');
 const submitBtn = document.getElementById('submitBtn');
 const errorMsg = document.getElementById('errorMsg');

@@ -1,3 +1,11 @@
+@php
+    use Illuminate\Support\Facades\Auth;
+
+    $user = Auth::user();
+    $role = strtolower($user->role ?? '');
+
+    $canManageUsers = in_array($role, ['admin', 'super admin', 'superadmin']);
+@endphp
 @extends('backend.layout.master')
 
 @section('title', 'Borrows')
@@ -218,10 +226,13 @@
             </div>
 
             <div class="d-flex gap-2">
-                <button class="btn btn-success d-flex align-items-center gap-2" data-bs-toggle="modal"
-                    data-bs-target="#restoreBorrowModal">
-                    <span class="fs-5"><i class="fa-sharp fa-thin fa-trash-undo"></i></span> {{ __('app.restore_item') }}
-                </button>
+                @if ($canManageUsers)
+                    <button class="btn btn-success d-flex align-items-center gap-2" data-bs-toggle="modal"
+                        data-bs-target="#restoreBorrowModal">
+                        <span class="fs-5"><i class="fa-sharp fa-thin fa-trash-undo"></i></span> {{ __('app.restore_item') }}
+                    </button>
+                @endif
+
                 <button class="btn btn-dark d-flex align-items-center gap-2" data-bs-toggle="modal"
                     data-bs-target="#borrowModal">
                     <span class="fs-5">+</span> {{ __('app.borrow_item') }}
@@ -893,7 +904,9 @@
             </div>
         </div>
     </div>
-    @include('backend.page.borrows.restoreBorrowModal');
+
+        @include('backend.page.borrows.restoreBorrowModal')
+
     {{-- <div class="modal fade" id="restoreBorrowModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">

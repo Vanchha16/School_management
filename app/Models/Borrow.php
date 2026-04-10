@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Borrow extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'student_id',
         'item_id',
@@ -23,6 +25,7 @@ class Borrow extends Model
         'call_note',
         'called_at',
         'called_by',
+        'deleted_by',
     ];
 
     protected $casts = [
@@ -30,6 +33,7 @@ class Borrow extends Model
         'due_date' => 'datetime',
         'return_date' => 'datetime',
         'called_at' => 'datetime',
+        'deleted_at'  => 'datetime', 
     ];
 
 
@@ -56,5 +60,9 @@ class Borrow extends Model
     public function calledByUser()
     {
         return $this->belongsTo(User::class, 'called_by');
+    }
+     public function deletedByUser()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }

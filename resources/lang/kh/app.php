@@ -242,7 +242,7 @@ return [
     'No Data found' => 'រកមិនឃើញទិន្នន័យ',
     'restore_item' => 'ស្ដារឡើងវិញ',
     'Please check if the charger is compatible with the laptop.' => 'សូមពិនិត្យមើលឆ្នាំងសាកអោយត្រូវជាមួយLaptop',
-    'I agree to the' => 'ខ្ញុំយល់ព្រមនឹង',
+    'I agree to the' => 'សម្ភារៈប្រើប្រាស់អនុញាតឱ្យខ្ចីប្រើបានត្រឹមតែមួយថ្ងៃ',
     'terms and conditions' => 'ល័ក្ខនិងល័ក្ខខ័ណ្ឌ',
     'Student added.' => 'បានបន្ថែមសិស្សដោយជោគជ័យ។',
     'Student updated.' => 'បានកែសម្រួលសិស្សដោយជោគជ័យ។',
