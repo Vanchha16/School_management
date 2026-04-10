@@ -242,7 +242,7 @@ return [
     'Return saved.' => 'Return saved.', 
     'socket_items' => 'Socket Items',
     'Please check if the charger is compatible with the laptop.' => 'Please check if the charger is compatible with the laptop.',
-    'I agree to the' => 'I agree to the',
+    'I agree to the' => 'Equipment is only allowed to be borrowed for one day.',
     'terms and conditions' => 'Terms and Conditions',
     'Student added.' => 'Student added.',
     'Student updated.' => 'Student updated.',
