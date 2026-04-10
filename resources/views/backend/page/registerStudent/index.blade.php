@@ -27,15 +27,17 @@
         html[lang="en"] body {
             font-size: 19px;
         }
+
         @media (max-width: 480px) {
             html[lang="en"] body {
                 font-size: 10px;
             }
-            .text-muted{
-            font-size: 13px;
+
+            .text-muted {
+                font-size: 13px;
+            }
         }
-        }
-        
+
         body {
             background: #f6f7fb;
         }
@@ -116,6 +118,33 @@
             background-color: #f1f3f5;
             transform: scale(1.08);
         }
+
+        .header-wrap {
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-wrap img {
+            width: 80px;
+            height: auto;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .header-wrap .title-box {
+            flex: 1;
+            min-width: 0;
+        }
+
+        @media (max-width: 480px) {
+            .header-wrap img {
+                width: 55px;
+            }
+
+            .header-wrap .title-box h3 {
+                font-size: 1.1rem;
+            }
+        }
         
     </style>
 </head>
@@ -124,10 +153,10 @@
 <body>
 
     <div class="container py-4" style="max-width:700px">
-        <div class="text-center mb-3 d-flex ">
-            <img src="{{ asset('assets/img/Logo.png') }}" alt="Logo" width="80" class="mb-2">
-            <div class=" text-center w-100" style="margin-right: 10%">
-                <h3 class="mb-1 " style="margin-top: 5px">{{ __('app.Form Borrow Item') }}</h3>
+        <div class="text-center mb-3 d-flex header-wrap">
+            <img src="{{ asset('assets/img/Logo.png') }}" alt="Logo" class="mb-2">
+            <div class="text-center title-box" style="padding-right: 20px;">
+                <h3 class="mb-1" style="margin-top: 5px">{{ __('app.Form Borrow Item') }}</h3>
                 <div class="text-muted">{{ __('app.fill_in_your_info') }}</div>
             </div>
         </div>
