@@ -1,16 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SimpleLoginController;
-use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\BorrowController;
-use App\Http\Controllers\Backend\ItemController;
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\GroupController;
+use App\Http\Controllers\Backend\ItemController;
 use App\Http\Controllers\Backend\StudentController;
-use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\StudentRegisterController;
 use App\Http\Controllers\Backend\SubmissionController;
+use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +54,10 @@ Route::post('/logout', [SimpleLoginController::class, 'logout'])
 |--------------------------------------------------------------------------
 */
 
+Route::get('/policy', function () {
+    return view('backend.page.Policy.index');
+})->name('policy.index');
+
 Route::get('/register-student', [StudentRegisterController::class, 'create'])->name('student.register');
 Route::post('/register-student', [StudentRegisterController::class, 'store'])->name('student.register.store');
 Route::post('/register-student/submit', [SubmissionController::class, 'store'])->name('submissions.store.public');
@@ -72,6 +76,7 @@ Route::get('/register/check-student-name', [StudentRegisterController::class, 'c
 
 Route::middleware('auth')->get('/dashboard', function () {
     $role = strtolower(auth()->user()->role ?? 'student');
+
     return in_array($role, ['admin', 'staff'])
         ? redirect()->route('admin.dashboard')
         : redirect()->route('student.register');
@@ -121,7 +126,8 @@ Route::middleware(['auth', 'role:admin,staff'])
         Route::put('/borrows/update', [BorrowController::class, 'update'])->name('borrows.update');
         Route::post('/borrows/{borrow}/undo-return', [BorrowController::class, 'undoReturn'])->name('borrows.undoReturn');
         Route::delete('/borrows/{borrow}', [BorrowController::class, 'destroy'])->name('borrows.destroy');
-
+        Route::get('/borrows/trashed',       [BorrowController::class, 'trashed'])->name('borrows.trashed');
+Route::post('/borrows/{id}/restore', [BorrowController::class, 'restore'])->name('borrows.restore');
         Route::patch('/borrows/{borrow}/call-status', [BorrowController::class, 'updateCallStatus'])
             ->name('borrows.overdue.call-status');
 

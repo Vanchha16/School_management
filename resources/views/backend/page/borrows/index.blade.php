@@ -893,7 +893,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="restoreBorrowModal" tabindex="-1" aria-hidden="true">
+    @include('backend.page.borrows.restoreBorrowModal');
+    {{-- <div class="modal fade" id="restoreBorrowModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-light">
@@ -952,7 +953,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <script>
         function showAjaxMessage(message, type = 'success') {
             const container = document.getElementById('ajaxMessage');
@@ -1364,4 +1365,90 @@
 
         }
     </script>
+    <script>
+    function buildActionButtons(borrow) {
+        if (borrow.status === 'RETURNED') {
+            return `
+                ${buildViewButton(borrow)}
+                <form action="/admin/borrows/${borrow.id}/undo-return" method="POST" class="d-inline undo-return-form">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-outline-warning" style="margin-bottom:5px">
+                        Undo
+                    </button>
+                </form>
+            `;
+        }
+ 
+        return `
+            <button class="btn btn-sm btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#editBorrowModal"
+                data-id="${borrow.id}"
+                data-student="${borrow.student_id}"
+                data-item="${borrow.item_id}"
+                data-qty="${borrow.qty}"
+                style="margin-bottom:5px">
+                Edit
+            </button>
+ 
+            ${buildViewButton(borrow)}
+ 
+            <button class="btn btn-sm btn-outline-dark"
+                data-bs-toggle="modal"
+                data-bs-target="#returnModal"
+                data-borrow-id="${borrow.id}"
+                style="margin-bottom:5px">
+                Return
+            </button>
+ 
+            <button class="btn btn-sm btn-outline-danger delete-borrow-btn"
+                data-id="${borrow.id}"
+                onclick="return confirm('Delete this borrow record?')">
+                Delete
+            </button>
+        `;
+    }
+ 
+    // ── AJAX delete handler ──────────────────────────────────
+    document.addEventListener('click', async function (e) {
+        const btn = e.target.closest('.delete-borrow-btn');
+        if (!btn) return;
+ 
+        e.preventDefault();
+        if (!confirm('Delete this borrow record?')) return;
+ 
+        const id  = btn.dataset.id;
+        const row = document.getElementById(`borrow-row-${id}`);
+ 
+        btn.disabled    = true;
+        btn.textContent = 'Deleting…';
+ 
+        try {
+            const response = await fetch(`/admin/borrows/${id}`, {
+                method:  'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept':           'application/json',
+                    'X-CSRF-TOKEN':     document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: new URLSearchParams({ _method: 'DELETE' }),
+            });
+ 
+            const data = await response.json();
+ 
+            if (data.success) {
+                if (row) row.remove();
+                showAjaxMessage(data.message, 'success');
+            } else {
+                showAjaxMessage(data.message || 'Delete failed.', 'error');
+                btn.disabled    = false;
+                btn.textContent = 'Delete';
+            }
+        } catch (err) {
+            showAjaxMessage('Something went wrong.', 'error');
+            btn.disabled    = false;
+            btn.textContent = 'Delete';
+        }
+    });
+</script>
 @endsection

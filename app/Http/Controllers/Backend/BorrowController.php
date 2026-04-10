@@ -298,15 +298,74 @@ class BorrowController extends Controller
     }
 
     public function destroy(Borrow $borrow)
-    {
-        if ($borrow->status === 'BORROWED') {
-            Item::where('Itemid', $borrow->item_id)->increment('qty', $borrow->qty ?? 1);
-        }
-
-        $borrow->delete();
-
-        return redirect()->route('borrows.index')->with('success', 'Borrow record deleted.');
+{
+    // Return qty to stock if still borrowed
+    if ($borrow->status === 'BORROWED') {
+        Item::where('Itemid', $borrow->item_id)->increment('available', $borrow->qty ?? 1);
     }
+ 
+    $borrow->deleted_by = Auth::id();
+    $borrow->save();
+    $borrow->delete(); // soft delete — sets deleted_at
+ 
+    if (request()->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Borrow record moved to trash.',
+            'id'      => $borrow->id,
+        ]);
+    }
+ 
+    return redirect()->route('borrows.index')
+        ->with('success', 'Borrow record moved to trash.');
+}
+ 
+// ── 2. trashed() ────────────────────────────────────────────
+public function trashed(Request $request)
+{
+    $q = $request->input('q');
+ 
+    $trashed = Borrow::onlyTrashed()
+        ->with(['student.group', 'item', 'deletedByUser'])
+        ->when($q, function ($query) use ($q) {
+            $query->where(function ($sub) use ($q) {
+                $sub->whereHas('student', fn($s) => $s->where('student_name', 'like', "%{$q}%"))
+                    ->orWhereHas('item',    fn($i) => $i->where('name',         'like', "%{$q}%"));
+            });
+        })
+        ->latest('deleted_at')
+        ->paginate(15);
+ 
+    return response()->json([
+        'html'  => view('backend.page.borrows.trashed-rows', compact('trashed'))->render(),
+        'total' => $trashed->total(),
+    ]);
+}
+ 
+// ── 3. restore() ────────────────────────────────────────────
+public function restore(int $id)
+{
+    $borrow = Borrow::onlyTrashed()->findOrFail($id);
+ 
+    // Deduct stock back if it was borrowed when deleted
+    if ($borrow->status === 'BORROWED') {
+        Item::where('Itemid', $borrow->item_id)->decrement('available', $borrow->qty ?? 1);
+    }
+ 
+    $borrow->deleted_by = null;
+    $borrow->restore(); // clears deleted_at
+ 
+    if (request()->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Borrow record restored successfully.',
+            'id'      => $borrow->id,
+        ]);
+    }
+ 
+    return redirect()->route('borrows.index')
+        ->with('success', 'Borrow record restored successfully.');
+}
 
     public function lateReturns(Request $request)
     {

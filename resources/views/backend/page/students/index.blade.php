@@ -7,10 +7,46 @@
     @include('backend.partials.alert')
 
     <div class="container-fluid py-4">
+        {{-- Alerts --}}
+        <div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 9999; max-width: 400px;">
 
-        @if (session('success'))
+            {{-- Success --}}
+            @if (session('success'))
+                <div class="alert custom-toast alert-success border-0 border-start border-5 border-success shadow-sm rounded-4 fade show bg-white mb-3"
+                    role="alert">
+                    <div class="d-flex align-items-center p-2">
+                        <div class="me-3 fs-4 text-success"><i class="bi bi-check-circle-fill"></i></div>
+                        <div>
+                            <strong class="d-block text-dark">Success</strong>
+                            <span class="text-muted small">{{ session('success') }}</span>
+                        </div>
+                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                    </div>
+                    <div class="progress-loader bg-success"></div>
+                </div>
+            @endif
+
+            {{-- Errors --}}
+            @if ($errors->any())
+                @foreach ($errors->all() as $e)
+                    <div class="alert custom-toast alert-danger border-0 border-start border-5 border-danger shadow-sm rounded-4 fade show bg-white mb-2"
+                        role="alert">
+                        <div class="d-flex align-items-center p-2">
+                            <div class="me-3 fs-4 text-danger"><strong>!</strong></div>
+                            <div>
+                                <strong class="d-block text-dark">Error</strong>
+                                <span class="text-muted small">{{ $e }}</span>
+                            </div>
+                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                        </div>
+                        <div class="progress-loader bg-danger"></div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+        {{-- @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+        @endif --}}
 
         <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
             <div>
@@ -155,7 +191,7 @@
                 @csrf
 
                 <div class="modal-header">
-                    <h5 class="modal-title fw-semibold">Add Student</h5>
+                    <h5 class="modal-title fw-semibold">{{ __('app.Add Student') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -163,7 +199,7 @@
                     <div class="row g-3">
 
                         <div class="col-12">
-                            <label class="form-label fw-semibold">Student Name <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">{{ __('app.Student Name') }} <span class="text-danger">*</span></label>
                             <input type="text" name="student_name" class="form-control"
                                 value="{{ old('student_name') }}" required>
                             @error('student_name')
@@ -172,8 +208,7 @@
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold">{{ __('app.Gender') }} <span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">{{ __('app.Gender') }} <span class="text-danger">*</span></label>
                             <select name="gender" class="form-select" required>
                                 <option value="">-- {{ __('app.select_gender') }} --</option>
                                 <option value="Male" {{ old('gender') == 'Male' ? 'selected' : '' }}>

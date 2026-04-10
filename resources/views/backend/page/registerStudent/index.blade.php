@@ -27,7 +27,15 @@
         html[lang="en"] body {
             font-size: 19px;
         }
-
+        @media (max-width: 480px) {
+            html[lang="en"] body {
+                font-size: 10px;
+            }
+            .text-muted{
+            font-size: 13px;
+        }
+        }
+        
         body {
             background: #f6f7fb;
         }
@@ -108,6 +116,7 @@
             background-color: #f1f3f5;
             transform: scale(1.08);
         }
+        
     </style>
 </head>
 
@@ -293,8 +302,8 @@
 
                     <div id="error_alert" class="d-none"
                         style="display:flex; gap:10px; align-items:flex-start; border-left:4px solid #E24B4A; border-radius:0 8px 8px 0; background:#FCEBEB; padding:12px 16px; margin-bottom:1rem; line-height:1.6;">
-                        <img src="{{ asset('assets/img/brake-warning-regular (1).png') }}" id="icon" alt="warning"
-                            width="20" height="20" style="margin-top:2px; flex-shrink:0;">
+                        <img src="{{ asset('assets/img/brake-warning-regular (1).png') }}" id="icon"
+                            alt="warning" width="20" height="20" style="margin-top:2px; flex-shrink:0;">
                         <span id="alert_text" style="font-size:13px; color:#ff0000; margin-left:10px;"></span>
                     </div>
                     <!-- ITEM PREVIEW -->
@@ -335,9 +344,18 @@
 
                         <textarea name="notes" class="form-control"></textarea>
                     </div>
+                    <div class="policy">
+                        <input type="checkbox" name="policy" id="policy">
+                        <label for="policy" style="font-size: 13px; margin-bottom: 5px;">
+                            {{ __('app.I agree to the') }}
+                            <a href="{{ route('policy.index') }}" target="_blank"
+                                style="color: inherit; text-decoration: underline;">
+                                {{ __('app.terms and conditions') }}
+                            </a>
+                        </label>
+                    </div>
 
-
-                    <button type="submit" class="btn btn-dark w-100" id="submitBtn">
+                    <button type="submit" class="btn btn-dark w-100" id="submitBtn" disabled>
                         {{ __('app.Submit') }}
                     </button>
 
@@ -412,7 +430,8 @@
 
                 erroradapter.classList.add('d-none');
                 // Then in the adaptor check:
-                if (lowerName.includes('adaptor laptop') || lowerName.includes('ឆ្នាំងសាក laptop') || lowerName.includes('adaptor​ laptop')) {
+                if (lowerName.includes('adaptor laptop') || lowerName.includes('ឆ្នាំងសាក laptop') || lowerName
+                    .includes('adaptor​ laptop')) {
                     document.getElementById('alert_text').textContent =
                         '{{ __('app.Please check if the charger is compatible with the laptop.') }}';
                     erroradapter.classList.remove('d-none');
@@ -580,6 +599,13 @@
 
             updateItemUI(originalSelect.value || '');
             syncGroupId();
+
+
+            // document.getElementById('policy').addEventListener('change', function() {
+            //     submitBtn.disabled = !this.checked;
+        });
+        document.getElementById('policy').addEventListener('change', function() {
+            submitBtn.disabled = !this.checked;
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

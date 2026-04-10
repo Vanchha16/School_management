@@ -64,7 +64,7 @@ class ItemController extends Controller
             'borrow' => 0,
         ]);
 
-        return back()->with('success', 'Item added successfully!');
+        return back()->with('success', __('app.Item added successfully!'));
     }
 
     public function destroy(Request $request, $itemid)
@@ -74,7 +74,7 @@ class ItemController extends Controller
         ]);
 
         if (! Hash::check($request->password, auth()->user()->password)) {
-            return back()->withErrors(['password' => 'The password is incorrect password']);
+            return back()->withErrors(['password' => __('app.The password is incorrect password')]);
         }
 
         $item = Item::where('Itemid', $itemid)->firstOrFail();
@@ -86,7 +86,7 @@ class ItemController extends Controller
 
         $item->delete();
 
-        return redirect()->route('items.index')->with('success', 'Item deleted!');
+        return redirect()->route('items.index')->with('success', __('app.Item deleted!'));
     }
 
     // public function edit($itemid)
@@ -132,7 +132,7 @@ class ItemController extends Controller
         $item->save();
 
         // 6. Trigger that SweetAlert we set up earlier!
-        return back()->with('success', 'Item updated successfully!');
+        return back()->with('success', __('app.Item updated successfully!'));
     }
 
     public function show($itemid)

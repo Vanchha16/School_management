@@ -77,7 +77,7 @@ class StudentController extends Controller
 
         Student::create($data);
 
-        return redirect()->route('students.index')->with('success', 'Student added.');
+        return redirect()->route('students.index')->with('success', __('app.Student added.'));
     }
 
     public function show($studentid)
@@ -117,13 +117,13 @@ class StudentController extends Controller
 
         $student->update($data);
 
-        return redirect()->route('students.index')->with('success', 'Student updated.');
+        return redirect()->route('students.index')->with('success', __('app.Student updated.'));
     }
 
     public function destroy($student_id)
     {
         Student::where('student_id', $student_id)->firstOrFail()->delete();
 
-        return redirect()->route('students.index')->with('success', 'Student deleted!');
+        return redirect()->route('students.index')->with('success', __('app.Student deleted!'));
     }
 }

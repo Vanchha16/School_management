@@ -10,8 +10,7 @@
   <script src="https://kit.fontawesome.com/0f2939e7cf.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
-
-
+  <script src="{{ asset('assets/js/alert.js') }}"></script>
 <script>
     // Wait for the entire window (images, styles, scripts) to finish loading
     window.addEventListener('load', function() {
@@ -28,7 +27,6 @@
             }, 500); 
         }
     });
-</script>
 </script>
 </body>
 </html>

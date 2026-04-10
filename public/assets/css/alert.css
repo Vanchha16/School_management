@@ -1,0 +1,45 @@
+/* Custom styling to match the screenshot */
+.custom-toast {
+    position: relative;
+    overflow: hidden;
+    /* Keeps the progress bar inside the rounded corners */
+    animation: slideRotateIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes slideRotateIn {
+    from {
+        transform: translateX(100%) rotate(10deg);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+/* 2. The Progress Bar "Run Back" */
+.progress-loader {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    opacity: 0.6;
+    animation: runBack 4s linear forwards;
+}
+
+@keyframes runBack {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
+    }
+}
+
+/* 3. Smooth exit when closed */
+.alert.fade.show {
+    transition: all 0.4s ease;
+}

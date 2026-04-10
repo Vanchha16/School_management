@@ -35,13 +35,13 @@ class GroupController extends Controller
             'group_name' => $request->group_name,
         ]);
 
-        return back()->with('success', 'Group added successfully!');
+        return back()->with('success', __('app.Group added successfully!'));
     }
 
     public function destroy($group_id)
     {
         Group::where('group_id', $group_id)->firstOrFail()->delete();
 
-        return back()->with('success', 'Group deleted successfully!');
+        return back()->with('success', __('app.Group deleted successfully!'));
     }
 }
