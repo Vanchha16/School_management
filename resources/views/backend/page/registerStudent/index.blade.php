@@ -141,6 +141,12 @@
         }
 
         @media (max-width: 480px) {
+            .policy{
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 12px;
+            }
             .header-wrap img {
                 width: 55px;
             }
@@ -151,6 +157,9 @@
         }
         .no-drop{
             cursor: no-drop !important;
+        }
+        .redred{
+            color: red;
         }
     </style>
 </head>
@@ -227,19 +236,19 @@
                     @endif
                 </button>
 
-                <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2 mt-2 language-menu">
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2 mt-2 language-menu ">
                     <li>
                         <a class="dropdown-item rounded-3 text-center py-2" href="{{ route('language.switch', 'en') }}"
                             title="English">
                             <img src="{{ asset('assets/img/united-states-of-america.png') }}" alt="English"
-                                width="28" height="28" class="rounded-circle">English
+                                width="28" height="28" class="rounded-circle">&nbsp;English
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item rounded-3 text-center py-2" href="{{ route('language.switch', 'kh') }}"
+                        <a class="dropdown-item rounded-3 text-start py-2" href="{{ route('language.switch', 'kh') }}"
                             title="Khmer">
                             <img src="{{ asset('assets/img/world.png') }}" alt="Khmer" width="28" height="28"
-                                class="rounded-circle">ខ្មែរ
+                                class="rounded-circle">&nbsp;ខ្មែរ
                         </a>
                     </li>
                 </ul>
@@ -253,8 +262,7 @@
                     <!-- GROUP -->
                     <!-- STUDENT -->
                     <div class="mb-3">
-                        <label class="form-label">{{ __('app.Student Name') }} <i
-                                class="fa-light fa-brake-warning"></i> *</label>
+                        <label class="form-label">{{ __('app.Student Name') }} <span class="redred">*</span></label>
 
                         <input type="text" id="student_name" name="student_name" class="form-control"
                             list="students_list" autocomplete="off" value="{{ old('student_name') }}" required>
@@ -268,7 +276,7 @@
                         <small id="student_help" class="text-muted"></small>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label ">{{ __('app.groups') }} *</label>
+                        <label class="form-label ">{{ __('app.groups') }} <span class="redred">*</span></label>
 
                         <input type="text" id="group_search" name="group_search" class="form-control"
                             list="groups_list" placeholder="{{ __('app.Input group name') }}" autocomplete="off"
@@ -286,7 +294,7 @@
 
                     <!-- GENDER -->
                     <div class="mb-3">
-                        <label class="form-label">{{ __('app.Gender') }} *</label>
+                        <label class="form-label">{{ __('app.Gender') }} <span class="redred">*</span></label>
 
                         <select id="gender" name="gender" class="form-select" required>
                             <option value="">-- {{ __('app.select_gender') }} --</option>
@@ -300,20 +308,17 @@
 
                     <!-- PHONE -->
                     <div class="mb-3">
-                        <label class="form-label">{{ __('app.Phone Number') }} *</label>
+                        <label class="form-label">{{ __('app.Phone Number') }} <span class="redred">*</span></label>
 
                         <input type="text" id="phone_number" name="phone_number" class="form-control"
                             value="{{ old('phone_number') }}" maxlength="10" inputmode="numeric" required>
                         <small id="phone_error" class="text-danger"></small>
                     </div>
 
-
-                    <hr>
-
                     {{-- <h5>{{ __('app.borrow_item') }}</h5> --}}
                     <!-- ITEM SELECT -->
                     <div class="mb-3">
-                        <label class="form-label">{{ __('app.item') }} *</label>
+                        <label class="form-label">{{ __('app.item') }} <span class="redred">*</span></label>
 
                         <select id="item_id" name="item_id" placeholder="{{ __('app.Search or type item...') }}"
                             required>
@@ -365,7 +370,7 @@
                     <!-- QTY -->
                     <div class="mb-3">
 
-                        <label class="form-label">{{ __('app.qty') }} *</label>
+                        <label class="form-label">{{ __('app.qty') }} <span class="redred">*</span></label>
 
                         <select name="qty" id="qty" class="form-select" required>
                             <option value="1" selected>1</option>
@@ -383,9 +388,9 @@
                         <label class="form-label">{{ __('app.notes') }}</label>
                         <textarea name="notes" class="form-control" style="resize: none;"></textarea>
                     </div>
-                    <div class="policy">
+                    <div class="policy" style="margin-bottom: 2px">
                         <input type="checkbox" name="policy" id="policy">
-                        <label for="policy" style="font-size: 16px; margin-bottom: 5px; color: red;">
+                        <label for="policy" class="policy" style="color: red;">
                             {{ __('app.I agree to the') }}
                         </label>
                     </div>

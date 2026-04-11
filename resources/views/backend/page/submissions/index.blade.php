@@ -6,7 +6,7 @@
 
     <div class="container-fluid py-4">
 
-        @include('backend.page.alerts.alert');
+        @include('backend.page.alerts.alert')
 
         @if (session('group_change_request'))
             @php $change = session('group_change_request'); @endphp
@@ -46,7 +46,8 @@
                     </div>
 
                     {{-- Message --}}
-                    <div class="px-4 py-3" style="font-size:14px; line-height:1.6; color:#374151;">
+                    <div class="px-4 py-3" style="font-size:14px; line-height:1.6; color:#374151;"> 
+
                         {{ __('app.This student') }}
                         <span class="fw-bold text-dark">{{ $change['student_name'] }}</span>
                         {{ __('app.is already in group') }}
