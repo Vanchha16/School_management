@@ -6,43 +6,149 @@
 
     <div class="container-fluid py-4">
 
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+        @include('backend.page.alerts.alert');
+
+        @if (session('group_change_request'))
+            @php $change = session('group_change_request'); @endphp
+
+            {{-- Backdrop --}}
+            <div id="groupChangeBackdrop"
+                style="position:fixed; inset:0; background:rgba(15,23,42,.45);
+                backdrop-filter:blur(3px); z-index:1050; animation:fadeIn .25s ease;">
+            </div>
+
+            {{-- Sliding banner --}}
+            <div id="groupChangeBanner"
+                style="position:fixed; top:0; left:50%; transform:translateX(-50%);
+                width:100%; max-width:640px; z-index:1051;
+                animation:slideDown .4s cubic-bezier(.25,.8,.25,1);">
+
+                <div
+                    style="margin:20px 16px 0; background:#fff; border-radius:16px;
+                    box-shadow:0 20px 60px rgba(0,0,0,.25);
+                    border-top:5px solid #f59e0b; overflow:hidden;">
+
+                    {{-- Header --}}
+                    <div class="d-flex align-items-center gap-3 px-4 pt-4 pb-2">
+                        <div
+                            style="width:48px; height:48px; border-radius:12px;
+                            background:linear-gradient(135deg,#fef3c7,#fde68a);
+                            display:flex; align-items:center; justify-content:center;
+                            box-shadow:0 4px 12px rgba(245,158,11,.25); flex-shrink:0;">
+                            <i class="bi bi-exclamation-triangle-fill text-warning fs-4"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold mb-0 text-dark">
+                                {{ __('app.Group Change Required') ?? 'Group Change Required' }}</h6>
+                            <small
+                                class="text-muted">{{ __('app.Please choose an action to continue') ?? 'Please choose an action to continue' }}</small>
+                        </div>
+                    </div>
+
+                    {{-- Message --}}
+                    <div class="px-4 py-3" style="font-size:14px; line-height:1.6; color:#374151;">
+                        {{ __('app.This student') }}
+                        <span class="fw-bold text-dark">{{ $change['student_name'] }}</span>
+                        {{ __('app.is already in group') }}
+                        <span class="badge rounded-pill bg-secondary-subtle text-dark border px-3 py-2 mx-1">
+                            <i class="bi bi-people-fill me-1"></i>{{ $change['current_group'] }}
+                        </span>
+                        <br>
+                        {{ __('app.Do you want to change the student to group') }}
+                        <span
+                            class="badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2 mx-1">
+                            <i class="bi bi-arrow-right-circle-fill me-1"></i>{{ $change['new_group'] }}
+                        </span>
+                        ?
+                    </div>
+
+                    {{-- Actions --}}
+                    <div class="px-4 py-3 d-flex gap-2 flex-wrap" style="background:#f9fafb; border-top:1px solid #f1f5f9;">
+
+                        <form method="POST" action="{{ route('submissions.changeGroup', $change['submission_id']) }}"
+                            class="flex-grow-1">
+                            @csrf
+                            <button type="submit" class="btn btn-success w-100 fw-semibold" style="border-radius:10px;">
+                                <i class="bi bi-check-circle-fill me-1"></i>
+                                {{ __('app.Yes, Change Group') }}
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('submissions.approveBorrow', $change['submission_id']) }}"
+                            class="flex-grow-1">
+                            @csrf
+                            <input type="hidden" name="skip_group_change" value="1">
+                            <button type="submit" class="btn btn-primary w-100 fw-semibold" style="border-radius:10px;">
+                                <i class="bi bi-hand-thumbs-up-fill me-1"></i>
+                                {{ __('app.Approve Borrow') }}
+                            </button>
+                        </form>
+
+                        <a href="{{ route('submissions.index') }}" class="btn btn-outline-danger fw-semibold"
+                            style="border-radius:10px;">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                @keyframes slideDown {
+                    from {
+                        transform: translate(-50%, -120%);
+                        opacity: 0;
+                    }
+
+                    to {
+                        transform: translate(-50%, 0);
+                        opacity: 1;
+                    }
+                }
+
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                    }
+
+                    to {
+                        opacity: 1;
+                    }
+                }
+
+                body.banner-open {
+                    overflow: hidden;
+                }
+            </style>
+
+            <script>
+                document.body.classList.add('banner-open');
+                // prevent closing on backdrop click — user must choose an action
+                document.getElementById('groupChangeBackdrop').addEventListener('click', function(e) {
+                    const banner = document.getElementById('groupChangeBanner').querySelector('div');
+                    banner.style.animation = 'none';
+                    banner.offsetHeight; // force reflow
+                    banner.style.animation = 'shake .4s';
+                });
+            </script>
+
+            <style>
+                @keyframes shake {
+
+                    0%,
+                    100% {
+                        transform: translateX(0);
+                    }
+
+                    25% {
+                        transform: translateX(-8px);
+                    }
+
+                    75% {
+                        transform: translateX(8px);
+                    }
+                }
+            </style>
         @endif
-
-@if (session('group_change_request'))
-    @php $change = session('group_change_request'); @endphp
-    <div class="alert alert-warning">
-        <div class="mb-2">
-            {{ __('app.This student') }} <strong>{{ $change['student_name'] }}</strong>
-            {{ __('app.is already in group') }}
-            <strong>{{ $change['current_group'] }}</strong>.
-            {{ __('app.Do you want to change the student to group') }}
-            <strong>{{ $change['new_group'] }}</strong>?
-        </div>
-
-        <div class="d-flex gap-2 flex-wrap">
-            <form method="POST" action="{{ route('submissions.changeGroup', $change['submission_id']) }}">
-                @csrf
-                <button type="submit" class="btn btn-success">
-                    {{ __('app.Yes, Change Group') }}
-                </button>
-            </form>
-
-            <form method="POST" action="{{ route('submissions.approveBorrow', $change['submission_id']) }}">
-                @csrf
-                <input type="hidden" name="skip_group_change" value="1">
-                <button type="submit" class="btn btn-primary">
-                    {{ __('app.Approve Borrow') }}
-                </button>
-            </form>
-
-            <a href="{{ route('submissions.index') }}" class="btn btn-danger">
-                {{ __('app.Cancel') }}
-            </a>
-        </div>
-    </div>
-@endif
 
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -114,8 +220,8 @@
 
                                 <td>
                                     @if (!empty($row->item?->image))
-                                        <img src="{{ Storage::url('' . $row->item->image) }}" width="60"
-                                            height="60" style="object-fit:cover;border-radius:8px;">
+                                        <img src="{{ Storage::url('' . $row->item->image) }}" width="60" height="60"
+                                            style="object-fit:cover;border-radius:8px;">
                                     @else
                                         <span>No image</span>
                                     @endif

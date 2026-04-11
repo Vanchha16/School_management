@@ -46,7 +46,7 @@ class UserController extends Controller
             'status' => (int) $data['status'],
         ]);
 
-        return back()->with('success', 'User created successfully.');
+        return back()->with('success', __('app.User created successfully.'));
     }
 
     public function update(Request $request, User $user)
@@ -71,7 +71,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return back()->with('success', 'User updated successfully.');
+        return back()->with('success', __('app.User updated successfully.'));
     }
 
     public function destroy(User $user)
@@ -83,6 +83,6 @@ class UserController extends Controller
 
         $user->delete();
 
-        return back()->with('success', 'User deleted successfully.');
+        return back()->with('success', 'app.User deleted successfully.');
     }
 }

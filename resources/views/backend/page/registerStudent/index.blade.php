@@ -149,6 +149,9 @@
                 font-size: 1.1rem;
             }
         }
+        .no-drop{
+            cursor: no-drop !important;
+        }
     </style>
 </head>
 
@@ -384,9 +387,6 @@
                         <input type="checkbox" name="policy" id="policy">
                         <label for="policy" style="font-size: 16px; margin-bottom: 5px; color: red;">
                             {{ __('app.I agree to the') }}
-                            {{-- <a href="#" style="color: inherit; text-decoration: underline;" id="showpolicy">
-                                {{ __('app.terms and conditions') }}
-                            </a> --}}
                         </label>
                     </div>
 
@@ -639,6 +639,10 @@
             // document.getElementById('policy').addEventListener('change', function() {
             //     submitBtn.disabled = !this.checked;
         });
+        // if (document.getElementById('policy')) {
+            
+        // }
+        
         document.getElementById('policy').addEventListener('change', function() {
             submitBtn.disabled = !this.checked;
         });

@@ -7,9 +7,7 @@
     <div class="container-fluid py-4">
 
         {{-- Alerts --}}
-        @if (session('success'))
-            <div class="alert alert-success rounded-4">{{ session('success') }}</div>
-        @endif
+        @include('backend.page.alerts.alert');
 
         @if ($errors->any())
             <div class="alert alert-danger rounded-4">

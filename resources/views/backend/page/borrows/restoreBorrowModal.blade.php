@@ -1,5 +1,4 @@
 
-    
 <div class="modal fade" id="restoreBorrowModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg" style="border-radius:18px; overflow:hidden;">
@@ -15,8 +14,10 @@
                     </div>
                     <div>
                         <h5 class="fw-bold mb-0 text-dark">{{ __('app.restore_item') }}</h5>
+
                         <small class="text-muted" id="trashedCount">
-                            <i class="bi bi-hourglass-split"></i> Loading…
+
+                            <i class="bi bi-hourglass-split"></i> {{ __('app.Loading') }}…
                         </small>
                     </div>
                 </div>
@@ -31,20 +32,20 @@
                             <i class="bi bi-search text-muted"></i>
                         </span>
                         <input type="text" id="trashedSearch" class="form-control border-start-0 ps-0"
-                               placeholder="Search student or item…"
+                               placeholder="{{ __('app.Search student or item…') }}"
                                style="box-shadow:none;">
                     </div>
                     <button class="btn btn-primary btn-sm px-3" id="trashedSearchBtn">
-                        <i class="bi bi-search me-1"></i> Search
+                        <i class="bi bi-search me-1"></i> {{ __('app.search') }}
                     </button>
                     <button class="btn btn-light btn-sm border px-3" id="trashedResetBtn">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> {{ __('app.reset') }}
                     </button>
 
                     <div class="ms-auto d-none" id="bulkBar">
-                        <span class="badge bg-dark me-2" id="bulkCount">0 selected</span>
+                        <span class="badge bg-dark me-2" id="bulkCount">0 {{ __('app.selected') }}</span>
                         <button class="btn btn-success btn-sm px-3" id="bulkRestoreBtn">
-                            <i class="bi bi-arrow-clockwise me-1"></i> Restore selected
+                            <i class="bi bi-arrow-clockwise me-1"></i> {{ __('app.Restore selected') }}
                         </button>
                     </div>
                 </div>
@@ -55,19 +56,25 @@
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead style="background:#f8f9fa; position:sticky; top:0; z-index:2;">
-                            <tr style="font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:#6b7280;">
+                            <tr style="font-size:12px; color:#6b7280;">
                                 <th class="ps-4" style="width:40px;">
                                     <input type="checkbox" id="selectAllTrashed" class="form-check-input">
                                 </th>
                                 <th style="width:40px;">#</th>
-                                <th>Student</th>
-                                <th>Item</th>
-                                <th class="text-center">Qty</th>
-                                <th>Borrow Date</th>
-                                <th>Deleted By</th>
-                                <th>Deleted At</th>
-                                <th>Status</th>
-                                <th class="text-end pe-4">Action</th>
+
+                                <th>{{ __('app.students') }}</th>
+                                <th>{{ __('app.items') }}</th>
+                                <th class="text-center">{{ __('app.qty') }}</th>
+
+                                <th>{{ __('app.borrow_date') }}</th>
+
+                                <th>{{ __('app.deleted_by') }}</th>
+
+                                <th>{{ __('app.deleted_at') }}</th>
+
+                                <th>{{ __('app.Status') }}</th>
+
+                                <th class="text-end pe-4">{{ __('app.action') }}</th>
                             </tr>
                         </thead>
                         <tbody id="trashedTbody">
@@ -90,10 +97,10 @@
             <div class="modal-footer border-0 px-4 py-3" style="background:#fafafa;">
                 <small class="text-muted me-auto">
                     <i class="bi bi-info-circle me-1"></i>
-                    Restored records return to the active borrow list.
+                    {{ __('app.Restored records return to the active borrow list.') }}
                 </small>
                 <button type="button" class="btn btn-light border px-4" data-bs-dismiss="modal">
-                    Close
+                    {{ __('app.Close') }}
                 </button>
             </div>
 
@@ -102,6 +109,10 @@
 </div>
 
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Moul&display=swap');
+    html[lang="kh"]{
+        font-family: 'Moul', 'Noto Sans Khmer', sans-serif;
+    }
     #restoreBorrowModal .table tbody tr {
         transition: background .15s ease, transform .15s ease;
     }
@@ -143,6 +154,7 @@
         0% { background-position: 200% 0; }
         100% { background-position: -200% 0; }
     }
+    
 </style>
 
 @push('scripts')
@@ -244,13 +256,13 @@
         tbody.querySelectorAll('.restore-btn').forEach(btn => {
             btn.addEventListener('click', function () {
                 Swal.fire({
-                    title: 'Restore this record?',
-                    text: 'It will move back to the active borrow list.',
+                    title: '{{ __("app.Restore this record?") }}',
+                    text: '{{ __("app.Restored records return to the active borrow list.") }}',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#198754',
                     cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Yes, restore',
+                    confirmButtonText: '{{ __("app.Yes, restore") }}',
                 }).then(res => {
                     if (!res.isConfirmed) return;
                     restoreOne(this.dataset.id, this).then(ok => {
@@ -291,7 +303,6 @@
     bulkBtn.addEventListener('click', function () {
         const ids = [...tbody.querySelectorAll('.row-check:checked')].map(cb => cb.value);
         if (ids.length === 0) return;
-
         Swal.fire({
             title: `Restore ${ids.length} record${ids.length !== 1 ? 's' : ''}?`,
             text: 'They will all move back to the active borrow list.',
