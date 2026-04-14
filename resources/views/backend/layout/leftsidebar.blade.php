@@ -3,7 +3,7 @@
 
     $user = Auth::user();
     $role = strtolower($user->role ?? '');
-    $profilePhoto = !empty($user?->photo) ? Storage::url('/profile/' . $user->photo) : null;
+    $profilePhoto = !empty($user?->photo) ? Storage::url('' . $user->photo) : null;
     $userInitial = strtoupper(substr($user->name ?? 'A', 0, 1));
 
     $pendingSubmissionCount = $pendingSubmissionCount ?? 0;
