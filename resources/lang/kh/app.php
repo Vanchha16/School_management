@@ -161,6 +161,7 @@ return [
     'Search student or item...' => 'ស្វែងរកសិស្ស ឬសម្ភារៈ...',
     'Total Late Returns' => 'ការប្រគល់យឺតសរុប',
     'Total Days late' => 'ចំនួនថ្ងៃដែលយឺត',
+    'days' => 'ថ្ងៃ',
     'Borrowed more than 3 days and still not returned.' => 'បានខ្ចីលើស 3 ថ្ងៃហើយនៅតែមិនបានប្រគល់',
     'Search student / phone / item...' => 'ស្វែងរកសិស្ស / លេខទូរស័ព្ទ / សម្ភារៈ...',
     'Welcome back, :name' => 'សូមស្វាគមន៍ត្រឡប់មកវិញ, :name',
