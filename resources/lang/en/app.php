@@ -191,6 +191,7 @@ return [
     'Search student or item...' => 'Search student or item...',
     'Total Late Returns' => 'Total Late Returns',
     'Total Days late' => 'Total Days late',
+    'days' => 'days',
     'Borrowed more than 3 days and still not returned.' => 'Borrowed more than 3 days and still not returned.',
     'Search student / phone / item...' => 'Search student / phone / item...',
     'Welcome back, :name' => 'Welcome back, :name',
